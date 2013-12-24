@@ -49,11 +49,7 @@
  				</LinearLayout>
 
 	            <TextView
-<<<<<<< HEAD
 	                android:id="@+id/tv_pub_username"
-=======
-	                android:id="@+id/tv_username"
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignParentLeft="true"
@@ -62,46 +58,29 @@
 	                android:textColor="@color/defaultTextColor"
 	                android:textSize="15sp" />
 
-<<<<<<< HEAD
 	            <FrameLayout
 	                android:id="@+id/ll_image"
 	                android:layout_width="100dp"
 	                android:layout_height="100dp"
-=======
-	            <LinearLayout
-	                android:id="@+id/ll_image"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	                android:layout_alignParentRight="true"
 	                android:background="@drawable/back_user_icon"
 	                android:gravity="center" >
 
 	                <ImageView
-<<<<<<< HEAD
 	                    android:id="@+id/iv_imagefile"
 	                    android:layout_width="match_parent"
 	                    android:layout_height="match_parent"
 	                    android:layout_margin="1dp" />
 
 	                <ImageView
-=======
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	                    android:id="@+id/iv_bulletin"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:layout_gravity="right"
-<<<<<<< HEAD
 	                    android:layout_marginRight="80dp"
 	                    android:background="@drawable/dd_bg2" />
 
 	            </FrameLayout>
-=======
-	                    android:layout_marginRight="30dp"
-	                    android:background="@drawable/dd_bg2" />
-
-	            </LinearLayout>
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 
 	    </RelativeLayout>
 	    

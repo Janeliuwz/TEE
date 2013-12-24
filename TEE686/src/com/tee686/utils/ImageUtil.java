@@ -25,7 +25,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-<<<<<<< HEAD
 //<<<<<<< HEAD
 import android.widget.ImageView;
 //=======
@@ -33,9 +32,6 @@ import android.view.View;
 //import android.widget.ImageView;
 
 //>>>>>>> temp
-=======
-import android.widget.ImageView;
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 import com.casit.tee686.R;
 import com.tee686.db.DBHelper;
 import com.tee686.db.ImageCacheColumn;
@@ -47,15 +43,11 @@ public class ImageUtil {
 	/**
 	 * 默认图片
 	 */
-<<<<<<< HEAD
 //<<<<<<< HEAD
 //	private final static int Default_Img = R.drawable.bg_load_default;
 //=======
 	private final static int Default_Img = R.drawable.back_user_icon;
 //>>>>>>> temp
-=======
-	private final static int Default_Img = R.drawable.bg_load_default;
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 
 	private static Object lock = new Object();
 
@@ -98,14 +90,10 @@ public class ImageUtil {
 
 	/**
 <<<<<<< HEAD
-<<<<<<< HEAD
 	 * 获得程序在sd开上的cahce目录
 =======
 	 * 获得程序在sd卡上的cahce目录
 >>>>>>> temp
-=======
-	 * 获得程序在sd开上的cahce目录
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	 * 
 	 * @param context
 	 *            The context to use
@@ -147,7 +135,6 @@ public class ImageUtil {
 				callback, b);
 		if (bitmap == null) {// 先查找数据库，再查找本地sd卡,若没有.再从网站加载，若网站上没有图片或错误时返回null
 			// 设置默认图片
-<<<<<<< HEAD
 //<<<<<<< HEAD
 			view.setImageResource(Default_Img);
 //		} else {
@@ -160,12 +147,6 @@ public class ImageUtil {
 			view.setImageBitmap(bitmap);
 			
 //>>>>>>> temp
-=======
-			view.setImageResource(Default_Img);
-		} else {
-			// 设置本地SD卡缓存图片
-			view.setImageBitmap(bitmap);
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 		}
 	}
 
@@ -203,14 +184,10 @@ public class ImageUtil {
 
 	/**
 <<<<<<< HEAD
-<<<<<<< HEAD
 	 * 保存图片到SD卡
 =======
 	 * 保存图片到缓存
 >>>>>>> temp
-=======
-	 * 保存图片到SD卡
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	 * 
 	 * @param imagePath
 	 * @param buffer
@@ -236,14 +213,10 @@ public class ImageUtil {
 
 	/**
 <<<<<<< HEAD
-<<<<<<< HEAD
 	 * 保存图片到缓存
 =======
 	 * 保存图片到sd卡
 >>>>>>> temp
-=======
-	 * 保存图片到缓存
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	 * 
 	 * @param imagePath
 	 * @param bm
@@ -335,13 +308,10 @@ public class ImageUtil {
 	 *            得到数据后的处理方法回调
 	 * @throws IOException
 	 */
-<<<<<<< HEAD
 //<<<<<<< HEAD
 //=======
 	@SuppressWarnings("rawtypes")
 //>>>>>>> temp
-=======
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 	public static Bitmap loadThumbnailImage(final String imagePath,
 			final String imgUrl, final DBHelper dbHelper,
 			final ImageCallback callback, final boolean b) {
@@ -371,13 +341,10 @@ public class ImageUtil {
 				}
 			};
 			Runnable runnable = new Runnable() {
-<<<<<<< HEAD
 //<<<<<<< HEAD
 //=======
 				@SuppressWarnings("unchecked")
 //>>>>>>> temp
-=======
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 				@Override
 				public void run() {
 					try {

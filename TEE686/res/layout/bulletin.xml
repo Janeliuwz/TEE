@@ -20,7 +20,6 @@
             android:background="@drawable/bypay_title_btn_add_on" />
 
     </RelativeLayout>
-<<<<<<< HEAD
     
     <LinearLayout
         android:id="@+id/list_content"
@@ -44,13 +43,5 @@
     </LinearLayout>
 
     <include layout="@layout/load_failed_layout" />
-=======
-
-    <ListView
-        android:id="@+id/lv_community_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
->>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 
 </LinearLayout>
