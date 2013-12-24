@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
@@ -24,7 +25,8 @@ import com.umeng.update.UmengUpdateAgent;
 //import android.widget.Button;
 
 public class IndexActivity extends BaseActivity {
-	private ImageView imgBrand;		
+	private ImageView imgBrand;
+	private Button personalCenter;
 	protected String mAppId;
 	protected String mUserId;
 	protected String mChannelId;
@@ -35,10 +37,21 @@ public class IndexActivity extends BaseActivity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			Intent intent = new Intent(IndexActivity.this, MainActivity.class);
+			startActivity(intent);
+//			overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
+		}
+    };
+    
+    private OnClickListener pCenterListener = new OnClickListener()
+    {
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			Intent intent = new Intent(IndexActivity.this, UserLoginActivity.class);
 	        startActivity(intent);
 //	        overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
 		}
-    };	
+    };
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +59,9 @@ public class IndexActivity extends BaseActivity {
 		setContentView(R.layout.activity_index);
 		imgBrand = (ImageView)findViewById(R.id.image_brand);
         imgBrand.setOnClickListener(enterListener);	
+        personalCenter = (Button)findViewById(R.id.personalcenter);
+        personalCenter.setOnClickListener(pCenterListener);
+        
 		JPushInterface.setDebugMode(true); 	//设置开启日志,发布时请关闭日志
         JPushInterface.init(this); 
         JPushInterface.setAliasAndTags(this, "tee686", null, new TagAliasCallback() {
