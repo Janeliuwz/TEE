@@ -56,7 +56,7 @@ public class UserLoginActivity extends BaseActivity {
 	private EditText editPwd;
 	private Button mCommunity;
 	private Button btnEnter;
-//	private Button btnRegister;
+	private Button btnRegister;
 	private String key;
 	private ImageButton qqButton;
 	private ImageButton weiboButton;
@@ -137,7 +137,7 @@ public class UserLoginActivity extends BaseActivity {
 			}
 		});
 
-		/*btnRegister.setOnClickListener(new OnClickListener() {
+		btnRegister.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -146,7 +146,7 @@ public class UserLoginActivity extends BaseActivity {
 						UserRegisterActivity.class);
 				finish();
 			}
-		});*/
+		});
 	}
 
 	protected void checkUsername(String name, String pwd) {
@@ -190,7 +190,7 @@ public class UserLoginActivity extends BaseActivity {
 		editUserID = (EditText) findViewById(R.id.edittext_user_username);
 		editPwd = (EditText) findViewById(R.id.edittext_user_pwd);
 		btnEnter = (Button) findViewById(R.id.button_user_login);
-//		btnRegister = (Button) findViewById(R.id.button_user_register);
+		btnRegister = (Button) findViewById(R.id.button_user_register);
 		goHome = (LinearLayout) findViewById(R.id.Linear_above_toHome);
 		mCommunity = (Button) findViewById(R.id.btn_community);
 	}

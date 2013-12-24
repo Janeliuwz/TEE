@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/user_center"
+            android:textSize="15sp"
             android:textColor="#fff" />
     </LinearLayout>
 
@@ -40,6 +41,7 @@
         android:clickable="true"
         android:gravity="center"
         android:text="社区"
+        android:textSize="15sp"
         android:textColor="#fff" />
 
 </FrameLayout>

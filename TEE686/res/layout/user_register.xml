@@ -17,6 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="10dp"
             android:gravity="center"
             android:orientation="vertical" >
 
@@ -26,7 +27,11 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="输入用户名（必填）"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName" 
+                android:textColor="#000"
+            	android:textCursorDrawable="@color/black"
+            	android:textSize="22sp"
+            />
 
             <EditText
                 android:id="@+id/register_pwd"
@@ -34,7 +39,10 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="输入密码（必填）"
-                android:inputType="textPassword" />
+                android:inputType="textPassword" 
+                android:textColor="#000"
+            	android:textCursorDrawable="@color/black"
+            	android:textSize="22sp"/>
 
             <TextView
                 android:id="@+id/phone_number"
@@ -51,13 +59,16 @@
             <Button
                 android:id="@+id/user_register"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/back_submit_style"
-                android:text="@string/user_register" />
+                android:text="@string/user_register_submit" 
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
     </ScrollView>

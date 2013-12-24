@@ -37,7 +37,7 @@
             android:singleLine="true"
             android:textColor="#000"
             android:textCursorDrawable="@color/black"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <EditText
             android:id="@+id/edittext_user_pwd"
@@ -51,7 +51,7 @@
             android:singleLine="true"
             android:textColor="#000"
             android:textCursorDrawable="@color/black"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,22 +61,28 @@
             <Button
                 android:id="@+id/button_user_login"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="45dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/back_submit_style"
-                android:text="@string/user_enter" />
+                android:text="@string/user_enter" 
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-            <!-- <Button
+            <Button
                 android:id="@+id/button_user_register"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="45dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/back_submit_style"
-                android:text="@string/user_register" /> -->
+                android:text="@string/user_register" 
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
