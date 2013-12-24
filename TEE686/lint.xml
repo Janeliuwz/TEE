@@ -2,6 +2,7 @@
 <lint>
     <issue id="ExtraTranslation" severity="ignore" />
     <issue id="MissingTranslation" severity="ignore" />
+    <issue id="NewApi" severity="ignore" />
     <issue id="TypographyDashes" severity="ignore" />
     <issue id="ValidFragment">
         <ignore path="src/com/tee686/view/UserCollectFragment.java" />

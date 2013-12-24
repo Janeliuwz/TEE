@@ -6,10 +6,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 
->>>>>>> temp
+//>>>>>>> temp
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.casit.tee686.R;
@@ -45,11 +45,11 @@ public class UserRegisterActivity extends BaseActivity {
 	public static String PVC = "pvc";// 省份
 	public static String CITY = "city";// 城市
 	public static String SEX = "sex";// 性别
-<<<<<<< HEAD
+//<<<<<<< HEAD
 //	public static String PIC = "pic";// 头像图片地址
-=======
+//=======
 	public static String PIC = "pic";// 头像图片地址
->>>>>>> temp
+//>>>>>>> temp
 	public static String TEL = "tel";// 手机号
 	public static String PLA = "plat";// 第三方登陆平台
 //	public static String REG = "reg";// 注册时间
@@ -58,10 +58,10 @@ public class UserRegisterActivity extends BaseActivity {
 	private EditText username;
 	private EditText pwd;
 	private TextView mobile;	
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 	private Button mCommunity;	
->>>>>>> temp
+//>>>>>>> temp
 	private Button register;
 	private LinearLayout gohome;
 	private SharedPreferences share;
@@ -105,8 +105,8 @@ public class UserRegisterActivity extends BaseActivity {
 				checkUsername(username.getText().toString(), pwd.getText().toString());
 			}
 		});
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 		
 		mCommunity.setOnClickListener(new OnClickListener() {
 			
@@ -116,7 +116,7 @@ public class UserRegisterActivity extends BaseActivity {
 				IntentUtil.start_activity(UserRegisterActivity.this, BulletinActivity.class);
 			}
 		});
->>>>>>> temp
+//>>>>>>> temp
 	}	
 
 	protected void checkUsername(String name, String pwd) {
@@ -151,20 +151,20 @@ public class UserRegisterActivity extends BaseActivity {
 		username = (EditText) findViewById(R.id.register_username);
 		pwd = (EditText) findViewById(R.id.register_pwd);
 		mobile = (TextView) findViewById(R.id.phone_number);		
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 		mCommunity = (Button) findViewById(R.id.btn_community);		
->>>>>>> temp
+//>>>>>>> temp
 		register = (Button) findViewById(R.id.user_register);
 		gohome = (LinearLayout) findViewById(R.id.Linear_above_toHome);
 	}
 
 	class RegisterAsyncTask extends AsyncTask<String, Void, Boolean> {
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 		private HttpURLConnection conn;
 		
->>>>>>> temp
+//>>>>>>> temp
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -174,10 +174,10 @@ public class UserRegisterActivity extends BaseActivity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 			
->>>>>>> temp
+//>>>>>>> temp
 			StringBuffer result = new StringBuffer();
 			userInfoItem = new UserInfoItem(mobile.getText().toString(), username.getText().toString(),
 					pwd.getText().toString(), share.getString(SEX, ""), share.getString(BIR, ""), share.getString(PVC, ""), 
@@ -185,11 +185,11 @@ public class UserRegisterActivity extends BaseActivity {
 			try {				
 				byte[] data = new ObjectMapper().writeValueAsBytes(userInfoItem);
 				URL url = new URL(params[0]);
-<<<<<<< HEAD
+//<<<<<<< HEAD
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-=======
+//=======
 				conn = (HttpURLConnection) url.openConnection();
->>>>>>> temp
+//>>>>>>> temp
 				conn.setDoOutput(true);
 				conn.setUseCaches(false);
 				conn.setDoInput(true);
@@ -209,14 +209,14 @@ public class UserRegisterActivity extends BaseActivity {
 					}
 					info = result.toString();
 					in.close();
-<<<<<<< HEAD
-				} 
-				conn.disconnect();	
-				return true;
-			} catch (Exception e) {
+//<<<<<<< HEAD
+//				} 
+//				conn.disconnect();	
+//				return true;
+//			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-=======
+//				e.printStackTrace();
+//=======
 					conn.disconnect();	
 					return true;
 				} 
@@ -226,7 +226,7 @@ public class UserRegisterActivity extends BaseActivity {
 				e.printStackTrace();
 			} finally {
 				conn.disconnect();
->>>>>>> temp
+//>>>>>>> temp
 			}
 			return false;
 			
@@ -249,12 +249,12 @@ public class UserRegisterActivity extends BaseActivity {
 						UserCenterActivity.class);
 				finish();
 			} else {
-<<<<<<< HEAD
+//<<<<<<< HEAD
 				showLongToast("网络出现问题，请稍后再试");
 				username.setText("");
-=======
+//=======
 				showLongToast("网络出现问题，请稍后再试");				
->>>>>>> temp
+//>>>>>>> temp
 				pwd.setText("");
 			}
 		}

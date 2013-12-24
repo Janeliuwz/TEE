@@ -25,13 +25,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import android.widget.ImageView;
-=======
+//=======
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
->>>>>>> temp
+//>>>>>>> temp
 import com.casit.tee686.R;
 import com.tee686.db.DBHelper;
 import com.tee686.db.ImageCacheColumn;
@@ -43,11 +43,11 @@ public class ImageUtil {
 	/**
 	 * 默认图片
 	 */
-<<<<<<< HEAD
-	private final static int Default_Img = R.drawable.bg_load_default;
-=======
+//<<<<<<< HEAD
+//	private final static int Default_Img = R.drawable.bg_load_default;
+//=======
 	private final static int Default_Img = R.drawable.back_user_icon;
->>>>>>> temp
+//>>>>>>> temp
 
 	private static Object lock = new Object();
 
@@ -135,18 +135,18 @@ public class ImageUtil {
 				callback, b);
 		if (bitmap == null) {// 先查找数据库，再查找本地sd卡,若没有.再从网站加载，若网站上没有图片或错误时返回null
 			// 设置默认图片
-<<<<<<< HEAD
+//<<<<<<< HEAD
 			view.setImageResource(Default_Img);
-		} else {
+//		} else {
 			// 设置本地SD卡缓存图片
-			view.setImageBitmap(bitmap);
-=======
+//			view.setImageBitmap(bitmap);
+//=======
 //			view.setVisibility(View.GONE);
 		} else {
 			// 设置本地SD卡缓存图片
 			view.setImageBitmap(bitmap);
 			
->>>>>>> temp
+//>>>>>>> temp
 		}
 	}
 
@@ -308,10 +308,10 @@ public class ImageUtil {
 	 *            得到数据后的处理方法回调
 	 * @throws IOException
 	 */
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 	@SuppressWarnings("rawtypes")
->>>>>>> temp
+//>>>>>>> temp
 	public static Bitmap loadThumbnailImage(final String imagePath,
 			final String imgUrl, final DBHelper dbHelper,
 			final ImageCallback callback, final boolean b) {
@@ -341,10 +341,10 @@ public class ImageUtil {
 				}
 			};
 			Runnable runnable = new Runnable() {
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 				@SuppressWarnings("unchecked")
->>>>>>> temp
+//>>>>>>> temp
 				@Override
 				public void run() {
 					try {
