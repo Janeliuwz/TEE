@@ -47,6 +47,7 @@ import com.tee686.activity.UserLoginActivity;
 import com.tee686.entity.UserInfoItem;
 import com.tee686.utils.ImageUtil;
 import com.tee686.utils.ImageUtil.ImageCallback;
+import com.tee686.utils.UserHeadUtil;
 
 @SuppressLint("ValidFragment")
 public class UserIntroFragment extends Fragment {
@@ -229,31 +230,9 @@ public class UserIntroFragment extends Fragment {
 	class imgAsyncTask extends AsyncTask<String, Void, Void> {
 
 		@Override
-		protected Void doInBackground(String... params) {
-			try {								
-				URL url = new URL(params[0]);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();				
-				conn.setUseCaches(false);
-				conn.setDoInput(true);				
-				conn.setConnectTimeout(5000);					
-				if(conn.getResponseCode() == 200) {
-					ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-					byte[] buffer = new byte[1024];
-					int len = 0;
-					InputStream in = conn.getInputStream();
-					while((len = in.read(buffer)) != -1) {
-						outStream.write(buffer, 0, len);
-					}
-					in.close();
-					data = outStream.toByteArray();
-					img.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-					img.setScaleType(ScaleType.CENTER_CROP);
-				} 
-				conn.disconnect();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		protected Void doInBackground(String... params) {			
+			img.setImageBitmap(UserHeadUtil.getUserHeadImage(params[0]));
+			img.setScaleType(ScaleType.CENTER_CROP);
 			return null;			
 		}		
 	}

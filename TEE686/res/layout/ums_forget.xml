@@ -110,7 +110,7 @@
                     android:textSize="16sp" />
 
                 <ImageButton
-                    android:id="@+id/imageView1"
+                    android:id="@+id/iv_imagefile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

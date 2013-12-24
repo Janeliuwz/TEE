@@ -21,7 +21,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import com.casit.tee686.R;
 import com.tee686.config.Urls;
 import com.tee686.entity.UserInfoItem;
@@ -29,7 +28,7 @@ import com.tee686.https.HttpUtils;
 import com.tee686.https.NetWorkHelper;
 import com.tee686.indicator.PageIndicator;
 import com.tee686.ui.base.BaseFragmentActivity;
-import com.tee686.utils.PopupWindowUtil;
+import com.tee686.utils.IntentUtil;
 import com.tee686.view.UserCollectFragment;
 import com.tee686.view.UserIntroFragment;
 import com.tee686.view.UserLogOutFragment;
@@ -38,7 +37,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 		OnClickListener {
 
 	public static String UID = "uid";
-	private ImageView imgTitleButton;
+	private Button mCommunity;
 	private Button ref_buButton;
 	private String result = "";
 
@@ -121,9 +120,8 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 	private void initControl() {
 		ImgLeft = (ImageView) findViewById(R.id.imageview_user_left);
 		ImgRight = (ImageView) findViewById(R.id.imageview_user_right);
-		imgTitleButton = (ImageView) findViewById(R.id.imageview_user_title);
-		imgTitleButton.setImageResource(R.drawable.button_user_more);
-		imgTitleButton.setOnClickListener(new myOnClickListener());
+		mCommunity = (Button) findViewById(R.id.btn_community);		
+		mCommunity.setOnClickListener(new myOnClickListener());
 		ref_buButton = (Button) findViewById(R.id.bn_refresh);
 		ref_buButton.setOnClickListener(new OnClickListener() {
 			
@@ -286,15 +284,13 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 	}
 
 	private class myOnClickListener implements OnClickListener {
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
+		
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
-			case R.id.imageview_user_title:
-				new PopupWindowUtil(mViewPager).showActionWindow(v,
-						UserCenterActivity.this, mTabsAdapter.tabs);
+			case R.id.btn_community:
+				IntentUtil.start_activity(UserCenterActivity.this, BulletinActivity.class);
 				break;
 			}
 		}

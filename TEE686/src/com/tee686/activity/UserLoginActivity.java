@@ -54,6 +54,7 @@ public class UserLoginActivity extends BaseActivity {
 
 	private EditText editUserID;
 	private EditText editPwd;
+	private Button mCommunity;
 	private Button btnEnter;
 //	private Button btnRegister;
 	private String key;
@@ -126,6 +127,15 @@ public class UserLoginActivity extends BaseActivity {
 				}
 			}
 		});
+		
+		mCommunity.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				IntentUtil.start_activity(UserLoginActivity.this, BulletinActivity.class);
+			}
+		});
 
 		/*btnRegister.setOnClickListener(new OnClickListener() {
 
@@ -182,6 +192,7 @@ public class UserLoginActivity extends BaseActivity {
 		btnEnter = (Button) findViewById(R.id.button_user_login);
 //		btnRegister = (Button) findViewById(R.id.button_user_register);
 		goHome = (LinearLayout) findViewById(R.id.Linear_above_toHome);
+		mCommunity = (Button) findViewById(R.id.btn_community);
 	}
 
 	protected void startBaidu() {

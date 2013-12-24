@@ -29,12 +29,17 @@
             android:textColor="#fff" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageview_user_title"
+    <Button
+        android:id="@+id/btn_community"
         style="@style/title_right_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:src="@drawable/button_user_help"
-        android:visibility="gone" />
+        android:layout_gravity="right|center"
+        android:layout_margin="5dp"
+        android:background="@drawable/back_above_menushow_style"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="社区"
+        android:textColor="#fff" />
+
 </FrameLayout>

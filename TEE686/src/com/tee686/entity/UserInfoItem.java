@@ -1,6 +1,12 @@
 package com.tee686.entity;
 
-public class UserInfoItem {
+import java.io.Serializable;
+
+public class UserInfoItem implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4083656511702918056L;
 	private String mobile;
 	private String username;
 	private String pwd;
@@ -14,6 +20,10 @@ public class UserInfoItem {
 	private String regtime;
 //	private String head_image_url;
 	private String platform;//第三方登陆平台
+//	private Integer flag = 0;
+//	private Integer myselfid;
+//	private boolean vip = false;//专家
+//	private boolean vender = false;//厂商
 	
 	public UserInfoItem(String mobile, String username, String pwd, String sex,
 			String birthday, String province, String city, String regtime,
@@ -108,7 +118,47 @@ public class UserInfoItem {
 	public void setPlatform(String platform) {
 		this.platform = platform;
 	}
-	
+
+	/*public String getHead_image_url() {
+		return head_image_url;
+	}
+
+	public void setHead_image_url(String head_image_url) {
+		this.head_image_url = head_image_url;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public boolean isVip() {
+		return vip;
+	}
+
+	public void setVip(boolean vip) {
+		this.vip = vip;
+	}
+
+	public boolean isVender() {
+		return vender;
+	}
+
+	public void setVender(boolean vender) {
+		this.vender = vender;
+	}
+
+	public Integer getMyselfid() {
+		return myselfid;
+	}
+
+	public void setMyselfid(Integer myselfid) {
+		this.myselfid = myselfid;
+	}
+	*/
 	
 
 	
