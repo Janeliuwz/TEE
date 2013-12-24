@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -71,6 +72,29 @@ public class UserRegisterActivity extends BaseActivity {
 //	Pattern p = Pattern.compile("\\w+[\\n\\r\\t]*");
 	
 	private TelephonyManager tm;
+	
+	private Handler registerhandler = new Handler(){
+		public void handleMessage(android.os.Message msg)
+		{
+			switch(msg.what)
+			{
+			case 1:
+	            Toast.makeText(getApplicationContext(), "服务器没有返回结果", Toast.LENGTH_SHORT).show();  
+				break;
+			case 2:
+				Toast.makeText(getApplicationContext(), "这个账号已经存在", Toast.LENGTH_SHORT).show(); 
+				break;
+			case 3:
+				Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+				break;
+			case 4:
+				Toast.makeText(getApplicationContext(), "恭喜你注册成功", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				break;
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,26 +149,26 @@ public class UserRegisterActivity extends BaseActivity {
 					        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());  
 					  
 					        collector.cancel();// 停止请求results（是否成功的结果）  
-					        System.out.println(result.getType());  
+					        //System.out.println(result.getType());  
 					        
 					        if (result == null)  
-					        {  
-					            //Toast.makeText(getApplicationContext(), "服务器没有返回结果", Toast.LENGTH_SHORT).show();  
-					        }  
+					        {
+					        	registerhandler.sendEmptyMessage(1); 
+					        } 
 					        else if (result.getType() == IQ.Type.ERROR)  
 					        {  
 					            if (result.getError().toString().equalsIgnoreCase("conflict(409)"))  
 					            {  
-					                //Toast.makeText(getApplicationContext(), "这个账号已经存在", Toast.LENGTH_SHORT).show();  
+					                registerhandler.sendEmptyMessage(2); 
 					            }  
 					            else  
 					            {  
-					                //Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();  
+					            	registerhandler.sendEmptyMessage(3); 
 					            }  
 					        }  
 					        else if (result.getType() == IQ.Type.RESULT)  
 					        {  
-					            //Toast.makeText(getApplicationContext(), "恭喜你注册成功", Toast.LENGTH_SHORT).show();  
+					        	registerhandler.sendEmptyMessage(4);   
 					            Intent intent = new Intent(UserRegisterActivity.this, UserLoginActivity.class);  
 					            // 注册成功将信息发送给主界面  
 					            UserLoginActivity.UID = UID;  
@@ -158,7 +182,7 @@ public class UserRegisterActivity extends BaseActivity {
 					    }  
 					    catch (Exception ex)  
 					    { 
-					    	Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
+					    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
 					        ex.printStackTrace();  
 					    }
 					}
@@ -177,7 +201,10 @@ public class UserRegisterActivity extends BaseActivity {
 			}
 		});
 //>>>>>>> temp
-	}	
+	}
+	
+	
+
 
 	protected void checkUsername(String name, String pwd) {
 		// TODO Auto-generated method stub
