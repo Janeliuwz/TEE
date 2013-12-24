@@ -106,60 +106,63 @@ public class UserRegisterActivity extends BaseActivity {
 				PWD = pwd.getText().toString();
 				checkUsername(UID, PWD);
 				
-				try  
-			    {  
-			        Registration reg = new Registration();  
-			  
-			        reg.setType(IQ.Type.SET);  
-			        reg.setTo(XmppTool.getConnection().getServiceName());  
-			        System.out.println(XmppTool.getConnection().getServiceName());  
-			        reg.setUsername(UID);  
-			        reg.setPassword(PWD);  
-			        reg.addAttribute("android", "tee_createUser_android");  
-			        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()), new PacketTypeFilter(IQ.class));  
-			        PacketCollector collector = XmppTool.getConnection().createPacketCollector(filter);  
-			        XmppTool.getConnection().sendPacket(reg);  
-			        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());  
-			  
-			        collector.cancel();// 停止请求results（是否成功的结果）  
-			        System.out.println(result);  
-			        if (result == null)  
-			        {  
-			            Toast.makeText(getApplicationContext(), "服务器没有返回结果", Toast.LENGTH_SHORT)  
-			                    .show();  
-			        }  
-			        else if (result.getType() == IQ.Type.ERROR)  
-			        {  
-			            if (result.getError().toString().equalsIgnoreCase("conflict(409)"))  
-			            {  
-			                Toast.makeText(getApplicationContext(), "这个账号已经存在",  
-			                        Toast.LENGTH_SHORT).show();  
-			            }  
-			            else  
-			            {  
-			                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT)  
-			                        .show();  
-			            }  
-			        }  
-			        else if (result.getType() == IQ.Type.RESULT)  
-			        {  
-			            Toast.makeText(getApplicationContext(), "恭喜你注册成功",  
-			                    Toast.LENGTH_SHORT).show();  
-			            Intent intent = new Intent(getApplicationContext(), UserLoginActivity.class);  
-			            // 注册成功将信息发送给主界面  
-			            UserLoginActivity.UID = UID;  
-			            UserLoginActivity.PWD = PWD;
-			            startActivity(intent);  
-			            //if (XmppTool.login(UID, PWD))  
-			            //{  
-			            //    startActivity(intent);  
-			            //}  
-			        }  
-			    }  
-			    catch (Exception ex)  
-			    {  
-			        ex.printStackTrace();  
-			    }  
+				new Thread()
+				{
+					public void run()
+					{
+						try  
+					    {  
+					        Registration reg = new Registration();  
+					        reg.setType(IQ.Type.SET);  
+					        reg.setTo(XmppTool.getConnection().getServiceName());  
+					        System.out.println(XmppTool.getConnection().getServiceName());  
+					        reg.setUsername(UID);  
+					        reg.setPassword(PWD);  
+					        reg.addAttribute("android", "tee_createUser_android");  
+					        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()), new PacketTypeFilter(IQ.class));  
+					        PacketCollector collector = XmppTool.getConnection().createPacketCollector(filter);  
+					        XmppTool.getConnection().sendPacket(reg);  
+					        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());  
+					  
+					        collector.cancel();// 停止请求results（是否成功的结果）  
+					        System.out.println(result.getType());  
+					        
+					        if (result == null)  
+					        {  
+					            //Toast.makeText(getApplicationContext(), "服务器没有返回结果", Toast.LENGTH_SHORT).show();  
+					        }  
+					        else if (result.getType() == IQ.Type.ERROR)  
+					        {  
+					            if (result.getError().toString().equalsIgnoreCase("conflict(409)"))  
+					            {  
+					                //Toast.makeText(getApplicationContext(), "这个账号已经存在", Toast.LENGTH_SHORT).show();  
+					            }  
+					            else  
+					            {  
+					                //Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();  
+					            }  
+					        }  
+					        else if (result.getType() == IQ.Type.RESULT)  
+					        {  
+					            //Toast.makeText(getApplicationContext(), "恭喜你注册成功", Toast.LENGTH_SHORT).show();  
+					            Intent intent = new Intent(UserRegisterActivity.this, UserLoginActivity.class);  
+					            // 注册成功将信息发送给主界面  
+					            UserLoginActivity.UID = UID;  
+					            UserLoginActivity.PWD = PWD;
+					            startActivity(intent);  
+					            //if (XmppTool.login(UID, PWD))  
+					            //{  
+					            //    startActivity(intent);  
+					            //}  
+					        }  
+					    }  
+					    catch (Exception ex)  
+					    { 
+					    	Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
+					        ex.printStackTrace();  
+					    }
+					}
+				}.start();
 			}
 		});
 //<<<<<<< HEAD
@@ -191,7 +194,7 @@ public class UserRegisterActivity extends BaseActivity {
 			return;
 		}
 		// String loginUser = String.format(Urls.USER_LOGIN, name, pwd);
-		new RegisterAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, Urls.USER_REGISTER);
+		//new RegisterAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, Urls.USER_REGISTER);
 	}
 
 	private void initSharedPreference() {

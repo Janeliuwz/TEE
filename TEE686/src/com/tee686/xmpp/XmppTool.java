@@ -18,14 +18,14 @@ public class XmppTool {
 
 	private static XMPPConnection con = null;
     private static int PORT = 5222;  
-    private static String SERVER_NAME = "192.168.2.6";  
+    private static String SERVER_NAME = "192.168.1.101";  
 	
     //打开连接
 	private static void openConnection() {
 		try {
 			//设置服务器url和端口
 			ConnectionConfiguration connConfig = new ConnectionConfiguration(SERVER_NAME, PORT);
-
+			connConfig.setSASLAuthenticationEnabled(false);
 			con = new XMPPConnection(connConfig);
 			con.connect();
 			/*
@@ -57,6 +57,7 @@ public class XmppTool {
 		}
 		catch (XMPPException xe) 
 		{
+			System.out.println(xe.getXMPPError().toString());
 			xe.printStackTrace();
 		}
 	}
@@ -64,6 +65,10 @@ public class XmppTool {
 	//获得连接对象
 	public static XMPPConnection getConnection() {
 		if (con == null) {
+			openConnection();
+		}
+		else if(con != null&&!con.isConnected())
+		{
 			openConnection();
 		}
 		return con;
@@ -79,7 +84,7 @@ public class XmppTool {
     public static boolean login(String account, String passwd)  
     {  
         ConnectionConfiguration config = new ConnectionConfiguration(SERVER_NAME, PORT);  
-        config.setSASLAuthenticationEnabled(false);  
+        //config.setSASLAuthenticationEnabled(false);  
         con = new XMPPConnection(config);  
         try  
         {  
