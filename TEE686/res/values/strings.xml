@@ -183,6 +183,7 @@
     <string name="upomp_bypay_affirm">确认</string>
     <string name="upomp_bypay_splash_version">版本1.0.0</string>
     <string name="upomp_bypay_splash_info">中国银联股份有限公司版权所有</string>
+<<<<<<< HEAD
     <string name="btn_camera">拍照</string>
     <string name="btn_photo">从相册选择</string>
     <string name="sd_noexit">SD卡不存在</string>
@@ -198,4 +199,10 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
+=======
+
+    <string name="btn_camera">拍照</string>
+    <string name="btn_photo">从相册选择</string>
+    <string name="sd_noexit">SD卡不存在</string>
+>>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 </resources>

@@ -17,8 +17,13 @@
             android:id="@+id/et_publish_bulletin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+<<<<<<< HEAD
             android:focusable="true"
             android:focusableInTouchMode="true"
+=======
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+>>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
             android:gravity="top|left"
             android:hint="你有什么要通知大家？"
             android:inputType="textMultiLine"

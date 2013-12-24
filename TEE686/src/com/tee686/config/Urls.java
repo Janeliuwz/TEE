@@ -27,12 +27,15 @@ public class Urls {
 	public static final String USER_LOGIN = BASIC_URL + "/UserloginServlet?uname=%s&pwd=%s";
 	public static final String USER_REGISTER = BASIC_URL + "/UserRegisterServlet";
 	public static final String USER_INFO = BASIC_URL + "/UserInfoServlet?uname=%s";
+<<<<<<< HEAD
 //<<<<<<< HEAD
 //=======
 	public static final String USER_PUBLISH = BASIC_URL + "/UserPublishServlet";
 	public static final String USER_UPLOAD_IMAGE = BASIC_URL + "/UserUploadImageServlet";
 	public static final String USER_DOAWLOAD_IMAGE = BASIC_URL + "/UserDownloadImageServlet";
 //>>>>>>> temp
+=======
+>>>>>>> 4db0e6d48a7b21141338d461bc937e2d3d48f3ea
 
 	/**
 	 * 1 k 2 act 3 model 4 itemid
