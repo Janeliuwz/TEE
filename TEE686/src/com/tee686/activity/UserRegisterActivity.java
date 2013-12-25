@@ -221,6 +221,7 @@ public class UserRegisterActivity extends BaseActivity {
 			return;
 		}
 		// String loginUser = String.format(Urls.USER_LOGIN, name, pwd);
+		//server0
 		//new RegisterAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, Urls.USER_REGISTER);
 	}
 

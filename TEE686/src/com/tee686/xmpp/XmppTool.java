@@ -1,8 +1,12 @@
 package com.tee686.xmpp;
 
+import java.util.Collection;
+
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -11,6 +15,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.util.StringUtils;
 
 import android.util.Log;
 
@@ -91,7 +96,6 @@ public class XmppTool {
             con.connect();  
             con.login(account, passwd);  
             return true;  
-  
         }  
         catch (XMPPException e)  
         {  
@@ -100,6 +104,99 @@ public class XmppTool {
         }  
     }  
     
+	/**
+	 * 更改用户状态
+	 */
+	public void setPresence(int code) {
+		if (con == null)
+			return;
+		Presence presence;
+		switch (code) {
+			case 0:
+				presence = new Presence(Presence.Type.available);
+				con.sendPacket(presence);
+				Log.v("state", "设置在线");
+				break;
+			case 1:
+				presence = new Presence(Presence.Type.available);
+				presence.setMode(Presence.Mode.chat);
+				con.sendPacket(presence);
+				Log.v("state", "设置Q我吧");
+				System.out.println(presence.toXML());
+				break;
+			case 2:
+				presence = new Presence(Presence.Type.available);
+				presence.setMode(Presence.Mode.dnd);
+				con.sendPacket(presence);
+				Log.v("state", "设置忙碌");
+				System.out.println(presence.toXML());
+				break;
+			case 3:
+				presence = new Presence(Presence.Type.available);
+				presence.setMode(Presence.Mode.away);
+				con.sendPacket(presence);
+				Log.v("state", "设置离开");
+				System.out.println(presence.toXML());
+				break;
+			case 4:
+				Roster roster = con.getRoster();
+				Collection<RosterEntry> entries = roster.getEntries();
+				for (RosterEntry entry : entries) {
+					presence = new Presence(Presence.Type.unavailable);
+					presence.setPacketID(Packet.ID_NOT_AVAILABLE);
+					presence.setFrom(con.getUser());
+					presence.setTo(entry.getUser());
+					con.sendPacket(presence);
+					System.out.println(presence.toXML());
+				}
+				// 向同一用户的其他客户端发送隐身状态
+				presence = new Presence(Presence.Type.unavailable);
+				presence.setPacketID(Packet.ID_NOT_AVAILABLE);
+				presence.setFrom(con.getUser());
+				presence.setTo(StringUtils.parseBareAddress(con.getUser()));
+				con.sendPacket(presence);
+				Log.v("state", "设置隐身");
+				break;
+			case 5:
+				presence = new Presence(Presence.Type.unavailable);
+				con.sendPacket(presence);
+				Log.v("state", "设置离线");
+				break;
+			default:
+				break;
+		}
+	}
+	
+    /** 
+     * 删除当前用户 
+     * @param connection 
+     * @return 
+     */  
+    public static boolean deleteAccount(XMPPConnection connection)  
+    {  
+        try {  
+            connection.getAccountManager().deleteAccount();  
+            return true;  
+        } catch (Exception e) {  
+            return false;  
+        }  
+    }  
+    
+    /** 
+     * 修改密码 
+     * @param connection 
+     * @return 
+     */  
+    public static boolean changePassword(XMPPConnection connection,String pwd)  
+    {  
+        try {  
+            connection.getAccountManager().changePassword(pwd);  
+            return true;  
+        } catch (Exception e) {  
+            return false;  
+        }  
+    } 
+	
 	public static void addPacketListener(PacketListener myListener,
 			OrFilter allPF) {
 		con.addPacketListener(myListener, allPF);

@@ -2,14 +2,26 @@ package com.tee686.activity;
 
 import java.util.Locale;
 
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Registration;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -22,6 +34,7 @@ import com.tee686.https.HttpUtils;
 import com.tee686.activity.UserCenterActivity;
 import com.tee686.utils.IntentUtil;
 import com.tee686.ui.base.BaseActivity;
+import com.tee686.xmpp.XmppTool;
 import com.tee686.config.Urls;
 import com.tee686.https.NetWorkHelper;
 import com.baidu.frontia.Frontia;
@@ -50,7 +63,7 @@ public class UserLoginActivity extends BaseActivity {
 	public static String PIC = "pic";// 头像图片地址
 	public static String PLA = "plat";//第三方登陆平台
 	public static String Scope_Basic = "basic";// 用户基本权限，可以获取用户的基本信息
-	 public static String Scope_Netdisk = "netdisk";// 获取用户在个人云存储中存放的数据
+	public static String Scope_Netdisk = "netdisk";// 获取用户在个人云存储中存放的数据
 
 	private EditText editUserID;
 	private EditText editPwd;
@@ -74,15 +87,50 @@ public class UserLoginActivity extends BaseActivity {
 	private String picurl;
 	private String platform;
 
+
+	/**
+	 * 初始化
+	 */
+	private void initControl() {
+		qqButton = (ImageButton) findViewById(R.id.qqLogin);
+		weiboButton = (ImageButton) findViewById(R.id.weiboLogin);
+		editUserID = (EditText) findViewById(R.id.edittext_user_username);
+		editPwd = (EditText) findViewById(R.id.edittext_user_pwd);
+		btnEnter = (Button) findViewById(R.id.button_user_login);
+		btnRegister = (Button) findViewById(R.id.button_user_register);
+		goHome = (LinearLayout) findViewById(R.id.Linear_above_toHome);
+		mCommunity = (Button) findViewById(R.id.btn_community);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Frontia.init(getApplicationContext(), Conf.APIKEY);
 		setContentView(R.layout.user_login_uid);
+		
 		initControl();
 		initSharePreferences();
 		mAuthorization = Frontia.getAuthorization();		
 
+		btnEnter.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				UID = editUserID.getText().toString();
+				PWD = editPwd.getText().toString();
+				String loginUser;
+				
+				if(checkUsername(UID, PWD))
+				{
+					loginUser = String.format(Urls.USER_LOGIN, UID, PWD);
+
+					new LoginAsyncTask().executeOnExecutor(
+							AsyncTask.THREAD_POOL_EXECUTOR, loginUser, UID, PWD);
+				}
+
+			}
+		});
+		
 		qqButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -97,16 +145,7 @@ public class UserLoginActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				startBaidu();
-			}
-		});
-
-		btnEnter.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				checkUsername(editUserID.getText().toString(), editPwd
-						.getText().toString());
+				startWeibo();
 			}
 		});
 
@@ -149,27 +188,21 @@ public class UserLoginActivity extends BaseActivity {
 		});
 	}
 
-	protected void checkUsername(String name, String pwd) {
+	protected boolean checkUsername(String name, String pwd) {
 		// TODO Auto-generated method stub
 		if (TextUtils.isEmpty(name)) {
 			Toast.makeText(this, R.string.user_username, Toast.LENGTH_SHORT)
 					.show();
-			return;
+			return false;
 		} else if (TextUtils.isEmpty(pwd)) {
 			Toast.makeText(this, R.string.user_pwd, Toast.LENGTH_SHORT).show();
-			return;
+			return false;
 		} else if (!NetWorkHelper.checkNetState(this)) {
 			Toast.makeText(this, R.string.httpisNull, Toast.LENGTH_SHORT)
 					.show();
-			return;
+			return false;
 		}
-
-		String loginUser;
-		loginUser = String.format(Urls.USER_LOGIN,
-				name, pwd);
-
-		new LoginAsyncTask().executeOnExecutor(
-				AsyncTask.THREAD_POOL_EXECUTOR, loginUser);
+		return true;
 	}
 
 	private void initSharePreferences() {
@@ -181,21 +214,7 @@ public class UserLoginActivity extends BaseActivity {
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void initControl() {
-		qqButton = (ImageButton) findViewById(R.id.qqLogin);
-		weiboButton = (ImageButton) findViewById(R.id.weiboLogin);
-		editUserID = (EditText) findViewById(R.id.edittext_user_username);
-		editPwd = (EditText) findViewById(R.id.edittext_user_pwd);
-		btnEnter = (Button) findViewById(R.id.button_user_login);
-		btnRegister = (Button) findViewById(R.id.button_user_register);
-		goHome = (LinearLayout) findViewById(R.id.Linear_above_toHome);
-		mCommunity = (Button) findViewById(R.id.btn_community);
-	}
-
-	protected void startBaidu() {
+	protected void startWeibo() {
 		// TODO Auto-generated method stub
 		// mAuthorization.enableSinaWeiboSSO(Conf.SINA_APP_KEY);
 //		List<String> scope = new ArrayList<String>();
@@ -267,28 +286,30 @@ public class UserLoginActivity extends BaseActivity {
 				});
 	}
 
+	private Handler logIMhandler = new Handler(){
+		public void handleMessage(android.os.Message msg)
+		{
+			switch(msg.what)
+			{
+			case 0:
+	            //Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();  
+				break;
+			case 1:
+				//Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show(); 
+				break;
+			default:
+				break;
+			}
+		}
+	};
+
 	class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
 
 		private boolean flag = false;
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			showAlertDialog("温馨提示", "正在登录请稍等一下~");
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			// TODO Auto-generated method stub
-
-			// if (!HttpUtils.isNetworkAvailable(UserLoginUidActivity.this)) {
-			// showLongToast(getResources().getString(R.string.httpisNull));
-			// return false;
-			// }
+		private boolean server0Login(String param0) {
 			String result = "";
 			try {
-				result = HttpUtils.getByHttpClient(UserLoginActivity.this, params[0]);
+				result = HttpUtils.getByHttpClient(UserLoginActivity.this, param0);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();				
@@ -310,7 +331,53 @@ public class UserLoginActivity extends BaseActivity {
 				e.printStackTrace();
 				return false;
 			}
+		}
+		private boolean server1Login(final String IM_name, final String IM_pwd) {
+			new Thread()
+			{
+				public void run()
+				{
+					try  
+				    {  
+						if(!XmppTool.login(IM_name, IM_pwd))
+							logIMhandler.sendEmptyMessage(0);
+						logIMhandler.sendEmptyMessage(1);
+				    }  
+				    catch (Exception ex)  
+				    { 
+				    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
+				    	XmppTool.closeConnection();
+				    	ex.printStackTrace();  
+				    	logIMhandler.sendEmptyMessage(0);
+				    }
+				}
+			}.start();
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			showAlertDialog("温馨提示", "正在登录请稍等一下~");
+		}
 
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+
+			// if (!HttpUtils.isNetworkAvailable(UserLoginUidActivity.this)) {
+			// showLongToast(getResources().getString(R.string.httpisNull));
+			// return false;
+			// }
+			
+			//TEE用户中心服务器登陆
+			if(!server0Login(params[0]))
+				return false;
+			//即时通讯服务器登陆
+			if(!server1Login(params[1], params[2]))
+				return false;
+			
+			return true;
 		}
 
 		@Override
