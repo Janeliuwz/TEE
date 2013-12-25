@@ -291,6 +291,9 @@ public class UserLoginActivity extends BaseActivity {
 =======
 
 		private boolean success = false;
+<<<<<<< HEAD
+>>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
+=======
 >>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
 		private boolean flag = false;
 		private boolean server0Login(String param0) {
@@ -322,6 +325,7 @@ public class UserLoginActivity extends BaseActivity {
 		
 		private boolean server1Login(final String IM_name, final String IM_pwd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			try  
 		    {  
 				if(!XmppTool.login(IM_name, IM_pwd))
@@ -336,6 +340,8 @@ public class UserLoginActivity extends BaseActivity {
 		    	return false;
 		    }
 =======
+=======
+>>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
 			
 			Thread loginthread  = new Thread()
 			{
@@ -365,6 +371,9 @@ public class UserLoginActivity extends BaseActivity {
 				return success;
 			}
 			return success;
+<<<<<<< HEAD
+>>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
+=======
 >>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
 		}
 		
