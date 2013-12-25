@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+   
+    <TextView 
+        android:id="@+id/friendslist_catalog" 
+        android:paddingRight="4.0dip" 
+        android:layout_height="wrap_content" 
+        style="@style/FriendsListCatalog" />
+    
+    <LinearLayout 
+        android:id="@+id/Linear_frienditem" 
+        android:background="@drawable/frienditem" 
+        android:paddingLeft="8.0dip" 
+        android:layout_height="56.0dip" 
+        style="@style/FriendsListItem">
+        
+        <ImageView 
+            android:id="@+id/iv_frienditem_avatar" 
+            android:layout_width="40.0dip" 
+            android:layout_height="40.0dip" />
+        
+        <LinearLayout 
+            android:orientation="vertical" 
+            android:paddingLeft="8.0dip" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_weight="1.0">
+            <TextView 
+                android:id="@+id/frienditem_nick" 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:singleLine="true" 
+                style="@style/FontTitleInFriendsList" />
+        </LinearLayout>
+        
+        <!--<CheckBox 
+            android:id="@+id/contactitem_select_cb" 
+            android:focusable="false" 
+            android:focusableInTouchMode="false" 
+            android:visibility="visible" 
+            android:clickable="false" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_marginRight="21.0dip" />
+        -->
+    </LinearLayout>    
+
+</LinearLayout>

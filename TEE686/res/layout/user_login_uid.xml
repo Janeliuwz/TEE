@@ -36,7 +36,7 @@
             android:paddingLeft="5dp"
             android:singleLine="true"
             android:textColor="#000"
-            android:textCursorDrawable="@color/black"
+            android:textCursorDrawable="@null"
             android:textSize="22sp" />
 
         <EditText
@@ -50,7 +50,7 @@
             android:paddingLeft="5dp"
             android:singleLine="true"
             android:textColor="#000"
-            android:textCursorDrawable="@color/black"
+            android:textCursorDrawable="@null"
             android:textSize="22sp" />
 
         <LinearLayout

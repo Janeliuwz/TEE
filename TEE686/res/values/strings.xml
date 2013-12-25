@@ -25,6 +25,9 @@
     <string name="user_center_exit">退出功能</string>
     <string name="user_center_e_coin">v币:%s</string>
     <string name="user_center_e_reputation">v望:%s</string>
+    
+    <string name="im_friendslist">通讯录</string>
+    <string name="im_adduser">添加</string>
 
     <!-- 登录 -->
     <string name="user_title">TEE</string>

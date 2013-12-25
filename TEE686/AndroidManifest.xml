@@ -265,6 +265,14 @@
         <activity android:name="com.umeng.fb.ConversationActivity" />
         <activity android:name="com.umeng.fb.ContactActivity" />
 
+        <!-- 即时通讯模块 -->
+        <activity 
+            android:name="com.tee686.activity.FriendsListActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">            
+        </activity>
+        
+        
         <!-- Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"

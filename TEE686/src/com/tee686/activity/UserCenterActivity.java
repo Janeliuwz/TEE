@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 	public static String UID = "uid";
 	private Button mCommunity;
 	private Button ref_buButton;
+	private Button friendsList;
 	private String result = "";
 
 	ViewPager mViewPager;
@@ -130,6 +132,17 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 				// TODO Auto-generated method stub
 				new ContentAsyncTask().execute(String.format(Urls.USER_INFO, share.getString(UID, "")));
 			}
+		});
+		friendsList = (Button)findViewById(R.id.btn_friendsList);
+		friendsList.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(UserCenterActivity.this, FriendsListActivity.class);
+				startActivity(intent);
+			}
+			
 		});
 		mViewPager = (ViewPager) findViewById(R.id.user_pager);
 		mViewPager.setOffscreenPageLimit(2);

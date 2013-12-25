@@ -8,13 +8,14 @@
     <include layout="@layout/user_login_title" />
 
     <Button
+        android:id="@+id/btn_friendsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="通讯录"
         android:textSize="16sp"
         >
-        
     </Button>
+    
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
