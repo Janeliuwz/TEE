@@ -287,6 +287,11 @@ public class UserLoginActivity extends BaseActivity {
 	}
 
 	class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
+<<<<<<< HEAD
+=======
+
+		private boolean success = false;
+>>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
 		private boolean flag = false;
 		private boolean server0Login(String param0) {
 			String result = "";
@@ -316,6 +321,7 @@ public class UserLoginActivity extends BaseActivity {
 		}
 		
 		private boolean server1Login(final String IM_name, final String IM_pwd) {
+<<<<<<< HEAD
 			try  
 		    {  
 				if(!XmppTool.login(IM_name, IM_pwd))
@@ -329,6 +335,37 @@ public class UserLoginActivity extends BaseActivity {
 		    	ex.printStackTrace();  
 		    	return false;
 		    }
+=======
+			
+			Thread loginthread  = new Thread()
+			{
+				public void run()
+				{
+					try  
+				    {  
+						if(!XmppTool.login(IM_name, IM_pwd))
+							success = false;
+						success = true;
+				    }  
+				    catch (Exception ex)  
+				    { 
+				    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
+				    	XmppTool.closeConnection();
+				    	ex.printStackTrace();  
+				    	success = false;
+				    }
+				}
+			};
+			loginthread.start();
+			try {
+				loginthread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return success;
+			}
+			return success;
+>>>>>>> 737b5708fc14f196d648e9ba504adb2f5d515536
 		}
 		
 		@Override
