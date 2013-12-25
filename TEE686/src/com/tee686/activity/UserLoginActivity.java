@@ -305,6 +305,7 @@ public class UserLoginActivity extends BaseActivity {
 
 	class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
 
+		private boolean success = false;
 		private boolean flag = false;
 		private boolean server0Login(String param0) {
 			String result = "";
@@ -332,26 +333,37 @@ public class UserLoginActivity extends BaseActivity {
 				return false;
 			}
 		}
+		
 		private boolean server1Login(final String IM_name, final String IM_pwd) {
-			new Thread()
+			
+			Thread loginthread  = new Thread()
 			{
 				public void run()
 				{
 					try  
 				    {  
 						if(!XmppTool.login(IM_name, IM_pwd))
-							logIMhandler.sendEmptyMessage(0);
-						logIMhandler.sendEmptyMessage(1);
+							success = false;
+						success = true;
 				    }  
 				    catch (Exception ex)  
 				    { 
 				    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
 				    	XmppTool.closeConnection();
 				    	ex.printStackTrace();  
-				    	logIMhandler.sendEmptyMessage(0);
+				    	success = false;
 				    }
 				}
-			}.start();
+			};
+			loginthread.start();
+			try {
+				loginthread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return success;
+			}
+			return success;
 		}
 		
 		@Override
