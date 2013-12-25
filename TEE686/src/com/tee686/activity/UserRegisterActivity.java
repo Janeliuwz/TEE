@@ -173,7 +173,8 @@ public class UserRegisterActivity extends BaseActivity {
 					            // 注册成功将信息发送给主界面  
 					            UserLoginActivity.UID = UID;  
 					            UserLoginActivity.PWD = PWD;
-					            startActivity(intent);  
+					            startActivity(intent);
+					            finish();
 					            //if (XmppTool.login(UID, PWD))  
 					            //{  
 					            //    startActivity(intent);  

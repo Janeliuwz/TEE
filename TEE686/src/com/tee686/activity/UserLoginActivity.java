@@ -286,25 +286,7 @@ public class UserLoginActivity extends BaseActivity {
 				});
 	}
 
-	private Handler logIMhandler = new Handler(){
-		public void handleMessage(android.os.Message msg)
-		{
-			switch(msg.what)
-			{
-			case 0:
-	            //Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();  
-				break;
-			case 1:
-				//Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show(); 
-				break;
-			default:
-				break;
-			}
-		}
-	};
-
 	class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
-
 		private boolean flag = false;
 		private boolean server0Login(String param0) {
 			String result = "";
@@ -332,26 +314,21 @@ public class UserLoginActivity extends BaseActivity {
 				return false;
 			}
 		}
+		
 		private boolean server1Login(final String IM_name, final String IM_pwd) {
-			new Thread()
-			{
-				public void run()
-				{
-					try  
-				    {  
-						if(!XmppTool.login(IM_name, IM_pwd))
-							logIMhandler.sendEmptyMessage(0);
-						logIMhandler.sendEmptyMessage(1);
-				    }  
-				    catch (Exception ex)  
-				    { 
-				    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
-				    	XmppTool.closeConnection();
-				    	ex.printStackTrace();  
-				    	logIMhandler.sendEmptyMessage(0);
-				    }
-				}
-			}.start();
+			try  
+		    {  
+				if(!XmppTool.login(IM_name, IM_pwd))
+					return false;
+				return true;
+		    }  
+		    catch (Exception ex)  
+		    { 
+		    	//Toast.makeText(getApplicationContext(),ex.toString(), Toast.LENGTH_SHORT).show();
+		    	XmppTool.closeConnection();
+		    	ex.printStackTrace();  
+		    	return false;
+		    }
 		}
 		
 		@Override
@@ -371,8 +348,8 @@ public class UserLoginActivity extends BaseActivity {
 			// }
 			
 			//TEE用户中心服务器登陆
-			if(!server0Login(params[0]))
-				return false;
+			//if(!server0Login(params[0]))
+			//	return false;
 			//即时通讯服务器登陆
 			if(!server1Login(params[1], params[2]))
 				return false;
