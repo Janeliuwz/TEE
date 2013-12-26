@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FriendSearchActivity" >
+
+	<RelativeLayout 
+        android:id="@+id/friendSearchTitle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/back_title"
+        android:gravity="center_horizontal" >
+        
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查找用户"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textSize="22sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+    </RelativeLayout>    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/friendSearchTitle"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+    	android:paddingLeft="@dimen/activity_horizontal_margin"
+    	android:paddingRight="@dimen/activity_horizontal_margin"
+    	android:paddingTop="@dimen/activity_vertical_margin">
+    	<EditText
+        	android:id="@+id/search_user_name"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+        	android:hint="输入对方ID"
+        	android:ems="10" >
+        	<requestFocus />
+    	</EditText>
+
+   		<RelativeLayout
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentLeft="true"
+    	    android:layout_below="@+id/search_user_name" >
+
+	        <ListView
+            	android:id="@+id/search_friend_list"
+            	android:layout_width="match_parent"
+        	    android:layout_height="wrap_content">
+    	    </ListView>
+
+	    </RelativeLayout>
+	</RelativeLayout>
+</RelativeLayout>

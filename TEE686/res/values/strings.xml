@@ -28,6 +28,8 @@
     
     <string name="im_friendslist">通讯录</string>
     <string name="im_adduser">添加</string>
+    <string name="im_checkuser">查看用户</string>
+    <string name="im_addsubmit">加为好友</string>
 
     <!-- 登录 -->
     <string name="user_title">TEE</string>
