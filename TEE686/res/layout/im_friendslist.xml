@@ -54,14 +54,13 @@
 	    	
 	    </LinearLayout>
 	    
+	    <com.tee686.im.SideBar 
+    	    android:id ="@+id/friendslist_sideBar"  
+	    	android:layout_height="wrap_content"  
+	    	android:layout_width="20dp"  
+	    	android:layout_gravity="right|center_vertical"
+	    	android:background="@drawable/friendslist_sidebar_bg"
+		/>	    
     </FrameLayout>
-    
-    <com.tee686.im.SideBar 
-        android:id ="@+id/friendslist_sideBar"  
-	    android:layout_height="wrap_content"  
-	    android:layout_width="20dp"  
-	    android:layout_gravity="right|center_vertical"
-	    android:background="@drawable/friendslist_sidebar_bg"
-	/>
 
 </LinearLayout>
