@@ -8,7 +8,7 @@ public class PinyinComparator implements Comparator{
 	public int compare(Object o1, Object o2) {
 		 String str1 = PinyinUtil.getPingYin((String) o1);
 	     String str2 = PinyinUtil.getPingYin((String) o2);
-	     return str1.compareTo(str2);
+	     return str1.compareToIgnoreCase(str2);
 	}
 
 }

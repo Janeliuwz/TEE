@@ -115,7 +115,14 @@ public class FriendsListActivity extends Activity{
 	 * 实现快速滚动索引接口SectionIndexer
 	 * TODO:完成对好友名称的获取
 	 */
+	static class friends
+	{
+		String username;
+		Boolean presence;
+	};
+	
 	private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234","北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
+	private static List<friends> list = new ArrayList<friends>();
 	static class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 
 		private Context mContext;
@@ -132,8 +139,34 @@ public class FriendsListActivity extends Activity{
 		public FriendsListAdapter(Context mContext) {
 			this.mContext = mContext;
 			//TODO:完成对好友名称的获取
-			this.mNames = testNames;
-			Arrays.sort(mNames, new PinyinComparator());
+			list.clear();
+			friends tempfriends;
+			Roster roster = XmppTool.getConnection().getRoster();
+			Collection<RosterEntry> entries = roster.getEntries();
+			for (RosterEntry entry : entries) 
+			{
+			     Presence presence = roster.getPresence(entry.getUser());			     
+			     tempfriends = new friends();
+			     if(presence.isAvailable() == true)
+			     {
+			    	 tempfriends.username = entry.getUser().toString();
+			    	 tempfriends.presence = true;
+			     }
+			     else
+			     {
+			    	 tempfriends.username = entry.getUser().toString();
+			    	 tempfriends.presence = false;
+			     }
+			     list.add(tempfriends);
+			}
+			mNames = new String[list.size()];
+			for(int i=0;i<list.size();i++)
+			{
+				this.mNames[i]=list.get(i).username;
+			}
+			//this.mNames = testNames;
+			Arrays.sort(mNames,new PinyinComparator());
+			System.out.println("排序完成");
 		}
 		
 		@Override
