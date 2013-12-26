@@ -1011,11 +1011,11 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int Linear_above_toHome=0x7f070243;
         public static final int Linear_frienditem=0x7f070037;
         public static final int RelativeLayout1=0x7f07006a;
-        public static final int action_settings=0x7f07025c;
+        public static final int action_settings=0x7f07025f;
         public static final int add_f_pic=0x7f07003f;
         public static final int add_f_submit=0x7f070041;
         public static final int add_f_username=0x7f070040;
-        public static final int appwidget_text=0x7f070251;
+        public static final int appwidget_text=0x7f070254;
         public static final int bankname=0x7f07001e;
         public static final int bg_index=0x7f07000b;
         public static final int blank=0x7f070021;
@@ -1156,7 +1156,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int et_user_main=0x7f070155;
         public static final int et_usernumber=0x7f0701a1;
         public static final int et_yanz=0x7f0701a3;
-        public static final int feedback=0x7f07025d;
+        public static final int feedback=0x7f070260;
         public static final int friendSearchTitle=0x7f07003e;
         public static final int frienditem_nick=0x7f070039;
         public static final int friendsTitle=0x7f070042;
@@ -1214,7 +1214,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int imageview_user_right=0x7f070230;
         public static final int imagexian=0x7f0701c0;
         public static final int imagexk=0x7f0701be;
+        public static final int img=0x7f070251;
         public static final int imgbtn_enter=0x7f070012;
+        public static final int info=0x7f070253;
         public static final int iv1_me_fc=0x7f0700ac;
         public static final int iv1_me_lax=0x7f0700ae;
         public static final int iv1_me_rvio=0x7f0700b2;
@@ -1266,7 +1268,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int ll_ums_info=0x7f0701cf;
         public static final int ll_yeslog=0x7f07015c;
         public static final int load_progressBar=0x7f07004c;
-        public static final int login=0x7f07025b;
+        public static final int login=0x7f07025e;
         public static final int lv_community_content=0x7f070024;
         public static final int lv_friends=0x7f070044;
         public static final int lv_search=0x7f0701cc;
@@ -1413,6 +1415,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int text_header=0x7f07003b;
         public static final int tg_m_sax_btn=0x7f07007d;
         public static final int tishi=0x7f0701ca;
+        public static final int title=0x7f070252;
         public static final int top=0x7f070008;
         public static final int triangle=0x7f070005;
         public static final int tuding=0x7f07017d;
@@ -1596,15 +1599,15 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int xinmima2=0x7f070190;
         public static final int xinmima6=0x7f070193;
         public static final int xiugaisj=0x7f0701d2;
-        public static final int xlistview_footer_content=0x7f070252;
-        public static final int xlistview_footer_hint_textview=0x7f070254;
-        public static final int xlistview_footer_progressbar=0x7f070253;
-        public static final int xlistview_header_arrow=0x7f070259;
-        public static final int xlistview_header_content=0x7f070255;
-        public static final int xlistview_header_hint_textview=0x7f070257;
-        public static final int xlistview_header_progressbar=0x7f07025a;
-        public static final int xlistview_header_text=0x7f070256;
-        public static final int xlistview_header_time=0x7f070258;
+        public static final int xlistview_footer_content=0x7f070255;
+        public static final int xlistview_footer_hint_textview=0x7f070257;
+        public static final int xlistview_footer_progressbar=0x7f070256;
+        public static final int xlistview_header_arrow=0x7f07025c;
+        public static final int xlistview_header_content=0x7f070258;
+        public static final int xlistview_header_hint_textview=0x7f07025a;
+        public static final int xlistview_header_progressbar=0x7f07025d;
+        public static final int xlistview_header_text=0x7f070259;
+        public static final int xlistview_header_time=0x7f07025b;
         public static final int xx=0x7f07014a;
         public static final int xx2=0x7f070156;
         public static final int yihebao=0x7f0701a8;
@@ -1792,9 +1795,10 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int user_login_title=0x7f0300a8;
         public static final int user_login_uid=0x7f0300a9;
         public static final int user_register=0x7f0300aa;
-        public static final int xlist_view=0x7f0300ab;
-        public static final int xlistview_footer=0x7f0300ac;
-        public static final int xlistview_header=0x7f0300ad;
+        public static final int vlist_lv_friend=0x7f0300ab;
+        public static final int xlist_view=0x7f0300ac;
+        public static final int xlistview_footer=0x7f0300ad;
+        public static final int xlistview_header=0x7f0300ae;
     }
     public static final class menu {
         public static final int index=0x7f0f0000;
