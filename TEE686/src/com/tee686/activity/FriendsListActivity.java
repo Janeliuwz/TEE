@@ -121,7 +121,7 @@ public class FriendsListActivity extends Activity{
 		Boolean presence;
 	};
 	
-	private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234","北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
+	//private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234","北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
 	private static List<friends> list = new ArrayList<friends>();
 	static class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 
@@ -225,7 +225,15 @@ public class FriendsListActivity extends Activity{
 			//viewHolder.ivAvatar.setImageResource();
 			viewHolder.tvName.setText(username);
 			//TODO:状态
-			viewHolder.tvStatus.setText("在线");
+			Boolean presenceStatu = findpresenceStatubyUsername(username);
+			if(presenceStatu == true)
+			{
+				viewHolder.tvStatus.setText("在线");
+			}
+			else
+			{
+				viewHolder.tvStatus.setText("离线");
+			}
 			
 			return convertView;
 		}
@@ -252,6 +260,20 @@ public class FriendsListActivity extends Activity{
 		@Override
 		public Object[] getSections() {
 			return null;
+		}
+		
+		public static Boolean findpresenceStatubyUsername(String username)
+		{
+			Boolean presenceStatu = true;
+			for(int i=0;i<list.size();i++)
+			{
+				if(list.get(i).username.equals(username))
+				{
+					presenceStatu = list.get(i).presence;
+					break;
+				}
+			}
+			return presenceStatu;
 		}
 		
 	}
