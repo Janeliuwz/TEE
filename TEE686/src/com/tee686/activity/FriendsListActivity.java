@@ -132,7 +132,7 @@ public class FriendsListActivity extends Activity{
 			TextView tvCatalog; //目录
 			ImageView ivAvatar; //头像
 			TextView tvName; //用户名
-			TextView tvStatus; //状态
+			TextView tvStatus; //状态ni y
 		}
 		
 		@SuppressWarnings("unchecked")
