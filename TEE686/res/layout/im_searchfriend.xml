@@ -32,22 +32,38 @@
     	android:paddingLeft="@dimen/activity_horizontal_margin"
     	android:paddingRight="@dimen/activity_horizontal_margin"
     	android:paddingTop="@dimen/activity_vertical_margin">
-    	<EditText
-        	android:id="@+id/search_user_name"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:layout_alignParentTop="true"
-			android:layout_centerHorizontal="true"
-        	android:hint="输入对方ID"
-        	android:ems="10" >
-        	<requestFocus />
-    	</EditText>
+        
+        <FrameLayout 
+            android:id="@+id/frame_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true" >
+            <EditText
+	        	android:id="@+id/search_user_name"
+    	    	android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+				android:singleLine="true"
+        		android:hint="输入对方ID"
+        		android:ems="10" >
+        		<requestFocus />
+    		</EditText>
+    		<ImageButton 
+    		    android:id="@+id/ib_friendsearch"
+    		    android:layout_height="35dp"
+    		    android:layout_width="35dp"
+    		    android:layout_gravity="right|center_vertical"
+    		    android:layout_marginRight="3dp"
+    		    android:background="@drawable/search">    		    
+    		</ImageButton>     
+    	</FrameLayout>
+
 
    		<RelativeLayout
         	android:layout_width="match_parent"
         	android:layout_height="wrap_content"
         	android:layout_alignParentLeft="true"
-    	    android:layout_below="@+id/search_user_name" >
+    	    android:layout_below="@+id/frame_search" >
 
 	        <ListView
             	android:id="@+id/search_friend_list"
