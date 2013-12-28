@@ -9,15 +9,13 @@
         android:id="@+id/friendsTitle"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="@drawable/back_title"
-        android:gravity="center_horizontal" >
+        android:background="@drawable/back_title" >
         
         <TextView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/im_friendslist"
             android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:textSize="22sp"
             android:textColor="@color/white"

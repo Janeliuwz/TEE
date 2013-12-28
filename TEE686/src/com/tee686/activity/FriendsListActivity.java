@@ -28,9 +28,13 @@ import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
@@ -64,6 +68,35 @@ public class FriendsListActivity extends Activity{
 		friendsListIndexbar.setListView(friendsList);
 		mDialogText = (TextView) LayoutInflater.from(this).inflate(R.layout.im_friendslist_pos, null);
 		mDialogText.setVisibility(View.INVISIBLE);
+		
+		//单击好友列表项
+		friendsList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos,
+					long id) {
+				// TODO Auto-generated method stub
+				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
+				Toast.makeText(getApplicationContext(), 
+						tv_name.getText(), Toast.LENGTH_SHORT).show();
+			}
+			
+		});
+		
+		//长按好友列表项
+		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				TextView tv_name = (TextView)arg1.findViewById(R.id.tv_frienditem_name);
+				Toast.makeText(getApplicationContext(), 
+						tv_name.getText(), Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+		});
 		
 		//TODO
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
