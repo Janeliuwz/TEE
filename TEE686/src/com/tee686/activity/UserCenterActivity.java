@@ -2,11 +2,25 @@ package com.tee686.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import com.tee686.xmpp.XmppTool;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -153,6 +168,75 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 		llGoHome.setOnClickListener(this);
 		loadLayout = (LinearLayout) findViewById(R.id.view_loading);
 		loadFaillayout = (LinearLayout) findViewById(R.id.view_load_fail);
+		
+		//开启消息监听
+		ChatManager cm = XmppTool.getConnection().getChatManager();
+	    cm.addChatListener(new ChatManagerListener() 
+	    	{
+				@Override
+				public void chatCreated(Chat chat, boolean able) 
+				{
+					chat.addMessageListener(new MessageListener() {
+						@Override
+						public void processMessage(Chat chat2, Message message)
+						{
+							String from = message.getFrom();
+							String friendId=null;
+							if(from.contains("/"))
+							{
+								friendId=from.substring(0,from.lastIndexOf("/"));
+								System.out.println(friendId + message.getBody());
+							}
+							//Todo：发送广播通知更新聊天页面与通讯录页面内容
+						}
+					});
+				}
+			}
+	    );
+	     //监听prensence包  
+		  PacketFilter filter = new AndFilter(new PacketTypeFilter(Presence.class));  
+	      PacketListener listener = new PacketListener() {  
+	
+	          @Override  
+	          public void processPacket(Packet packet) 
+	          {	              
+	              //看API可知道   Presence是Packet的子类  
+	              if (packet instanceof Presence)
+	              { 
+	            	  System.out.println(packet.toXML());
+	                  Presence presence = (Presence) packet;  
+	                  //Presence还有很多方法，可查看API   
+	                  String from = presence.getFrom();//发送方  
+	                  String to = presence.getTo();//接收方  
+	                  //Presence.Type有7中状态  
+	                  if (presence.getType().equals(Presence.Type.subscribe))
+	                  {//好友申请  
+	                	   
+	                  }
+	                  else if (presence.getType().equals(Presence.Type.subscribed))
+	                  {//同意添加好友  
+	                        
+	                  } 
+	                  else if (presence.getType().equals(Presence.Type.unsubscribe))
+	                  {//拒绝添加好友  和  删除好友  
+	                        
+	                  } 
+	                  else if (presence.getType().equals(Presence.Type.unsubscribed)) 
+	                  {//这个我没用到  
+	                  	
+	                  }
+	                  else if (presence.getType().equals(Presence.Type.unavailable))
+	                  {//好友下线   要更新好友列表，可以在这收到包后，发广播到指定页面   更新列表  
+	                        
+	                  } 
+	                  else 
+	                  {//好友上线  
+	                        
+	                  }  
+	              }  
+	          }  
+	      };  
+	      XmppTool.getConnection().addPacketListener(listener, filter);  
 	}
 
 	private void initViewPager() {

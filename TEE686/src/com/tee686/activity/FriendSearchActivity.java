@@ -33,6 +33,7 @@ public class FriendSearchActivity extends Activity{
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			String keyword = username.getText().toString();
+			String value = "";
 			try{
 					UserSearchManager search = new UserSearchManager(XmppTool.getConnection());
 					Form searchForm = search.getSearchForm("search."+ XmppTool.getConnection().getServiceName());
@@ -46,11 +47,11 @@ public class FriendSearchActivity extends Activity{
 						Iterator<Row> it = data.getRows();
 						while (it.hasNext()) {
 							Row row = it.next();
-							Iterator iterator = row.getValues("Username");
+							Iterator iterator = row.getValues("jid");
 							if (iterator.hasNext()) {
-								String value = iterator.next().toString();
+								value = iterator.next().toString();
 								System.out.println("result:"+value);
-								if(value.equals(keyword))
+								if(value.substring(0,value.lastIndexOf('@')).equals(keyword))
 								{
 									ishas = true;
 								}
@@ -64,7 +65,7 @@ public class FriendSearchActivity extends Activity{
 						{
 							Intent intent = new Intent();
 							intent.setClass(FriendSearchActivity.this, FriendAddActivity.class);
-							intent.putExtra("USERID", keyword);
+							intent.putExtra("USERID",value);
 							startActivity(intent);
 						}
 					}
