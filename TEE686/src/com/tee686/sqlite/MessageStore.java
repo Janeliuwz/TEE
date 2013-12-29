@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class MessageStore {
@@ -50,6 +51,10 @@ public class MessageStore {
 		return ret;
 	}
 	
+	public Cursor selectMessagelist(String friendid,String userid)
+	{
+		return db.rawQuery("select * from messagelist where (whereto=? and wherefrom=?) or (whereto=? and wherefrom=?) order by id asc", new String[]{friendid,userid,userid,friendid});
+	}
 	//Todo:
 	//自己写的方法
 

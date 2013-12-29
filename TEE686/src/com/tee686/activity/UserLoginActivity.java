@@ -64,6 +64,9 @@ public class UserLoginActivity extends BaseActivity {
 	public static String PLA = "plat";//第三方登陆平台
 	public static String Scope_Basic = "basic";// 用户基本权限，可以获取用户的基本信息
 	public static String Scope_Netdisk = "netdisk";// 获取用户在个人云存储中存放的数据
+	
+	public static String name;
+	public static String password;
 
 	private EditText editUserID;
 	private EditText editPwd;
@@ -116,16 +119,17 @@ public class UserLoginActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View v) {
-				UID = editUserID.getText().toString();
-				PWD = editPwd.getText().toString();
+				
+				name = editUserID.getText().toString();
+				password = editPwd.getText().toString();
 				String loginUser;
 				
-				if(checkUsername(UID, PWD))
+				if(checkUsername(name,password))
 				{
-					loginUser = String.format(Urls.USER_LOGIN, UID, PWD);
+					loginUser = String.format(Urls.USER_LOGIN, name, password);
 
 					new LoginAsyncTask().executeOnExecutor(
-							AsyncTask.THREAD_POOL_EXECUTOR, loginUser, UID, PWD);
+							AsyncTask.THREAD_POOL_EXECUTOR, loginUser, name, password);
 				}
 
 			}
@@ -364,6 +368,7 @@ public class UserLoginActivity extends BaseActivity {
 			mAlertDialog.dismiss();
 			if (result) {
 				showLongToast("登录成功");
+				share = getSharedPreferences(SharedName,Context.MODE_PRIVATE);
 				Editor edit = share.edit();
 				edit.putString(UID, editUserID.getText().toString());
 				edit.putString(PWD, editPwd.getText().toString());

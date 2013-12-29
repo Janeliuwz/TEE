@@ -84,6 +84,11 @@ public class XmppTool {
 		con.disconnect();
 		con = null;
 	}
+	
+	public static String getServer()
+	{
+		return SERVER_NAME;
+	}
 
     //用户登录  
     public static boolean login(String account, String passwd)  

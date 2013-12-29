@@ -66,6 +66,8 @@ public class UserRegisterActivity extends BaseActivity {
 	private Button register;
 	private LinearLayout gohome;
 	private SharedPreferences share;
+	private String name;
+	private String password;
 	@SuppressLint("SimpleDateFormat")
 	SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");	
 	UserInfoItem userInfoItem;
@@ -126,9 +128,9 @@ public class UserRegisterActivity extends BaseActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub				
 				
-				UID = username.getText().toString();
-				PWD = pwd.getText().toString();
-				checkUsername(UID, PWD);
+				name = username.getText().toString();
+				password = pwd.getText().toString();
+				checkUsername(name, password);
 				
 				new Thread()
 				{
@@ -140,8 +142,8 @@ public class UserRegisterActivity extends BaseActivity {
 					        reg.setType(IQ.Type.SET);  
 					        reg.setTo(XmppTool.getConnection().getServiceName());  
 					        System.out.println(XmppTool.getConnection().getServiceName());  
-					        reg.setUsername(UID);  
-					        reg.setPassword(PWD);  
+					        reg.setUsername(name);  
+					        reg.setPassword(password);  
 					        reg.addAttribute("android", "tee_createUser_android");  
 					        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()), new PacketTypeFilter(IQ.class));  
 					        PacketCollector collector = XmppTool.getConnection().createPacketCollector(filter);  
@@ -171,8 +173,8 @@ public class UserRegisterActivity extends BaseActivity {
 					        	registerhandler.sendEmptyMessage(4);   
 					            Intent intent = new Intent(UserRegisterActivity.this, UserLoginActivity.class);  
 					            // 注册成功将信息发送给主界面  
-					            UserLoginActivity.UID = UID;  
-					            UserLoginActivity.PWD = PWD;
+					            UserLoginActivity.name = name;  
+					            UserLoginActivity.password = password;
 					            startActivity(intent);
 					            finish();
 					            //if (XmppTool.login(UID, PWD))  
