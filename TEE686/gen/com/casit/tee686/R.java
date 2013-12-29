@@ -1128,7 +1128,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int chatBottom=0x7f070042;
         public static final int chatList=0x7f070041;
         public static final int chatTitle=0x7f07003e;
-        public static final int chat_titleID=0x7f070040;
         public static final int cr_bt_lianxi=0x7f0701bd;
         public static final int cr_tv_banben=0x7f0701bc;
         public static final int dan=0x7f0701b0;
@@ -1440,6 +1439,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int tv_bankname=0x7f07018e;
         public static final int tv_bulletincontent=0x7f070027;
         public static final int tv_cardphone=0x7f070191;
+        public static final int tv_chatTitleName=0x7f070040;
         public static final int tv_frienditem_catalog=0x7f07004f;
         public static final int tv_frienditem_name=0x7f070052;
         public static final int tv_frienditem_status=0x7f070053;

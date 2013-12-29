@@ -24,7 +24,7 @@
 		    android:textColor="@color/white" />
 		
         <TextView 
-            android:id="@+id/chat_titleID"
+            android:id="@+id/tv_chatTitleName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="用户名"

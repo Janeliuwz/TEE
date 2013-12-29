@@ -73,12 +73,14 @@ public class FriendsListActivity extends Activity{
 		friendsList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos,
-					long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				// TODO Auto-generated method stub
 				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(FriendsListActivity.this, FriendChatActivity.class);
+				intent.putExtra("friendName", tv_name.getText());
+				startActivity(intent);
 			}
 			
 		});
