@@ -1015,7 +1015,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int Linear_above_toHome=0x7f070253;
         public static final int Linear_frienditem=0x7f070050;
         public static final int RelativeLayout1=0x7f07007a;
-        public static final int action_settings=0x7f07026c;
+        public static final int action_settings=0x7f070270;
         public static final int add_f_pic=0x7f07003b;
         public static final int add_f_submit=0x7f07003d;
         public static final int add_f_username=0x7f07003c;
@@ -1165,7 +1165,11 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int et_user_main=0x7f070165;
         public static final int et_usernumber=0x7f0701b1;
         public static final int et_yanz=0x7f0701b3;
-        public static final int feedback=0x7f07026d;
+        public static final int feedback=0x7f070271;
+        public static final int flistmenu_clear=0x7f07026e;
+        public static final int flistmenu_del=0x7f07026d;
+        public static final int flistmenu_info=0x7f07026c;
+        public static final int flistmenu_send=0x7f07026b;
         public static final int frame_search=0x7f070054;
         public static final int friendSearchTitle=0x7f07003a;
         public static final int friendsTitle=0x7f07004b;
@@ -1277,7 +1281,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int ll_ums_info=0x7f0701df;
         public static final int ll_yeslog=0x7f07016c;
         public static final int load_progressBar=0x7f07005c;
-        public static final int login=0x7f07026b;
+        public static final int login=0x7f07026f;
         public static final int lv_community_content=0x7f070024;
         public static final int lv_friends=0x7f07004d;
         public static final int lv_search=0x7f0701dc;
@@ -1820,12 +1824,13 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
         public static final int xlistview_header=0x7f0300b0;
     }
     public static final class menu {
-        public static final int index=0x7f0f0000;
-        public static final int seciton6641=0x7f0f0001;
-        public static final int section223=0x7f0f0002;
-        public static final int section2345=0x7f0f0003;
-        public static final int v1__mea__aa__lax=0x7f0f0004;
-        public static final int v2__mea__aa__lax=0x7f0f0005;
+        public static final int friendslistmenu=0x7f0f0000;
+        public static final int index=0x7f0f0001;
+        public static final int seciton6641=0x7f0f0002;
+        public static final int section223=0x7f0f0003;
+        public static final int section2345=0x7f0f0004;
+        public static final int v1__mea__aa__lax=0x7f0f0005;
+        public static final int v2__mea__aa__lax=0x7f0f0006;
     }
     public static final class raw {
         public static final int audio_me_fc=0x7f060000;

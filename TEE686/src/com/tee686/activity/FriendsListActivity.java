@@ -23,12 +23,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
@@ -49,6 +56,13 @@ public class FriendsListActivity extends Activity{
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
 	
+	//上下文菜单选项
+	private static final int FLIST_CONTEXTMENU_SEND = Menu.FIRST;
+	private static final int FLIST_CONTEXTMENU_INFO = Menu.FIRST + 1;
+	private static final int FLIST_CONTEXTMENU_DELETE = Menu.FIRST + 2;
+	private static final int FLIST_CONTEXTMENU_CLEAR = Menu.FIRST + 3;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +75,9 @@ public class FriendsListActivity extends Activity{
 	 * 更新好友列表视图
 	 */
 	private void getFriendsListView() {
+		
+		//为视图注册长按上下文菜单
+		registerForContextMenu(friendsList);
 		
 		friendsList = (ListView)findViewById(R.id.lv_friends);
 		friendsList.setAdapter(new FriendsListAdapter(this));
@@ -78,6 +95,7 @@ public class FriendsListActivity extends Activity{
 				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
+				
 				Intent intent = new Intent(FriendsListActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText());
 				startActivity(intent);
@@ -85,7 +103,7 @@ public class FriendsListActivity extends Activity{
 			
 		});
 		
-		//长按好友列表项
+		/*//监听好友列表项长按操作，显示上下文菜单
 		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -94,11 +112,12 @@ public class FriendsListActivity extends Activity{
 				// TODO Auto-generated method stub
 				TextView tv_name = (TextView)arg1.findViewById(R.id.tv_frienditem_name);
 				Toast.makeText(getApplicationContext(), 
-						tv_name.getText(), Toast.LENGTH_SHORT).show();
-				return false;
+						tv_name.getText(), Toast.LENGTH_SHORT).show();				
+				friendsList.showContextMenu();
+				return true;
 			}
 			
-		});
+		});*/
 		
 		//TODO
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
@@ -111,6 +130,72 @@ public class FriendsListActivity extends Activity{
         friendsListIndexbar.setTextView(mDialogText);
 	}
 	
+	/*
+	 * 创建上下文菜单
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+	
+		/*手动添加上下文菜单选项
+		menu.setHeaderTitle("请选择操作");
+		menu.add(0, 0, 0, "发送消息");
+		menu.add(0, 1, 0, "查看资料");
+		menu.add(0, 2, 0, "删除好友");
+		menu.add(0, 3, 0, "清空记录");*/
+		
+		//通过xml文件配置上下文菜单
+		MenuInflater mInflater = getMenuInflater();
+		mInflater.inflate(R.menu.friendslistmenu, menu);
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	/*
+	 * 长按上下文菜单
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		//当前被选择的视图项的信息
+		AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo)item.getMenuInfo();
+		TextView tv_name = (TextView)menuInfo.targetView.findViewById(R.id.tv_frienditem_name);
+		Toast.makeText(this, tv_name.getText().toString(), Toast.LENGTH_SHORT).show();	
+		
+		//上下文菜单选择项的操作
+		switch(item.getItemId()) {	
+		
+		case FLIST_CONTEXTMENU_SEND:  //发送消息
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_INFO:  //查看资料
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_DELETE:  //删除好友
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_CLEAR:  //清空记录
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		default:
+			break;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	/*
+	 * 关闭上下文菜单
+	 */
+	@Override
+	public void onContextMenuClosed(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onContextMenuClosed(menu);
+	}
+
 	/*
 	 * 句柄初始化操作
 	 */
@@ -148,7 +233,6 @@ public class FriendsListActivity extends Activity{
 	/*
 	 * 自定义好友列表ListView适配器
 	 * 实现快速滚动索引接口SectionIndexer
-	 * TODO:完成对好友名称的获取
 	 */
 	static class friends
 	{
@@ -167,7 +251,7 @@ public class FriendsListActivity extends Activity{
 			TextView tvCatalog; //目录
 			ImageView ivAvatar; //头像
 			TextView tvName; //用户名
-			TextView tvStatus; //状态ni y
+			TextView tvStatus; //状态
 		}
 		
 		@SuppressWarnings("unchecked")

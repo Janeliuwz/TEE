@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/flistmenu_send" android:title="发送消息"/>
+    <item android:id="@+id/flistmenu_info" android:title="查看资料"/>
+    <item android:id="@+id/flistmenu_del" android:title="删除好友"/>
+    <item android:id="@+id/flistmenu_clear" android:title="清空记录"/>
+</menu>

@@ -27,10 +27,12 @@ public class FriendChatActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.im_chat);
 		
+		//默认不弹出软键盘
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 		initControl();
 		
+		//获取有户名和对话用户名
 		Intent intent = getIntent();
 		friendName = intent.getStringExtra("friendName");
 		share = getSharedPreferences(UserLoginActivity.SharedName,
