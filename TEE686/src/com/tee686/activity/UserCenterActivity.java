@@ -43,6 +43,7 @@ import com.tee686.entity.UserInfoItem;
 import com.tee686.https.HttpUtils;
 import com.tee686.https.NetWorkHelper;
 import com.tee686.indicator.PageIndicator;
+import com.tee686.sqlite.MessageStore;
 import com.tee686.ui.base.BaseFragmentActivity;
 import com.tee686.utils.IntentUtil;
 import com.tee686.view.UserCollectFragment;
@@ -181,12 +182,42 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 						public void processMessage(Chat chat2, Message message)
 						{
 							String from = message.getFrom();
+							String to = message.getTo();
 							String friendId=null;
+							String userId=null;
 							if(from.contains("/"))
 							{
 								friendId=from.substring(0,from.lastIndexOf("/"));
-								System.out.println(friendId + message.getBody());
 							}
+							else
+							{
+								friendId = from;
+							}
+							if(to.contains("/"))
+							{
+								friendId=to.substring(0,to.lastIndexOf("/"));	
+							}
+							else
+							{
+								userId = to;
+							}
+							System.out.println(friendId);
+							System.out.println(userId);
+							System.out.println(message.getBody());
+							
+							Map<String,String> msg = new HashMap<String,String>();
+							msg.put("to", userId);
+							msg.put("from", friendId);
+							msg.put("content", message.getBody());
+							
+							//存入数据库
+							MessageStore store = new MessageStore(UserCenterActivity.this);
+							long result = 0;
+							if((result = store.insertMessagelist(msg))!=-1)
+							{
+								System.out.println(result);
+							}
+							store.closeDB();
 							//Todo：发送广播通知更新聊天页面与通讯录页面内容
 						}
 					});
