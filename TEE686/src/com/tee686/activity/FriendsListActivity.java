@@ -75,11 +75,11 @@ public class FriendsListActivity extends Activity{
 	 * 更新好友列表视图
 	 */
 	private void getFriendsListView() {
+						
+		friendsList = (ListView)findViewById(R.id.lv_friends);
 		
 		//为视图注册长按上下文菜单
 		registerForContextMenu(friendsList);
-		
-		friendsList = (ListView)findViewById(R.id.lv_friends);
 		friendsList.setAdapter(new FriendsListAdapter(this));
 		friendsListIndexbar = (SideBar)findViewById(R.id.friendslist_sideBar);
 		friendsListIndexbar.setListView(friendsList);
