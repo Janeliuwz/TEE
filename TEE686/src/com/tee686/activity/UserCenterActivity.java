@@ -219,6 +219,11 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							}
 							store.closeDB();
 							//Todo：发送广播通知更新聊天页面与通讯录页面内容
+							Intent intent = new Intent("com.tee686.activity.FriendChatActivity");
+							intent.putExtra("content", message.getBody());
+							intent.putExtra("friendId", friendId);
+							intent.putExtra("userid",userId);
+					        sendBroadcast(intent);
 						}
 					});
 				}

@@ -1,5 +1,6 @@
 package com.tee686.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,10 @@ import com.tee686.sqlite.MessageStore;
 import com.tee686.xmpp.XmppTool;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -39,19 +42,20 @@ public class FriendChatActivity extends Activity{
 		
 		//默认不弹出软键盘
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		
-		initControl();
-		
+			
 		//获取有户名和对话用户名
 		Intent intent = getIntent();
 		friendName = intent.getStringExtra("friendName");
 		share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		userid = share.getString("uid","") + "@" + XmppTool.getServer();
-		Toast.makeText(getApplicationContext(), 
-				friendName + userid, Toast.LENGTH_SHORT).show();
 		
-		GetData();	
+		initControl();
+		GetData();
+		
+		//注册广播接收器
+		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendChatActivity");
+		registerReceiver(mReceiver, intentFilter);
 	}
 	
 	private void GetData()
@@ -83,6 +87,14 @@ public class FriendChatActivity extends Activity{
 		cursor.close();
 		store.closeDB();
 		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
+		if(mDataArrays.size()<6)
+		{
+			listMessage.setStackFromBottom(false);
+		}
+		else
+		{
+			listMessage.setStackFromBottom(true);
+		}
 		listMessage.setAdapter(mAdapter);
 	}
 
@@ -91,4 +103,37 @@ public class FriendChatActivity extends Activity{
 		tv_titleName.setText(friendName);
 		listMessage = (ListView) findViewById(R.id.chatList);
 	}
+	
+	//定义broadcastreceiver
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			System.out.println("broadcast Receiver");
+			String friendId = intent.getStringExtra("friendId");
+			String userId = intent.getStringExtra("userid");
+			String content = intent.getStringExtra("content");
+			if (friendId.equals(friendName)&&userId.equals(userid))
+			{
+				ChatMsgEntity entity = new ChatMsgEntity();
+				entity.setText(content);
+				entity.setName(friendId);
+				entity.setMsgType(true);
+				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
+				String date = sDateFormat.format(new java.util.Date());
+				entity.setDate(date);
+				mDataArrays.add(entity);
+				if(mDataArrays.size()<6)
+				{
+					listMessage.setStackFromBottom(false);
+				}
+				else
+				{
+					listMessage.setStackFromBottom(true);
+				}
+				mAdapter.notifyDataSetChanged();
+			}
+			//System.out.println("//"+friendId);
+		}
+	};
 }
