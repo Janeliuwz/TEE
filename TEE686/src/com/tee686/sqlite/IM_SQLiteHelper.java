@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class IM_SQLiteHelper extends SQLiteOpenHelper{
 	
 	private static final String DB_NAME = "imdata.db";
-	private static final String DB_CREATE = "create table if not exists messagelist(id integer primary key, whereto varchar, wherefrom varchar, msgcontent nvarchar, datetime text)";
+	private static final String DB_CREATE = "create table if not exists messagelist(id integer primary key, whereto varchar, wherefrom varchar, msgcontent nvarchar, datetime text,ifread integer)";
 	private static final int version = 1;
 	
 	public IM_SQLiteHelper(Context context) {
@@ -24,6 +24,10 @@ public class IM_SQLiteHelper extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		System.out.println("upgrade a database");
+		//db.execSQL("alter table messagelist add ifread integer");
 	}
 
+	public boolean deleteDatabase(Context context) {  
+	    return context.deleteDatabase(DB_NAME);  
+	}  
 }

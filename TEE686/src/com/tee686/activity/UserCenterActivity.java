@@ -209,6 +209,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							msg.put("to", userId);
 							msg.put("from", friendId);
 							msg.put("content", message.getBody());
+							msg.put("ifread","no");
 							
 							//存入数据库
 							MessageStore store = new MessageStore(UserCenterActivity.this);

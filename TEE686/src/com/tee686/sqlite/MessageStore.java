@@ -44,6 +44,11 @@ public class MessageStore {
 		values.put("wherefrom", msg.get("from"));
 		values.put("msgcontent", msg.get("content"));
 		
+		if(msg.containsKey("ifread"))
+			values.put("ifread",0);
+		else
+			values.put("ifread",1);
+		
 		SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
 		String date = sDateFormat.format(new java.util.Date());
 		values.put("datetime", date);
@@ -54,6 +59,11 @@ public class MessageStore {
 	public Cursor selectMessagelist(String friendid,String userid)
 	{
 		return db.rawQuery("select * from messagelist where (whereto=? and wherefrom=?) or (whereto=? and wherefrom=?) order by id asc", new String[]{friendid,userid,userid,friendid});
+	}
+	
+	public boolean deletedatabase(String name)
+	{
+		return true;
 	}
 	//Todo:
 	//自己写的方法

@@ -62,7 +62,6 @@ public class FriendsListActivity extends Activity{
 	private static final int FLIST_CONTEXTMENU_DELETE = Menu.FIRST + 2;
 	private static final int FLIST_CONTEXTMENU_CLEAR = Menu.FIRST + 3;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -102,7 +101,6 @@ public class FriendsListActivity extends Activity{
 			}
 			
 		});
-		
 		/*//监听好友列表项长按操作，显示上下文菜单
 		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 

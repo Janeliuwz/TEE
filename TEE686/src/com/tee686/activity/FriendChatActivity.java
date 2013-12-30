@@ -60,6 +60,7 @@ public class FriendChatActivity extends Activity{
 	
 	private void GetData()
 	{
+		//this.deleteDatabase("imdata.db");
 		MessageStore store = new MessageStore(FriendChatActivity.this);
 		Cursor cursor = store.selectMessagelist(friendName, userid);
 		while(cursor.moveToNext())
@@ -82,7 +83,8 @@ public class FriendChatActivity extends Activity{
 			System.out.println(cursor.getString(cursor.getColumnIndex("whereto")));
 			System.out.println(cursor.getString(cursor.getColumnIndex("wherefrom")));
 			System.out.println(cursor.getString(cursor.getColumnIndex("msgcontent")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("datetime")));		
+			System.out.println(cursor.getString(cursor.getColumnIndex("datetime")));
+			System.out.println(cursor.getString(cursor.getColumnIndex("ifread")));
 		}
 		cursor.close();
 		store.closeDB();
