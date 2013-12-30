@@ -2,6 +2,7 @@ package com.tee686.xmpp;
 
 import java.util.Collection;
 
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
@@ -22,6 +23,7 @@ import android.util.Log;
 public class XmppTool {
 
 	private static XMPPConnection con = null;
+	private static ChatManager cm = null;
     private static int PORT = 5222;  
     private static String SERVER_NAME = "192.168.1.101";  
 	
@@ -33,6 +35,7 @@ public class XmppTool {
 			connConfig.setSASLAuthenticationEnabled(false);
 			con = new XMPPConnection(connConfig);
 			con.connect();
+			//cm = con.getChatManager();
 			/*
 			con.addConnectionListener(new ConnectionListener() {
 				
@@ -65,6 +68,25 @@ public class XmppTool {
 			System.out.println(xe.getXMPPError().toString());
 			xe.printStackTrace();
 		}
+	}
+	
+	public static ChatManager XMPPgetChatManager()
+	{
+		if(cm!=null)
+		{
+			return cm;
+		}
+		else
+		{
+			if (con == null) {
+				openConnection();
+			}
+			else if(con != null&&!con.isConnected())
+			{
+				openConnection();
+			}
+		}
+		return con.getChatManager();
 	}
 
 	//获得连接对象

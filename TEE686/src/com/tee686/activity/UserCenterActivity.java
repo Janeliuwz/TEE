@@ -171,7 +171,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 		loadFaillayout = (LinearLayout) findViewById(R.id.view_load_fail);
 		
 		//开启消息监听
-		ChatManager cm = XmppTool.getConnection().getChatManager();
+		ChatManager cm = XmppTool.XMPPgetChatManager();
 	    cm.addChatListener(new ChatManagerListener() 
 	    	{
 				@Override
@@ -195,7 +195,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							}
 							if(to.contains("/"))
 							{
-								friendId=to.substring(0,to.lastIndexOf("/"));	
+								userId = to.substring(0,to.lastIndexOf("/"));	
 							}
 							else
 							{

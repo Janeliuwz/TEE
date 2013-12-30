@@ -127,7 +127,7 @@ public class FriendChatActivity extends Activity{
 				tv_msg.setText("");
 				try 
 				{
-					ChatManager cm = XmppTool.getConnection().getChatManager();
+					ChatManager cm = XmppTool.XMPPgetChatManager();
 					Chat chat = cm.createChat(friendName, null);
 					chat.sendMessage(msg);
 				} 
