@@ -34,19 +34,70 @@
 		    android:background="@drawable/back_above_menushow_style"/>"
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="40dp"            
+            android:background="@drawable/ums_info_bg"
+            android:gravity="center_vertical">
+        	<TextView
+	            android:id="@+id/tv_newMsg"
+    	        android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+            	android:layout_alignParentLeft="true"
+            	android:layout_centerVertical="true"
+            	android:gravity="center_vertical"
+            	android:paddingLeft="10dp"
+            	android:text="新消息"
+            	android:textColor="@color/black"
+            	android:textSize="20sp" />
+        	<ImageView 
+        	    android:id="@+id/iv_newIcon"
+        	    android:layout_width="48dp"
+        	    android:layout_height="36dp"
+        	    android:layout_centerVertical="true"
+        	    android:background="@drawable/umeng_xp_new_tip"
+        	    android:layout_alignParentRight="true"
+        	    android:layout_marginRight="25dp"/>
+		</RelativeLayout>
+        <ListView
+            android:id="@+id/lv_newMsgs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:scrollbars="none" >
+        </ListView>
+    </LinearLayout>
+
     <FrameLayout 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 				<LinearLayout 
 		    android:layout_gravity="center"
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
 		    android:orientation="vertical">
-		     
+		    
+		    <TextView 
+		        android:id="@+id/tv_fList"
+		        android:layout_width="match_parent"
+		        android:layout_height="40dp"
+		        android:paddingLeft="10dp"
+		        android:text="好友列表"
+		        android:textSize="20sp"
+		        android:textColor="@color/black"
+		        android:gravity="center_vertical"
+		        android:background="@drawable/ums_info_bg"/>
+		    
 		    <ListView
 	 	   	    android:id="@+id/lv_friends"
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
+	        	android:paddingLeft="5dp"
 	        	android:scrollbars="none">
 	    	</ListView>
 	    	
