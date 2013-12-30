@@ -26,8 +26,4 @@ public class IM_SQLiteHelper extends SQLiteOpenHelper{
 		System.out.println("upgrade a database");
 		//db.execSQL("alter table messagelist add ifread integer");
 	}
-
-	public boolean deleteDatabase(Context context) {  
-	    return context.deleteDatabase(DB_NAME);  
-	}  
 }

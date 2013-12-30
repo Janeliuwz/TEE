@@ -2,7 +2,13 @@ package com.tee686.activity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.XMPPException;
 
 import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
@@ -19,7 +25,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +42,8 @@ public class FriendChatActivity extends Activity{
 	private SharedPreferences share;
 	private ChatMsgViewAdapter mAdapter;
 	private ListView listMessage;
+	private Button sendMessage;
+	private EditText tv_msg;
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
 	
 	@Override
@@ -99,11 +111,82 @@ public class FriendChatActivity extends Activity{
 		}
 		listMessage.setAdapter(mAdapter);
 	}
+	
+	private OnClickListener sendlistener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			String msg = tv_msg.getText().toString();
+			if(msg.equals("")||msg == null)
+			{
+				Toast.makeText(getApplicationContext(), "发送内容不能为空", Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				tv_msg.setText("");
+				try 
+				{
+					ChatManager cm = XmppTool.getConnection().getChatManager();
+					Chat chat = cm.createChat(friendName, null);
+					chat.sendMessage(msg);
+				} 
+				catch (XMPPException e) {
+					System.out.println(e.getMessage());
+				}
+				
+				//发送内容存入数据库
+				Map<String,String> tempmsg = new HashMap<String,String>();
+				tempmsg.put("to", friendName);
+				tempmsg.put("from", userid);
+				tempmsg.put("content", msg);
+				MessageStore store = new MessageStore(FriendChatActivity.this);
+				long result = 0;
+				if((result = store.insertMessagelist(tempmsg))!=-1)
+				{
+					System.out.println(result);
+				}
+				store.closeDB();
+				
+				//更新界面
+				ChatMsgEntity entity = new ChatMsgEntity();
+				entity.setText(msg);
+				entity.setName(userid);
+				entity.setMsgType(false);
+				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
+				String date = sDateFormat.format(new java.util.Date());
+				entity.setDate(date);
+				mDataArrays.add(entity);
+				if(mDataArrays.size()<6)
+				{
+					listMessage.setStackFromBottom(false);
+				}
+				else
+				{
+					listMessage.setStackFromBottom(true);
+				}
+				mAdapter.notifyDataSetChanged();
+			}
+		}
+		
+	};
 
 	private void initControl() {				
 		tv_titleName = (TextView)findViewById(R.id.tv_chatTitleName);
+		tv_msg = (EditText)findViewById(R.id.text_chatMsg);
 		tv_titleName.setText(friendName);
 		listMessage = (ListView) findViewById(R.id.chatList);
+		sendMessage = (Button) findViewById(R.id.btn_chatSend);
+		
+		sendMessage.setOnClickListener(sendlistener);
+	}
+	
+	@Override
+	public void onBackPressed() 
+	{
+		unregisterReceiver(mReceiver);
+		System.out.println("注销监听");
+		this.finish();
 	}
 	
 	//定义broadcastreceiver

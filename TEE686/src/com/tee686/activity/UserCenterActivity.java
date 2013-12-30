@@ -187,7 +187,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							String userId=null;
 							if(from.contains("/"))
 							{
-								friendId=from.substring(0,from.lastIndexOf("/"));
+								friendId = from.substring(0,from.lastIndexOf("/"));
 							}
 							else
 							{

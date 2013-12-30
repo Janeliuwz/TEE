@@ -60,11 +60,6 @@ public class MessageStore {
 	{
 		return db.rawQuery("select * from messagelist where (whereto=? and wherefrom=?) or (whereto=? and wherefrom=?) order by id asc", new String[]{friendid,userid,userid,friendid});
 	}
-	
-	public boolean deletedatabase(String name)
-	{
-		return true;
-	}
 	//Todo:
 	//自己写的方法
 
