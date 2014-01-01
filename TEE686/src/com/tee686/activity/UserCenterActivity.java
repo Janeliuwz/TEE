@@ -201,22 +201,27 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							{
 								userId = to;
 							}
-							System.out.println(friendId);
-							System.out.println(userId);
-							System.out.println(message.getBody());
+							//System.out.println(friendId);
+							//System.out.println(userId);
+							//System.out.println(message.getBody());
 							
 							Map<String,String> msg = new HashMap<String,String>();
 							msg.put("to", userId);
 							msg.put("from", friendId);
 							msg.put("content", message.getBody());
 							msg.put("ifread","no");
+							msg.put("uid", userId);
 							
 							//存入数据库
 							MessageStore store = new MessageStore(UserCenterActivity.this);
 							long result = 0;
 							if((result = store.insertMessagelist(msg))!=-1)
 							{
-								System.out.println(result);
+								//System.out.println(result);
+							}
+							else
+							{
+								System.out.println("插入数据库失败");
 							}
 							store.closeDB();
 							//Todo：发送广播通知更新聊天页面与通讯录页面内容

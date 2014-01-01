@@ -43,6 +43,7 @@ public class MessageStore {
 		values.put("whereto", msg.get("to"));
 		values.put("wherefrom", msg.get("from"));
 		values.put("msgcontent", msg.get("content"));
+		values.put("userid",msg.get("uid"));
 		
 		if(msg.containsKey("ifread"))
 			values.put("ifread",0);
@@ -58,7 +59,14 @@ public class MessageStore {
 	
 	public Cursor selectMessagelist(String friendid,String userid)
 	{
-		return db.rawQuery("select * from messagelist where (whereto=? and wherefrom=?) or (whereto=? and wherefrom=?) order by id asc", new String[]{friendid,userid,userid,friendid});
+		return db.rawQuery("select * from messagelist where ((whereto=? and wherefrom=?) or (whereto=? and wherefrom=?)) and userid=? order by id asc", new String[]{friendid,userid,userid,friendid,userid});
+	}
+	
+	public int updateMessagelist(String friendid,String userid)
+	{
+		ContentValues contentValues = new ContentValues();  
+		contentValues.put("ifread", "1");
+		return db.update("messagelist", contentValues, "((whereto=? and wherefrom=?) or (whereto=? and wherefrom=?)) and userid=?", new String[]{friendid,userid,userid,friendid,userid});
 	}
 	//Todo:
 	//自己写的方法

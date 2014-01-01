@@ -91,13 +91,16 @@ public class FriendChatActivity extends Activity{
 				entity.setMsgType(false);
 			}
 			mDataArrays.add(entity);
-			System.out.println(cursor.getString(cursor.getColumnIndex("id")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("whereto")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("wherefrom")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("msgcontent")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("datetime")));
-			System.out.println(cursor.getString(cursor.getColumnIndex("ifread")));
+			System.out.println("从数据库获取对话数据");
+			System.out.println("数据库id："+ cursor.getString(cursor.getColumnIndex("id")));
+			System.out.println("发给" + cursor.getString(cursor.getColumnIndex("whereto")));
+			System.out.println("来自" + cursor.getString(cursor.getColumnIndex("wherefrom")));
+			System.out.println("内容：" + cursor.getString(cursor.getColumnIndex("msgcontent")));
+			System.out.println("时间：" + cursor.getString(cursor.getColumnIndex("datetime")));
+			System.out.println("是否已读：" + cursor.getString(cursor.getColumnIndex("ifread")));
+			System.out.println("属于用户：" + cursor.getString(cursor.getColumnIndex("userid")));
 		}
+		store.updateMessagelist(friendName, userid);
 		cursor.close();
 		store.closeDB();
 		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
@@ -140,6 +143,7 @@ public class FriendChatActivity extends Activity{
 				tempmsg.put("to", friendName);
 				tempmsg.put("from", userid);
 				tempmsg.put("content", msg);
+				tempmsg.put("uid", userid);
 				MessageStore store = new MessageStore(FriendChatActivity.this);
 				long result = 0;
 				if((result = store.insertMessagelist(tempmsg))!=-1)
