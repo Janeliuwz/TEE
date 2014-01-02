@@ -57,6 +57,11 @@ public class MessageStore {
 		return ret;
 	}
 	
+	public Cursor selectNewmsg(String userid)
+	{
+		return db.rawQuery("select * from messagelist where whereto=? and userid=? and ifread=? order by id desc", new String[]{userid,userid,"0"});
+	}
+	
 	public Cursor selectMessagelist(String friendid,String userid)
 	{
 		return db.rawQuery("select * from messagelist where ((whereto=? and wherefrom=?) or (whereto=? and wherefrom=?)) and userid=? order by id asc", new String[]{friendid,userid,userid,friendid,userid});

@@ -221,6 +221,9 @@ public class FriendChatActivity extends Activity{
 					listMessage.setStackFromBottom(true);
 				}
 				mAdapter.notifyDataSetChanged();
+				MessageStore store = new MessageStore(FriendChatActivity.this);
+				store.updateMessagelist(friendName, userid);
+				store.closeDB();
 			}
 			//System.out.println("//"+friendId);
 		}

@@ -13,14 +13,19 @@ import org.jivesoftware.smack.packet.Presence;
 
 import com.casit.tee686.R;
 import com.unionpay.mpay.views.r;
+import com.tee686.im.ChatMsgViewAdapter;
+import com.tee686.im.NewMsgListAdapter;
 import com.tee686.im.PinyinUtil;
 import com.tee686.im.PinyinComparator;
 import com.tee686.im.SideBar;
+import com.tee686.sqlite.MessageStore;
 import com.tee686.xmpp.XmppTool;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -52,9 +57,12 @@ public class FriendsListActivity extends Activity{
 
 	private Button addFriend;
 	private ListView friendsList;
+	private ListView newmsgList;
 	private WindowManager mWindowManager;
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
+	private List<Map<String,String>> mNewmsg = new ArrayList<Map<String,String>>();
+	private NewMsgListAdapter mAdapter;
 	
 	//上下文菜单选项
 	private static final int FLIST_CONTEXTMENU_SEND = Menu.FIRST;
@@ -67,7 +75,48 @@ public class FriendsListActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.im_friendslist);
 		initControl();
+		getNewmsgListView();
+		mAdapter = new NewMsgListAdapter(this, mNewmsg);
+		newmsgList.setAdapter(mAdapter);
 		getFriendsListView();
+	}
+	
+	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		getNewmsgListView();
+		mAdapter.notifyDataSetChanged();
+	}
+
+
+
+	private void getNewmsgListView()
+	{
+		mNewmsg.clear();
+		newmsgList = (ListView)findViewById(R.id.lv_newMsgs);
+		Map<String,String> tempid = new HashMap<String,String>();
+		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
+				Context.MODE_PRIVATE);
+		String userid = share.getString("uid","") + "@" + XmppTool.getServer();
+		MessageStore store = new MessageStore(FriendsListActivity.this);
+		Cursor newmsgcursor = store.selectNewmsg(userid);
+		while(newmsgcursor.moveToNext())
+		{
+			String friendid = newmsgcursor.getString(newmsgcursor.getColumnIndex("wherefrom"));
+			if(!tempid.containsKey(friendid))
+			{
+				tempid.put(friendid, "yes");
+				Map<String,String> newmsg = new HashMap<String,String>();
+				newmsg.put("msgcontent",newmsgcursor.getString(newmsgcursor.getColumnIndex("msgcontent")));
+				newmsg.put("friendid",friendid);
+				mNewmsg.add(newmsg);
+			}
+		}
+		newmsgcursor.close();
+		store.closeDB();
 	}
 		
 	/*
