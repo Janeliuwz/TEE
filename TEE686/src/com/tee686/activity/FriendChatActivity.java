@@ -55,7 +55,7 @@ public class FriendChatActivity extends Activity{
 		//默认不弹出软键盘
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 			
-		//获取有户名和对话用户名
+		//获取用户名和对话用户名
 		Intent intent = getIntent();
 		friendName = intent.getStringExtra("friendName");
 		share = getSharedPreferences(UserLoginActivity.SharedName,

@@ -57,11 +57,11 @@ public class FriendsListActivity extends Activity{
 
 	private Button addFriend;
 	private ListView friendsList;
-	private ListView newmsgList;
+	private ListView newMsgList;
 	private WindowManager mWindowManager;
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
-	private List<Map<String,String>> mNewmsg = new ArrayList<Map<String,String>>();
+	private List<Map<String,String>> mNewMsg = new ArrayList<Map<String,String>>();
 	private NewMsgListAdapter mAdapter;
 	
 	//上下文菜单选项
@@ -75,47 +75,65 @@ public class FriendsListActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.im_friendslist);
 		initControl();
-		getNewmsgListView();
-		mAdapter = new NewMsgListAdapter(this, mNewmsg);
-		newmsgList.setAdapter(mAdapter);
+		
+		getNewMsgListView();
+		mAdapter = new NewMsgListAdapter(this, mNewMsg);
+		newMsgList.setAdapter(mAdapter);
+		
 		getFriendsListView();
-	}
-	
-	
+	}	
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		getNewmsgListView();
+		
+		getNewMsgListView();
 		mAdapter.notifyDataSetChanged();
 	}
 
-
-
-	private void getNewmsgListView()
+	/*
+	 * 获取新消息列表视图
+	 */
+	private void getNewMsgListView()
 	{
-		mNewmsg.clear();
-		newmsgList = (ListView)findViewById(R.id.lv_newMsgs);
+		mNewMsg.clear();
+		newMsgList = (ListView)findViewById(R.id.lv_newMsgs);
 		Map<String,String> tempid = new HashMap<String,String>();
 		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		String userid = share.getString("uid","") + "@" + XmppTool.getServer();
+		newMsgList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+				// TODO Auto-generated method stub
+				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
+				Toast.makeText(getApplicationContext(), 
+						tv_name.getText(), Toast.LENGTH_SHORT).show();
+				
+				//跳转到聊天界面
+				Intent intent = new Intent(FriendsListActivity.this, FriendChatActivity.class);
+				intent.putExtra("friendName", tv_name.getText());
+				startActivity(intent);
+			}
+			
+		});
 		MessageStore store = new MessageStore(FriendsListActivity.this);
-		Cursor newmsgcursor = store.selectNewmsg(userid);
-		while(newmsgcursor.moveToNext())
+		Cursor newMsgcursor = store.selectNewmsg(userid);
+		while(newMsgcursor.moveToNext())
 		{
-			String friendid = newmsgcursor.getString(newmsgcursor.getColumnIndex("wherefrom"));
+			String friendid = newMsgcursor.getString(newMsgcursor.getColumnIndex("wherefrom"));
 			if(!tempid.containsKey(friendid))
 			{
 				tempid.put(friendid, "yes");
-				Map<String,String> newmsg = new HashMap<String,String>();
-				newmsg.put("msgcontent",newmsgcursor.getString(newmsgcursor.getColumnIndex("msgcontent")));
-				newmsg.put("friendid",friendid);
-				mNewmsg.add(newmsg);
+				Map<String,String> newMsg = new HashMap<String,String>();
+				newMsg.put("msgcontent",newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent")));
+				newMsg.put("friendid",friendid);
+				mNewMsg.add(newMsg);
 			}
 		}
-		newmsgcursor.close();
+		newMsgcursor.close();
 		store.closeDB();
 	}
 		
