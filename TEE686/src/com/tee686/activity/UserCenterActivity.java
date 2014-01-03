@@ -230,6 +230,9 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							intent.putExtra("friendId", friendId);
 							intent.putExtra("userid",userId);
 					        sendBroadcast(intent);
+					        
+					        Intent newmsgintent = new Intent("com.tee686.activity.FriendsListActivity");
+					        sendBroadcast(newmsgintent);
 						}
 					});
 				}

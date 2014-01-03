@@ -1,5 +1,6 @@
 package com.tee686.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.jivesoftware.smack.packet.Presence;
 
 import com.casit.tee686.R;
 import com.unionpay.mpay.views.r;
+import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
 import com.tee686.im.NewMsgListAdapter;
 import com.tee686.im.PinyinUtil;
@@ -22,8 +24,10 @@ import com.tee686.sqlite.MessageStore;
 import com.tee686.xmpp.XmppTool;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
@@ -76,11 +80,19 @@ public class FriendsListActivity extends Activity{
 		setContentView(R.layout.im_friendslist);
 		initControl();
 		
+		//获取新消息数据
 		getNewMsgListView();
+		
+		//设置新消息listview的适配器
 		mAdapter = new NewMsgListAdapter(this, mNewMsg);
 		newMsgList.setAdapter(mAdapter);
 		
+		//好友列表信息
 		getFriendsListView();
+		
+		//注册广播接收器
+		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
+		registerReceiver(mReceiver, intentFilter);
 	}	
 	
 	@Override
@@ -88,9 +100,40 @@ public class FriendsListActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onResume();
 		
+		//获取新消息数据
 		getNewMsgListView();
+		
+		//更新新消息列表
 		mAdapter.notifyDataSetChanged();
+		
+		//注册广播接收器
+		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
+		registerReceiver(mReceiver, intentFilter);
 	}
+	
+	@Override
+	public void onBackPressed() 
+	{
+		//注销广播监听器
+		unregisterReceiver(mReceiver);
+		System.out.println("注销监听");
+		this.finish();
+	}
+	
+	//定义broadcastreceiver
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			System.out.println("broadcast Receiver");
+			
+			//获取新消息数据
+			getNewMsgListView();
+			
+			//更新新消息列表
+			mAdapter.notifyDataSetChanged();
+		}
+	};
 
 	/*
 	 * 获取新消息列表视图
@@ -102,13 +145,17 @@ public class FriendsListActivity extends Activity{
 		Map<String,String> tempid = new HashMap<String,String>();
 		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
+		
+		//当前user的jid
 		String userid = share.getString("uid","") + "@" + XmppTool.getServer();
 		newMsgList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				// TODO Auto-generated method stub
-				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
+				
+				unregisterReceiver(mReceiver);
+				TextView tv_name = (TextView)view.findViewById(R.id.tv_newmsgitem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
 				
@@ -119,6 +166,8 @@ public class FriendsListActivity extends Activity{
 			}
 			
 		});
+		
+		//查询数据库获取新消息
 		MessageStore store = new MessageStore(FriendsListActivity.this);
 		Cursor newMsgcursor = store.selectNewmsg(userid);
 		while(newMsgcursor.moveToNext())
@@ -292,7 +341,6 @@ public class FriendsListActivity extends Activity{
 			Intent intent = new Intent(FriendsListActivity.this, FriendSearchActivity.class);
 			startActivity(intent);
 		}
-		
 	};
 
 	/*

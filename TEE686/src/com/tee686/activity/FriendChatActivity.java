@@ -36,8 +36,8 @@ import android.widget.Toast;
 
 public class FriendChatActivity extends Activity{
 	
-	private String userid;
-	private String friendName;
+	private String userid;//当前user的jid
+	private String friendName;//当前对话对方的jid
 	private TextView tv_titleName;
 	private SharedPreferences share;
 	private ChatMsgViewAdapter mAdapter;
