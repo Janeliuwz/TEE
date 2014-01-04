@@ -2,7 +2,9 @@ package com.tee686.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,8 @@ import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -224,7 +228,8 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 								System.out.println("插入数据库失败");
 							}
 							store.closeDB();
-							//Todo：发送广播通知更新聊天页面与通讯录页面内容
+							
+							//发送广播通知更新聊天页面与通讯录页面内容
 							Intent intent = new Intent("com.tee686.activity.FriendChatActivity");
 							intent.putExtra("content", message.getBody());
 							intent.putExtra("friendId", friendId);
@@ -280,9 +285,46 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 	                  }  
 	              }  
 	          }  
-	      };  
-	      XmppTool.getConnection().addPacketListener(listener, filter);  
+	      };
+	      
+	      XmppTool.getConnection().addPacketListener(listener, filter); 
+	      Roster roster = XmppTool.getConnection().getRoster();
+	  	  roster.addRosterListener(
+	  			  new RosterListener() {     
+	                    @Override    
+	                    //监听好友申请消息  
+	                    public void entriesAdded(Collection<String> invites) {    
+	                        // TODO Auto-generated method stub    
+	                        System.out.println("监听到好友申请的消息是："+invites);   
+	                       for (Iterator iter = invites.iterator(); iter.hasNext();) {  
+	                              String fromUserJids = (String)iter.next();  
+	                              System.out.println("fromUserJids是："+fromUserJids);
+	                        }                         
+	                       }      
+	                    @Override    
+	                    //监听好友同意添加消息  
+		                public void entriesUpdated(Collection<String> invites) {    
+	                           // TODO Auto-generated method stub    
+	                          System.out.println("监听到好友同意的消息是："+invites);    
+	                          for (Iterator iter = invites.iterator(); iter.hasNext();) {  
+	                             String fromUserJids = (String)iter.next(); 
+	                             System.out.println("同意添加的好友是："+fromUserJids);   
+	                            }                        
+	                          }   
+	                   @Override    
+	                    //监听好友删除消息  
+	                    public void entriesDeleted(Collection<String> delFriends) {    
+	                       // TODO Auto-generated method stub    
+	                       System.out.println("监听到删除好友的消息是："+delFriends);
+	                       }   
+	                   @Override    
+	                   //监听好友状态改变消息  
+	                    public void presenceChanged(Presence presence) {    
+	                        // TODO Auto-generated method stub 
+	                	   }
+	                   }); 
 	}
+
 
 	private void initViewPager() {
 		mTabsAdapter = new TabPageAdapter(this);
