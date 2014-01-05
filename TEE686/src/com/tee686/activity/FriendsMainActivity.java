@@ -57,6 +57,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -72,6 +73,7 @@ public class FriendsMainActivity extends Activity{
 	private ViewPager mTabPager;
 	private ImageView mTabSelected; //tab按钮选中时底端动画图片
 	private ImageView mTabMsg, mTabContacts;
+	private LinearLayout btnMsg, btnContacts;
 	private static final int TAB_MESSAGE = 0;
 	private static final int TAB_CONTACTS = 1;
 	
@@ -84,7 +86,7 @@ public class FriendsMainActivity extends Activity{
 	
 	private Button addFriend;
 	private ListView friendsList;
-	private ListView newMsgList;
+	private ListView msgList;
 	private WindowManager mWindowManager;
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
@@ -349,9 +351,11 @@ public class FriendsMainActivity extends Activity{
 		mTabSelected = (ImageView)findViewById(R.id.iv_tabselected);
 		mTabMsg = (ImageView)findViewById(R.id.iv_msgtab);
 		mTabContacts = (ImageView)findViewById(R.id.iv_contactstab);
+		btnMsg = (LinearLayout)findViewById(R.id.ll_msgtab);
+		btnContacts = (LinearLayout)findViewById(R.id.ll_contactstab);
 		
-		mTabMsg.setOnClickListener(new MyOnClickListener(0));
-		mTabContacts.setOnClickListener(new MyOnClickListener(1));
+		btnMsg.setOnClickListener(new MyOnClickListener(0));
+		btnContacts.setOnClickListener(new MyOnClickListener(1));
 		
 		//获取屏幕分辨率
 		DisplayMetrics dm = new DisplayMetrics();

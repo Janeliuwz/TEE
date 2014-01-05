@@ -27,18 +27,19 @@
             android:paddingBottom="2dp"
             android:layout_alignParentBottom="true">
             
-            <LinearLayout 
+            <LinearLayout
+                android:id="@+id/ll_msgtab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:clickable="true"
                 android:layout_weight="1">                
                 <ImageView 
                     android:id="@+id/iv_msgtab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="matrix"
-                    android:clickable="true"
                     android:src="@drawable/im_tab_msg_pressed"/>
                 <TextView 
                    	android:layout_width="wrap_content"
@@ -49,17 +50,18 @@
             </LinearLayout>
             
             <LinearLayout 
+                android:id="@+id/ll_contactstab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:clickable="true"
                 android:layout_weight="1">
                 <ImageView 
                     android:id="@+id/iv_contactstab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="matrix"
-                    android:clickable="true"
                     android:src="@drawable/im_tab_contacts"/>
                 <TextView 
                    	android:layout_width="wrap_content"
