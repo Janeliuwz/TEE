@@ -78,7 +78,7 @@ public class FriendsMainActivity extends Activity{
 	private static final int TAB_CONTACTS = 1;
 	
 	private int currIndex = 0; //当前页卡编号
-	private int zero = 0; //动画图片偏移量
+	private int zero; //动画图片偏移量
 	private int one; //动画图片位移
 	
 	private View layout;
@@ -362,7 +362,10 @@ public class FriendsMainActivity extends Activity{
 		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
 		int displayWidth = dm.widthPixels;
 		//int displayHeight = dm.heightPixels;
-		one = displayWidth/2;
+		//TODO:调整动画图片显示位置
+		int temp = displayWidth/4;
+		zero = temp - 20;
+		one = temp * 3 - 20;
 		
 		//装入分页页卡数据
 		LayoutInflater mLI = LayoutInflater.from(this);
@@ -478,7 +481,7 @@ public class FriendsMainActivity extends Activity{
 			case TAB_MESSAGE:
 				mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg_pressed));
 				if(currIndex == 1) {
-					animation = new TranslateAnimation(one, 0, 0, 0);
+					animation = new TranslateAnimation(one, zero, 0, 0);
 					mTabContacts.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_contacts));
 				}
 				break;
