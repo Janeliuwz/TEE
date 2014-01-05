@@ -92,6 +92,9 @@ public class FriendsMainActivity extends Activity{
 	private TextView mDialogText;
 	private List<Map<String,String>> mNewMsg = new ArrayList<Map<String,String>>();
 	private NewMsgListAdapter mAdapter;
+	private PagerAdapter mPagerAdapter;
+	private View view0;
+	private View view1;
 	
 	//上下文菜单选项
 	private static final int FLIST_CONTEXTMENU_SEND = Menu.FIRST;
@@ -145,7 +148,7 @@ public class FriendsMainActivity extends Activity{
 	public void onBackPressed() 
 	{
 		//注销广播监听器
-		unregisterReceiver(mReceiver);
+		//unregisterReceiver(mReceiver);
 		System.out.println("注销监听");
 		this.finish();
 	}
@@ -168,23 +171,23 @@ public class FriendsMainActivity extends Activity{
 	/*
 	 * 获取新消息列表视图
 	 */
-	/*private void getNewMsgListView()
+	private void getNewMsgListView(View v)
 	{
 		mNewMsg.clear();
-		newMsgList = (ListView)findViewById(R.id.lv_newMsgs);
+		msgList = (ListView)v.findViewById(R.id.lv_newMsgs);
 		Map<String,String> tempid = new HashMap<String,String>();
 		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		
 		//当前user的jid
 		String userid = share.getString("uid","") + "@" + XmppTool.getServer();
-		newMsgList.setOnItemClickListener(new OnItemClickListener() {
+		msgList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				// TODO Auto-generated method stub
 				
-				unregisterReceiver(mReceiver);
+				//unregisterReceiver(mReceiver);
 				TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
@@ -214,7 +217,7 @@ public class FriendsMainActivity extends Activity{
 		}
 		newMsgcursor.close();
 		store.closeDB();
-	}*/
+	}
 		
 	/*
 	 * 更新好友列表视图
@@ -364,8 +367,8 @@ public class FriendsMainActivity extends Activity{
 		//int displayHeight = dm.heightPixels;
 		//TODO:调整动画图片显示位置
 		int temp = displayWidth/4;
-		zero = temp - 20;
-		one = temp * 3 - 20;
+		zero = temp - 100;
+		one = temp * 3 - 100;
 		
 		//装入分页页卡数据
 		LayoutInflater mLI = LayoutInflater.from(this);
@@ -375,9 +378,12 @@ public class FriendsMainActivity extends Activity{
 		final ArrayList<View> views = new ArrayList<View>();
 		views.add(view0);
 		views.add(view1);
+		getNewMsgListView(view0);
+		mAdapter = new NewMsgListAdapter(this, mNewMsg);
+		msgList.setAdapter(mAdapter);
 		
 		//填充ViewPager的数据适配器
-		PagerAdapter mPagerAdapter = new PagerAdapter() {
+		mPagerAdapter = new PagerAdapter() {
 
 			@Override
 			public int getCount() {
@@ -398,10 +404,8 @@ public class FriendsMainActivity extends Activity{
 			public Object instantiateItem(View container, int position) {
 				((ViewPager)container).addView(views.get(position));
 				return views.get(position);
-			}
-			
+			}			
 		};
-		
 		mTabPager.setAdapter(mPagerAdapter);
 	}
 	
@@ -477,8 +481,11 @@ public class FriendsMainActivity extends Activity{
 		public void onPageSelected(int arg0) {
 			// TODO Auto-generated method stub
 			Animation animation = null;
+			//mPagerAdapter.notifyDataSetChanged();
 			switch(arg0) {
 			case TAB_MESSAGE:
+				//getNewMsgListView(view0);
+				//mAdapter.notifyDataSetChanged();
 				mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg_pressed));
 				if(currIndex == 1) {
 					animation = new TranslateAnimation(one, zero, 0, 0);

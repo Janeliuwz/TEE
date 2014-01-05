@@ -25,7 +25,7 @@ public class XmppTool {
 	private static XMPPConnection con = null;
 	private static ChatManager cm = null;
     private static int PORT = 5222;  
-    private static String SERVER_NAME = "10.10.10.22";  
+    private static String SERVER_NAME = "192.168.1.101";  
 	
     //打开连接
 	private static void openConnection() {
