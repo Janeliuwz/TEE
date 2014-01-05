@@ -27,7 +27,8 @@
     <string name="user_center_e_reputation">v望:%s</string>
     <string name="strReturn">返回</string>
     
-    <string name="im_friendslist">通讯录</string>
+    <string name="im_contacts">通讯录</string>
+    <string name="im_msglist">消息列表</string>
     <string name="im_adduser">添加</string>
     <string name="im_checkuser">查看用户</string>
     <string name="im_addsubmit">加为好友</string>

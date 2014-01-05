@@ -120,6 +120,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 					new UserIntroFragment(mUserInfoItem));
 			mTabsAdapter.addTab(getString(R.string.user_center_exit),
 					new UserLogOutFragment(UserCenterActivity.this, false));
+			
 			mTabsAdapter.notifyDataSetChanged();
 			mViewPager.setCurrentItem(0);
 		} else if (!NetWorkHelper.checkNetState(this)) {
@@ -159,7 +160,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(UserCenterActivity.this, FriendsListActivity.class);
+				Intent intent = new Intent(UserCenterActivity.this, FriendsMainActivity.class);
 				startActivity(intent);
 			}
 			
@@ -428,6 +429,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 					new UserIntroFragment(result));
 			mTabsAdapter.addTab(getString(R.string.user_center_exit),
 					new UserLogOutFragment(UserCenterActivity.this, false));
+			
 			mTabsAdapter.notifyDataSetChanged();
 			mViewPager.setCurrentItem(1);
 		}

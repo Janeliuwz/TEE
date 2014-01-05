@@ -84,10 +84,10 @@ public class NewMsgListAdapter extends BaseAdapter {
     	ViewHolder viewHolder = null;	
 	    if (convertView == null)
 	    {
-			  convertView = mInflater.inflate(R.layout.im_newmsglist_item, null);
+			  convertView = mInflater.inflate(R.layout.im_msglist_item, null);
 			  viewHolder = new ViewHolder();
-			  viewHolder.tvFriendid = (TextView) convertView.findViewById(R.id.tv_newmsgitem_name);
-			  viewHolder.tvMsg = (TextView) convertView.findViewById(R.id.tv_new_msg);
+			  viewHolder.tvFriendid = (TextView) convertView.findViewById(R.id.tv_msgitem_name);
+			  viewHolder.tvMsg = (TextView) convertView.findViewById(R.id.tv_msgcontent);
 			  convertView.setTag(viewHolder);
 	    }
 	    else

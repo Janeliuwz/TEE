@@ -32,8 +32,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +48,8 @@ import android.view.LayoutInflater;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -57,8 +64,24 @@ import android.widget.SectionIndexer;
 //import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class FriendsListActivity extends Activity{
+public class FriendsMainActivity extends Activity{
 
+	public static FriendsMainActivity instance = null;
+	
+	//Tab Bottom 标签页
+	private ViewPager mTabPager;
+	private ImageView mTabSelected; //tab按钮选中时底端动画图片
+	private ImageView mTabMsg, mTabContacts;
+	private static final int TAB_MESSAGE = 0;
+	private static final int TAB_CONTACTS = 1;
+	
+	private int currIndex = 0; //当前页卡编号
+	private int zero = 0; //动画图片偏移量
+	private int one; //动画图片位移
+	
+	private View layout;
+	private LayoutInflater inflater;
+	
 	private Button addFriend;
 	private ListView friendsList;
 	private ListView newMsgList;
@@ -77,22 +100,27 @@ public class FriendsListActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.im_friendslist);
-		initControl();
+		setContentView(R.layout.im_main);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		instance = this;
+				
+		initViewPager();
+		
+		//initControl();
 		
 		//获取新消息数据
-		getNewMsgListView();
+		//getNewMsgListView();
 		
 		//设置新消息listview的适配器
-		mAdapter = new NewMsgListAdapter(this, mNewMsg);
-		newMsgList.setAdapter(mAdapter);
+		//mAdapter = new NewMsgListAdapter(this, mNewMsg);
+		//newMsgList.setAdapter(mAdapter);
 		
 		//好友列表信息
-		getFriendsListView();
+		//getFriendsListView();
 		
 		//注册广播接收器
-		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
-		registerReceiver(mReceiver, intentFilter);
+		//IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
+		//registerReceiver(mReceiver, intentFilter);
 	}	
 	
 	@Override
@@ -101,14 +129,14 @@ public class FriendsListActivity extends Activity{
 		super.onResume();
 		
 		//获取新消息数据
-		getNewMsgListView();
+		//getNewMsgListView();
 		
 		//更新新消息列表
-		mAdapter.notifyDataSetChanged();
+		//mAdapter.notifyDataSetChanged();
 		
 		//注册广播接收器
-		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
-		registerReceiver(mReceiver, intentFilter);
+		//IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
+		//registerReceiver(mReceiver, intentFilter);
 	}
 	
 	@Override
@@ -128,7 +156,7 @@ public class FriendsListActivity extends Activity{
 			System.out.println("broadcast Receiver");
 			
 			//获取新消息数据
-			getNewMsgListView();
+			//getNewMsgListView();
 			
 			//更新新消息列表
 			mAdapter.notifyDataSetChanged();
@@ -138,7 +166,7 @@ public class FriendsListActivity extends Activity{
 	/*
 	 * 获取新消息列表视图
 	 */
-	private void getNewMsgListView()
+	/*private void getNewMsgListView()
 	{
 		mNewMsg.clear();
 		newMsgList = (ListView)findViewById(R.id.lv_newMsgs);
@@ -155,12 +183,12 @@ public class FriendsListActivity extends Activity{
 				// TODO Auto-generated method stub
 				
 				unregisterReceiver(mReceiver);
-				TextView tv_name = (TextView)view.findViewById(R.id.tv_newmsgitem_name);
+				TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
 				
 				//跳转到聊天界面
-				Intent intent = new Intent(FriendsListActivity.this, FriendChatActivity.class);
+				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText());
 				startActivity(intent);
 			}
@@ -168,7 +196,7 @@ public class FriendsListActivity extends Activity{
 		});
 		
 		//查询数据库获取新消息
-		MessageStore store = new MessageStore(FriendsListActivity.this);
+		MessageStore store = new MessageStore(FriendsMainActivity.this);
 		Cursor newMsgcursor = store.selectNewmsg(userid);
 		while(newMsgcursor.moveToNext())
 		{
@@ -184,12 +212,12 @@ public class FriendsListActivity extends Activity{
 		}
 		newMsgcursor.close();
 		store.closeDB();
-	}
+	}*/
 		
 	/*
 	 * 更新好友列表视图
 	 */
-	private void getFriendsListView() {
+/*	private void getFriendsListView() {
 						
 		friendsList = (ListView)findViewById(R.id.lv_friends);
 		
@@ -211,13 +239,13 @@ public class FriendsListActivity extends Activity{
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();
 				
-				Intent intent = new Intent(FriendsListActivity.this, FriendChatActivity.class);
+				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText());
 				startActivity(intent);
 			}
 			
 		});
-		/*//监听好友列表项长按操作，显示上下文菜单
+		//监听好友列表项长按操作，显示上下文菜单
 		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -231,7 +259,7 @@ public class FriendsListActivity extends Activity{
 				return true;
 			}
 			
-		});*/
+		});
 		
 		//TODO
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
@@ -243,20 +271,20 @@ public class FriendsListActivity extends Activity{
         mWindowManager.addView(mDialogText, lp);
         friendsListIndexbar.setTextView(mDialogText);
 	}
-	
+*/	
 	/*
 	 * 创建上下文菜单
 	 */
-	@Override
+/*	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 	
-		/*手动添加上下文菜单选项
-		menu.setHeaderTitle("请选择操作");
-		menu.add(0, 0, 0, "发送消息");
-		menu.add(0, 1, 0, "查看资料");
-		menu.add(0, 2, 0, "删除好友");
-		menu.add(0, 3, 0, "清空记录");*/
+		//手动添加上下文菜单选项
+		//menu.setHeaderTitle("请选择操作");
+		//menu.add(0, 0, 0, "发送消息");
+		//menu.add(0, 1, 0, "查看资料");
+		//menu.add(0, 2, 0, "删除好友");
+		//menu.add(0, 3, 0, "清空记录");
 		
 		//通过xml文件配置上下文菜单
 		MenuInflater mInflater = getMenuInflater();
@@ -264,11 +292,11 @@ public class FriendsListActivity extends Activity{
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
-
+*/
 	/*
 	 * 长按上下文菜单
 	 */
-	@Override
+/*	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
 		//当前被选择的视图项的信息
@@ -300,48 +328,171 @@ public class FriendsListActivity extends Activity{
 		}
 		return super.onContextItemSelected(item);
 	}
-
+*/
 	/*
 	 * 关闭上下文菜单
 	 */
-	@Override
+/*	@Override
 	public void onContextMenuClosed(Menu menu) {
 		// TODO Auto-generated method stub
 		super.onContextMenuClosed(menu);
 	}
+*/
 
+	/*
+	 * Tab页卡视图初始化
+	 */
+	private void initViewPager() {
+		mTabPager = (ViewPager)findViewById(R.id.im_tabPager);
+		mTabPager.setOnPageChangeListener(new MyOnPageChangeListener());
+		
+		mTabSelected = (ImageView)findViewById(R.id.iv_tabselected);
+		mTabMsg = (ImageView)findViewById(R.id.iv_msgtab);
+		mTabContacts = (ImageView)findViewById(R.id.iv_contactstab);
+		
+		mTabMsg.setOnClickListener(new MyOnClickListener(0));
+		mTabContacts.setOnClickListener(new MyOnClickListener(1));
+		
+		//获取屏幕分辨率
+		DisplayMetrics dm = new DisplayMetrics();
+		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
+		int displayWidth = dm.widthPixels;
+		//int displayHeight = dm.heightPixels;
+		one = displayWidth/2;
+		
+		//装入分页页卡数据
+		LayoutInflater mLI = LayoutInflater.from(this);
+		View view0 = mLI.inflate(R.layout.im_page_msg, null);
+		View view1 = mLI.inflate(R.layout.im_page_contacts, null);
+		
+		final ArrayList<View> views = new ArrayList<View>();
+		views.add(view0);
+		views.add(view1);
+		
+		//填充ViewPager的数据适配器
+		PagerAdapter mPagerAdapter = new PagerAdapter() {
+
+			@Override
+			public int getCount() {
+				return views.size();
+			}
+
+			@Override
+			public boolean isViewFromObject(View arg0, Object arg1) {
+				return arg0 == arg1;
+			}
+
+			@Override
+			public void destroyItem(View container, int position, Object object) {
+				((ViewPager)container).removeView(views.get(position));
+			}
+
+			@Override
+			public Object instantiateItem(View container, int position) {
+				((ViewPager)container).addView(views.get(position));
+				return views.get(position);
+			}
+			
+		};
+		
+		mTabPager.setAdapter(mPagerAdapter);
+	}
+	
 	/*
 	 * 句柄初始化操作
 	 */
-	private void initControl() {
+/*	private void initControl() {
 		
 		mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 		addFriend = (Button)findViewById(R.id.btn_addfriend);		
 		addFriend.setOnClickListener(addFriendListener);
 		
-		/*
-		SimpleAdapter adapter = new SimpleAdapter(this, 
-				getData(), 
-				R.layout.im_friendslist_item,
-				new String[]{"avatar", "name", "status"},
-				new int[]{R.id.iv_frienditem_avatar, R.id.tv_frienditem_name, R.id.tv_frienditem_status}
-		);
+
+		//SimpleAdapter adapter = new SimpleAdapter(this, 
+		//		getData(), 
+		//		R.layout.im_friendslist_item,
+		//		new String[]{"avatar", "name", "status"},
+		//		new int[]{R.id.iv_frienditem_avatar, R.id.tv_frienditem_name, R.id.tv_frienditem_status}
+		//);
 		friendlist.setAdapter(adapter);
-		*/
+
 	}
+*/
 	
 	/*
 	 * 监听器
 	 */
-	private OnClickListener addFriendListener = new OnClickListener() {
+/*	private OnClickListener addFriendListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			Intent intent = new Intent(FriendsListActivity.this, FriendSearchActivity.class);
+			Intent intent = new Intent(FriendsMainActivity.this, FriendSearchActivity.class);
 			startActivity(intent);
 		}
 	};
+*/
+
+	/*
+	 * 底部按钮点击监听
+	 */
+	public class MyOnClickListener implements View.OnClickListener {
+
+		private int index = 0;
+		
+		public MyOnClickListener(int i) {
+			index = i;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			mTabPager.setCurrentItem(index);
+		}
+		
+	}
+	
+	/*
+	 * Tab页卡切换监听器
+	 */
+	public class MyOnPageChangeListener implements OnPageChangeListener {
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onPageSelected(int arg0) {
+			// TODO Auto-generated method stub
+			Animation animation = null;
+			switch(arg0) {
+			case TAB_MESSAGE:
+				mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg_pressed));
+				if(currIndex == 1) {
+					animation = new TranslateAnimation(one, 0, 0, 0);
+					mTabContacts.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_contacts));
+				}
+				break;
+			case TAB_CONTACTS:
+				mTabContacts.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_contacts_pressed));
+				if(currIndex == 0) {
+					animation = new TranslateAnimation(zero, one, 0, 0);
+					mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg));
+				}
+				break;
+			}
+			currIndex = arg0;
+			animation.setFillAfter(true); //TRUE:图片停在动画结束位置
+			animation.setDuration(150);
+			mTabSelected.startAnimation(animation);
+		}
+		
+	}
 
 	/*
 	 * 自定义好友列表ListView适配器

@@ -267,23 +267,27 @@
 
         <!-- 即时通讯模块 -->
         <activity 
-            android:name="com.tee686.activity.FriendsListActivity"
+            android:name="com.tee686.activity.FriendsMainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">            
         </activity>
         <activity 
             android:name="com.tee686.activity.FriendSearchActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">            
         </activity>
         <activity 
             android:name="com.tee686.activity.FriendAddActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">            
         </activity>
          <activity 
             android:name="com.tee686.activity.FriendChatActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">            
         </activity>        
         
