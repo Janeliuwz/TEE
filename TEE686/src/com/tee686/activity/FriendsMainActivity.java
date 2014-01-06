@@ -16,6 +16,7 @@ import com.casit.tee686.R;
 import com.unionpay.mpay.views.r;
 import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
+import com.tee686.im.FriendsListAdapter;
 import com.tee686.im.NewMsgListAdapter;
 import com.tee686.im.PinyinUtil;
 import com.tee686.im.PinyinComparator;
@@ -87,11 +88,14 @@ public class FriendsMainActivity extends Activity{
 	private Button addFriend;
 	private ListView friendsList;
 	private ListView msgList;
-	private WindowManager mWindowManager;
+	
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
 	private List<Map<String,String>> mNewMsg = new ArrayList<Map<String,String>>();
+	private List<FriendsListAdapter.friends> mfriendsList = new ArrayList<FriendsListAdapter.friends>();
+	private String[] friendsNames;
 	private NewMsgListAdapter mAdapter;
+	private FriendsListAdapter fAdapter;
 	private PagerAdapter mPagerAdapter;
 	private View view0;
 	private View view1;
@@ -130,7 +134,6 @@ public class FriendsMainActivity extends Activity{
 	
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		
 		//获取新消息数据
@@ -139,19 +142,14 @@ public class FriendsMainActivity extends Activity{
 		//更新新消息列表
 		//mAdapter.notifyDataSetChanged();
 		
-		
 	}
 		
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
 		super.onRestart();
 		
-		//获取新消息数据
-		getNewMsgData();
-				
-		//更新新消息列表
-		mAdapter.notifyDataSetChanged();
+		getNewMsgData(); //获取新消息数据
+		mAdapter.notifyDataSetChanged(); //更新新消息列表
 		
 		//注册广播接收器
 		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsMainActivity");
@@ -213,31 +211,60 @@ public class FriendsMainActivity extends Activity{
 		newMsgcursor.close();
 		store.closeDB();
 	}
-		
+	
+	@SuppressWarnings("unchecked")
+	private void getFriendsListData() {
+		mfriendsList.clear();
+		FriendsListAdapter.friends tempfriends;
+		Roster roster = XmppTool.getConnection().getRoster();
+		Collection<RosterEntry> entries = roster.getEntries();
+		for (RosterEntry entry : entries) 
+		{
+		     Presence presence = roster.getPresence(entry.getUser());			     
+		     tempfriends = new FriendsListAdapter.friends();
+		     if(presence.isAvailable() == true)
+		     {
+		    	 tempfriends.username = entry.getUser().toString();
+		    	 tempfriends.presence = true;
+		     }
+		     else
+		     {
+		    	 tempfriends.username = entry.getUser().toString();
+		    	 tempfriends.presence = false;
+		     }
+		     mfriendsList.add(tempfriends);
+		}
+		friendsNames = new String[mfriendsList.size()];
+		for(int i=0;i<mfriendsList.size();i++)
+		{
+			this.friendsNames[i]=mfriendsList.get(i).username;
+		}
+		//this.mNames = testNames;
+		Arrays.sort(friendsNames, new PinyinComparator());
+		System.out.println("排序完成");
+		System.out.println(friendsNames.toString());
+	}
+	
 	/*
 	 * 更新好友列表视图
 	 */
-	private void getFriendsListView(View v) {
-						
-		friendsList = (ListView)v.findViewById(R.id.lv_friends);
-		
+	private void getFriendsListView() {
+
 		//为视图注册长按上下文菜单
 		//registerForContextMenu(friendsList);
-		friendsList.setAdapter(new FriendsListAdapter(this));
-		friendsListIndexbar = (SideBar)v.findViewById(R.id.friendslist_sideBar);
+		//friendsList.setAdapter(new FriendsListAdapter(this));
+
 		friendsListIndexbar.setListView(friendsList);
-		mDialogText = (TextView)LayoutInflater.from(this).inflate(R.layout.im_friendslist_pos, null);
 		mDialogText.setVisibility(View.INVISIBLE);
 		
-		//单击好友列表项
+		//监听好友列表项单击操作
 		friendsList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-				// TODO Auto-generated method stub
 				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
-				Toast.makeText(getApplicationContext(), 
-						tv_name.getText(), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(), 
+						//tv_name.getText(), Toast.LENGTH_SHORT).show();
 				
 				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText());
@@ -245,6 +272,7 @@ public class FriendsMainActivity extends Activity{
 			}
 			
 		});
+		
 		//监听好友列表项长按操作，显示上下文菜单
 /*		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -261,7 +289,7 @@ public class FriendsMainActivity extends Activity{
 			
 		});
 */		
-		//TODO
+		WindowManager mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
@@ -374,10 +402,6 @@ public class FriendsMainActivity extends Activity{
 		views.add(view0);
 		views.add(view1);
 		
-		//getFriendsListView(view1);
-		//friendsList = (ListView)view1.findViewById(R.id.lv_friends);
-		//friendsList.setAdapter();
-		
 		//填充ViewPager的数据适配器
 		mPagerAdapter = new PagerAdapter() {
 
@@ -402,38 +426,47 @@ public class FriendsMainActivity extends Activity{
 				v = views.get(position);
 				((ViewPager)container).addView(v);
 				
-				//viewpager的msg页初始化化
-				if(position == TAB_MESSAGE)
-				{
-					//获取其中的listview
-					msgList = (ListView)v.findViewById(R.id.lv_newMsgs);
-					
-					//获取数据
-					getNewMsgData();
+				switch(position) {
+				//ViewPager的消息列表页卡初始化化
+				case TAB_MESSAGE:
+
+					msgList = (ListView)v.findViewById(R.id.lv_newMsgs); //获取其中的listview
+					getNewMsgData(); //获取数据
 					
 					msgList.setOnItemClickListener(new OnItemClickListener() {
-
 						@Override
 						public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-							// TODO Auto-generated method stub
-							
 							unregisterReceiver(mReceiver);
 							TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
 							//Toast.makeText(getApplicationContext(), 
 									//tv_name.getText(), Toast.LENGTH_SHORT).show();
-							
 							//跳转到聊天界面
 							Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 							intent.putExtra("friendName", tv_name.getText());
 							startActivity(intent);
 						}
-					
 					});
 					
 					//设置适配器
 					mAdapter = new NewMsgListAdapter(FriendsMainActivity.this, mNewMsg);
-					msgList.setAdapter(mAdapter);					
-				}
+					msgList.setAdapter(mAdapter);
+					
+					break;	
+					
+				//ViewPager的通讯录页卡初始化化
+				case TAB_CONTACTS:
+					
+					friendsList = (ListView)v.findViewById(R.id.lv_friends);
+					friendsListIndexbar = (SideBar)v.findViewById(R.id.friendslist_sideBar);
+					mDialogText = (TextView)LayoutInflater.from(FriendsMainActivity.this).inflate(R.layout.im_friendslist_pos, null);
+					
+					getFriendsListData();
+					getFriendsListView();
+
+					fAdapter = new FriendsListAdapter(FriendsMainActivity.this, mfriendsList, friendsNames);
+					friendsList.setAdapter(fAdapter);
+					break;
+				}				
 				return views.get(position);
 			}
 
@@ -447,14 +480,15 @@ public class FriendsMainActivity extends Activity{
 			public void setPrimaryItem(ViewGroup container, int position,
 					Object object) {
 				// TODO Auto-generated method stub
-				
-				if(position == TAB_MESSAGE)
-				{
-					//重新获取数据，
-					getNewMsgData();
+				switch(position) {
+				case TAB_MESSAGE:
+					getNewMsgData(); //重新获取数据
+					mAdapter.notifyDataSetChanged(); //数据改变
+					break;
 					
-					//数据改变
-					mAdapter.notifyDataSetChanged();
+				case TAB_CONTACTS:
+					
+					break;
 				}
 				super.setPrimaryItem(container, position, object);
 			}			
@@ -561,172 +595,9 @@ public class FriendsMainActivity extends Activity{
 		
 	}
 
-	/*
-	 * 自定义好友列表ListView适配器
-	 * 实现快速滚动索引接口SectionIndexer
-	 */
-	static class friends
-	{
-		String username;
-		Boolean presence;
-	};
-	
+
 	//private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234","北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
-	private static List<friends> list = new ArrayList<friends>();
-	static class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 
-		private Context mContext;
-		private String[] mNames;
-		
-		static class ViewHolder {
-			TextView tvCatalog; //目录
-			ImageView ivAvatar; //头像
-			TextView tvName; //用户名
-			TextView tvStatus; //状态
-		}
-		
-		@SuppressWarnings("unchecked")
-		public FriendsListAdapter(Context mContext) {
-			this.mContext = mContext;
-			//TODO:完成对好友名称的获取
-			list.clear();
-			friends tempfriends;
-			Roster roster = XmppTool.getConnection().getRoster();
-			Collection<RosterEntry> entries = roster.getEntries();
-			for (RosterEntry entry : entries) 
-			{
-			     Presence presence = roster.getPresence(entry.getUser());			     
-			     tempfriends = new friends();
-			     if(presence.isAvailable() == true)
-			     {
-			    	 tempfriends.username = entry.getUser().toString();
-			    	 tempfriends.presence = true;
-			     }
-			     else
-			     {
-			    	 tempfriends.username = entry.getUser().toString();
-			    	 tempfriends.presence = false;
-			     }
-			     list.add(tempfriends);
-			}
-			mNames = new String[list.size()];
-			for(int i=0;i<list.size();i++)
-			{
-				this.mNames[i]=list.get(i).username;
-			}
-			//this.mNames = testNames;
-			Arrays.sort(mNames,new PinyinComparator());
-			System.out.println("排序完成");
-		}
-		
-		@Override
-		public int getCount() {
-			return mNames.length;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mNames[position];
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			
-			ViewHolder viewHolder = null;
-			final String username = mNames[position];
-			String catalog = PinyinUtil.getPingYin(username).toUpperCase().substring(0, 1);
-			
-			//填充视图，不为空时直接使用
-			if(convertView == null) {
-				convertView = LayoutInflater.from(mContext).inflate(R.layout.im_friendslist_item, null);
-				viewHolder = new ViewHolder();
-				viewHolder.tvCatalog = (TextView)convertView.findViewById(R.id.tv_frienditem_catalog);
-				viewHolder.ivAvatar = (ImageView)convertView.findViewById(R.id.iv_frienditem_avatar);
-				viewHolder.tvName = (TextView)convertView.findViewById(R.id.tv_frienditem_name);
-				viewHolder.tvStatus = (TextView)convertView.findViewById(R.id.tv_frienditem_status);
-				convertView.setTag(viewHolder);
-			}
-			else {
-				viewHolder = (ViewHolder)convertView.getTag();
-			}
-			
-			//设置字母索引
-			if(position == 0) {
-				viewHolder.tvCatalog.setVisibility(View.VISIBLE);
-				viewHolder.tvCatalog.setText(catalog);
-			}
-			else {
-				String lastCatalog = PinyinUtil.getPingYin(mNames[position-1]).toUpperCase().substring(0, 1);
-				if(catalog.equals(lastCatalog)) {
-					viewHolder.tvCatalog.setVisibility(View.GONE);
-				}
-				else {
-					viewHolder.tvCatalog.setVisibility(View.VISIBLE);
-					viewHolder.tvCatalog.setText(catalog);
-				}
-			}
-			
-			//TODO:头像
-			//viewHolder.ivAvatar.setImageResource();
-			viewHolder.tvName.setText(username);
-			//TODO:状态
-			Boolean presenceStatu = findpresenceStatubyUsername(username);
-			if(presenceStatu == true)
-			{
-				viewHolder.tvStatus.setText("在线");
-			}
-			else
-			{
-				viewHolder.tvStatus.setText("离线");
-			}
-			
-			return convertView;
-		}
-
-		//获取用户名所属字母索引
-		@Override
-		public int getPositionForSection(int section) {
-			for (int i = 0; i < mNames.length; i++) {
-	            //String l = PinyinUtil.converterToFirstSpell(mNames[i]).substring(0, 1);
-	            String l = PinyinUtil.getPingYin(mNames[i]).toUpperCase();
-	            char firstChar = l.charAt(0);
-	            if (firstChar == section) {  
-	                return i;  
-	            }
-			}
-			return -1;
-		}
-
-		@Override
-		public int getSectionForPosition(int position) {
-			return 0;
-		}
-
-		@Override
-		public Object[] getSections() {
-			return null;
-		}
-		
-		public static Boolean findpresenceStatubyUsername(String username)
-		{
-			Boolean presenceStatu = true;
-			for(int i=0;i<list.size();i++)
-			{
-				if(list.get(i).username.equals(username))
-				{
-					presenceStatu = list.get(i).presence;
-					break;
-				}
-			}
-			return presenceStatu;
-		}
-		
-	}
 	
 	/*
 	private List<Map<String, Object>> getData() 
