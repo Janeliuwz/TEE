@@ -34,6 +34,12 @@
     <string name="im_addsubmit">加为好友</string>
     <string name="im_sendMsg">发送</string>
 
+    <string name="contacts_menu1">好友资料</string>
+    <string name="contacts_menu2">发送消息</string>
+    <string name="contacts_menu3">删除好友</string>
+    
+    <string name="msglist_menu1">删除</string>
+    
     <!-- 登录 -->
     <string name="user_title">TEE</string>
     <string name="user_cancel">取消</string>

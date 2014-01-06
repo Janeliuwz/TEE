@@ -25,8 +25,10 @@ import com.tee686.sqlite.MessageStore;
 import com.tee686.xmpp.XmppTool;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -57,6 +59,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -74,7 +77,7 @@ public class FriendsMainActivity extends Activity{
 	private ViewPager mTabPager;
 	private ImageView mTabSelected; //tab按钮选中时底端动画图片
 	private ImageView mTabMsg, mTabContacts;
-	private LinearLayout btnMsg, btnContacts;
+	private LinearLayout btnMsg, btnContacts; //tab底部页卡按钮
 	private static final int TAB_MESSAGE = 0;
 	private static final int TAB_CONTACTS = 1;
 	
@@ -85,7 +88,7 @@ public class FriendsMainActivity extends Activity{
 	private View layout;
 	private LayoutInflater inflater;
 	
-	private Button addFriend;
+	private ImageButton addFriend;
 	private ListView friendsList;
 	private ListView msgList;
 	
@@ -101,11 +104,11 @@ public class FriendsMainActivity extends Activity{
 	private View view0;
 	private View view1;
 	
-	//上下文菜单选项
-	private static final int FLIST_CONTEXTMENU_SEND = Menu.FIRST;
-	private static final int FLIST_CONTEXTMENU_INFO = Menu.FIRST + 1;
-	private static final int FLIST_CONTEXTMENU_DELETE = Menu.FIRST + 2;
-	private static final int FLIST_CONTEXTMENU_CLEAR = Menu.FIRST + 3;
+	//菜单选项
+	private static final int CONTACTS_MENU_INFO = 0;
+	private static final int CONTACTS_MENU_SEND = 1;
+	private static final int CONTACTS_MENU_DELETE = 2;
+	private static final int MSG_MENU_CLEAR = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +118,6 @@ public class FriendsMainActivity extends Activity{
 		instance = this;
 				
 		initViewPager();
-		
-		//initControl();
 		
 		//获取新消息数据
 		//getNewMsgListView();
@@ -246,10 +247,8 @@ public class FriendsMainActivity extends Activity{
 		{
 			this.friendsNames[i]=mfriendsList.get(i).username;
 		}
-		//this.mNames = testNames;
 		Arrays.sort(friendsNames, new PinyinComparator());
 		System.out.println("排序完成");
-		System.out.println(friendsNames.toString());
 	}
 	
 	/*
@@ -269,13 +268,35 @@ public class FriendsMainActivity extends Activity{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-				TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
+			/*	TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
 				//Toast.makeText(getApplicationContext(), 
 						//tv_name.getText(), Toast.LENGTH_SHORT).show();
 				
 				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText());
-				startActivity(intent);
+				startActivity(intent); */
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
+				alertDialog.setTitle("请选择");
+				alertDialog.setItems(R.array.contactsmenu, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						switch(which) {
+						case CONTACTS_MENU_INFO:
+							System.out.println("好友资料");
+							break;
+						case CONTACTS_MENU_SEND:
+							System.out.println("发送消息");
+							break;
+						case CONTACTS_MENU_DELETE:
+							System.out.println("删除好友");
+							break;
+						}
+					}
+				});
+				alertDialog.show();
+				
 			}
 			
 		});
@@ -444,7 +465,6 @@ public class FriendsMainActivity extends Activity{
 					//设置适配器
 					mAdapter = new NewMsgListAdapter(FriendsMainActivity.this, mNewMsg);
 					msgList.setAdapter(mAdapter);
-					
 					break;	
 					
 				//ViewPager的通讯录页卡初始化化
@@ -453,6 +473,8 @@ public class FriendsMainActivity extends Activity{
 					friendsList = (ListView)v.findViewById(R.id.lv_friends);
 					friendsListIndexbar = (SideBar)v.findViewById(R.id.friendslist_sideBar);
 					mDialogText = (TextView)LayoutInflater.from(FriendsMainActivity.this).inflate(R.layout.im_friendslist_pos, null);
+					addFriend = (ImageButton)v.findViewById(R.id.btn_addfriend);		
+					addFriend.setOnClickListener(addFriendListener);
 					
 					getFriendsListData();
 					getFriendsListView();
@@ -466,14 +488,11 @@ public class FriendsMainActivity extends Activity{
 
 			@Override
 			public int getItemPosition(Object object) {
-				// TODO Auto-generated method stub
 				return POSITION_NONE;
 			}
 
 			@Override
-			public void setPrimaryItem(ViewGroup container, int position,
-					Object object) {
-				// TODO Auto-generated method stub
+			public void setPrimaryItem(ViewGroup container, int position, Object object) {
 				switch(position) {
 				case TAB_MESSAGE:
 					getNewMsgData(); //重新获取数据
@@ -495,12 +514,6 @@ public class FriendsMainActivity extends Activity{
 	 * 句柄初始化操作
 	 */
 /*	private void initControl() {
-		
-		mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-		addFriend = (Button)findViewById(R.id.btn_addfriend);		
-		addFriend.setOnClickListener(addFriendListener);
-		
-
 		//SimpleAdapter adapter = new SimpleAdapter(this, 
 		//		getData(), 
 		//		R.layout.im_friendslist_item,
@@ -508,23 +521,19 @@ public class FriendsMainActivity extends Activity{
 		//		new int[]{R.id.iv_frienditem_avatar, R.id.tv_frienditem_name, R.id.tv_frienditem_status}
 		//);
 		friendlist.setAdapter(adapter);
-
 	}
 */
 	
 	/*
-	 * 监听器
+	 * 添加好友按钮监听器
 	 */
-/*	private OnClickListener addFriendListener = new OnClickListener() {
-
+	private OnClickListener addFriendListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			Intent intent = new Intent(FriendsMainActivity.this, FriendSearchActivity.class);
 			startActivity(intent);
 		}
 	};
-*/
 
 	/*
 	 * 底部按钮点击监听

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="contactsmenu">
+        <item>@string/contacts_menu1</item>
+        <item>@string/contacts_menu2</item>
+        <item>@string/contacts_menu3</item>
+    </array>
+</resources>
