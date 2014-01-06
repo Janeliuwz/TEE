@@ -222,16 +222,16 @@ public class FriendsMainActivity extends Activity{
 	/*
 	 * 更新好友列表视图
 	 */
-/*	private void getFriendsListView() {
+	private void getFriendsListView(View v) {
 						
-		friendsList = (ListView)findViewById(R.id.lv_friends);
+		friendsList = (ListView)v.findViewById(R.id.lv_friends);
 		
 		//为视图注册长按上下文菜单
-		registerForContextMenu(friendsList);
+		//registerForContextMenu(friendsList);
 		friendsList.setAdapter(new FriendsListAdapter(this));
-		friendsListIndexbar = (SideBar)findViewById(R.id.friendslist_sideBar);
+		friendsListIndexbar = (SideBar)v.findViewById(R.id.friendslist_sideBar);
 		friendsListIndexbar.setListView(friendsList);
-		mDialogText = (TextView) LayoutInflater.from(this).inflate(R.layout.im_friendslist_pos, null);
+		mDialogText = (TextView)LayoutInflater.from(this).inflate(R.layout.im_friendslist_pos, null);
 		mDialogText.setVisibility(View.INVISIBLE);
 		
 		//单击好友列表项
@@ -251,7 +251,7 @@ public class FriendsMainActivity extends Activity{
 			
 		});
 		//监听好友列表项长按操作，显示上下文菜单
-		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+/*		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -265,7 +265,7 @@ public class FriendsMainActivity extends Activity{
 			}
 			
 		});
-		
+*/		
 		//TODO
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
@@ -276,7 +276,7 @@ public class FriendsMainActivity extends Activity{
         mWindowManager.addView(mDialogText, lp);
         friendsListIndexbar.setTextView(mDialogText);
 	}
-*/	
+	
 	/*
 	 * 创建上下文菜单
 	 */
@@ -378,9 +378,14 @@ public class FriendsMainActivity extends Activity{
 		final ArrayList<View> views = new ArrayList<View>();
 		views.add(view0);
 		views.add(view1);
+		
 		getNewMsgListView(view0);
 		mAdapter = new NewMsgListAdapter(this, mNewMsg);
 		msgList.setAdapter(mAdapter);
+		
+		//getFriendsListView(view1);
+		//friendsList = (ListView)view1.findViewById(R.id.lv_friends);
+		//friendsList.setAdapter();
 		
 		//填充ViewPager的数据适配器
 		mPagerAdapter = new PagerAdapter() {

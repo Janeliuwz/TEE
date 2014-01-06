@@ -83,6 +83,7 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_center_activity);
 		initControl();
+		//this.deleteDatabase("imdata.db");
 		share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		if (savedInstanceState != null) {
