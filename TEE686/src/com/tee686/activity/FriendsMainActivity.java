@@ -124,8 +124,8 @@ public class FriendsMainActivity extends Activity{
 		//getFriendsListView();
 		
 		//注册广播接收器
-		//IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
-		//registerReceiver(mReceiver, intentFilter);
+		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsMainActivity");
+		registerReceiver(mReceiver, intentFilter);
 	}	
 	
 	@Override
@@ -134,21 +134,35 @@ public class FriendsMainActivity extends Activity{
 		super.onResume();
 		
 		//获取新消息数据
-		//getNewMsgListView();
+		//getNewMsgData();
 		
 		//更新新消息列表
 		//mAdapter.notifyDataSetChanged();
 		
-		//注册广播接收器
-		//IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsListActivity");
-		//registerReceiver(mReceiver, intentFilter);
+		
 	}
-	
+		
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		
+		//获取新消息数据
+		getNewMsgData();
+				
+		//更新新消息列表
+		mAdapter.notifyDataSetChanged();
+		
+		//注册广播接收器
+		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsMainActivity");
+		registerReceiver(mReceiver, intentFilter);
+	}
+
 	@Override
 	public void onBackPressed() 
 	{
 		//注销广播监听器
-		//unregisterReceiver(mReceiver);
+		unregisterReceiver(mReceiver);
 		System.out.println("注销监听");
 		this.finish();
 	}
@@ -161,7 +175,7 @@ public class FriendsMainActivity extends Activity{
 			System.out.println("broadcast Receiver");
 			
 			//获取新消息数据
-			//getNewMsgListView();
+			getNewMsgData();
 			
 			//更新新消息列表
 			mAdapter.notifyDataSetChanged();
@@ -171,34 +185,15 @@ public class FriendsMainActivity extends Activity{
 	/*
 	 * 获取新消息列表视图
 	 */
-	private void getNewMsgListView(View v)
+	private void getNewMsgData()
 	{
 		mNewMsg.clear();
-		msgList = (ListView)v.findViewById(R.id.lv_newMsgs);
 		Map<String,String> tempid = new HashMap<String,String>();
 		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		
 		//当前user的jid
 		String userid = share.getString("uid","") + "@" + XmppTool.getServer();
-		msgList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-				// TODO Auto-generated method stub
-				
-				//unregisterReceiver(mReceiver);
-				TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
-				Toast.makeText(getApplicationContext(), 
-						tv_name.getText(), Toast.LENGTH_SHORT).show();
-				
-				//跳转到聊天界面
-				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
-				intent.putExtra("friendName", tv_name.getText());
-				startActivity(intent);
-			}
-			
-		});
 		
 		//查询数据库获取新消息
 		MessageStore store = new MessageStore(FriendsMainActivity.this);
@@ -379,10 +374,6 @@ public class FriendsMainActivity extends Activity{
 		views.add(view0);
 		views.add(view1);
 		
-		getNewMsgListView(view0);
-		mAdapter = new NewMsgListAdapter(this, mNewMsg);
-		msgList.setAdapter(mAdapter);
-		
 		//getFriendsListView(view1);
 		//friendsList = (ListView)view1.findViewById(R.id.lv_friends);
 		//friendsList.setAdapter();
@@ -406,9 +397,66 @@ public class FriendsMainActivity extends Activity{
 			}
 
 			@Override
-			public Object instantiateItem(View container, int position) {
-				((ViewPager)container).addView(views.get(position));
+			public Object instantiateItem(ViewGroup container, int position) {
+				View v = null;
+				v = views.get(position);
+				((ViewPager)container).addView(v);
+				
+				//viewpager的msg页初始化化
+				if(position == TAB_MESSAGE)
+				{
+					//获取其中的listview
+					msgList = (ListView)v.findViewById(R.id.lv_newMsgs);
+					
+					//获取数据
+					getNewMsgData();
+					
+					msgList.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+							// TODO Auto-generated method stub
+							
+							unregisterReceiver(mReceiver);
+							TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
+							//Toast.makeText(getApplicationContext(), 
+									//tv_name.getText(), Toast.LENGTH_SHORT).show();
+							
+							//跳转到聊天界面
+							Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
+							intent.putExtra("friendName", tv_name.getText());
+							startActivity(intent);
+						}
+					
+					});
+					
+					//设置适配器
+					mAdapter = new NewMsgListAdapter(FriendsMainActivity.this, mNewMsg);
+					msgList.setAdapter(mAdapter);					
+				}
 				return views.get(position);
+			}
+
+			@Override
+			public int getItemPosition(Object object) {
+				// TODO Auto-generated method stub
+				return POSITION_NONE;
+			}
+
+			@Override
+			public void setPrimaryItem(ViewGroup container, int position,
+					Object object) {
+				// TODO Auto-generated method stub
+				
+				if(position == TAB_MESSAGE)
+				{
+					//重新获取数据，
+					getNewMsgData();
+					
+					//数据改变
+					mAdapter.notifyDataSetChanged();
+				}
+				super.setPrimaryItem(container, position, object);
 			}			
 		};
 		mTabPager.setAdapter(mPagerAdapter);
