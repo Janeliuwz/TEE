@@ -229,6 +229,8 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							{
 								System.out.println("插入数据库失败");
 							}
+							store.deleteNewlist(friendId, userId);
+							store.insertNewlist(friendId, userId);
 							store.closeDB();
 							
 							//发送广播通知更新聊天页面与通讯录页面内容

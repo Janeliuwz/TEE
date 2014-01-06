@@ -150,6 +150,8 @@ public class FriendChatActivity extends Activity{
 				{
 					System.out.println(result);
 				}
+				store.deleteNewlist(friendName, userid);
+				store.insertNewlist(friendName, userid);
 				store.closeDB();
 				
 				//更新界面

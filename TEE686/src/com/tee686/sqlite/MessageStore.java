@@ -62,6 +62,11 @@ public class MessageStore {
 		return db.rawQuery("select * from messagelist where whereto=? and userid=? and ifread=? order by id desc", new String[]{userid,userid,"0"});
 	}
 	
+	public Cursor selectNewlist()
+	{
+		return db.rawQuery("select * from newlist order by id desc", null);
+	}
+	
 	public Cursor selectMessagelist(String friendid,String userid)
 	{
 		return db.rawQuery("select * from messagelist where ((whereto=? and wherefrom=?) or (whereto=? and wherefrom=?)) and userid=? order by id asc", new String[]{friendid,userid,userid,friendid,userid});
@@ -72,6 +77,20 @@ public class MessageStore {
 		ContentValues contentValues = new ContentValues();  
 		contentValues.put("ifread", "1");
 		return db.update("messagelist", contentValues, "((whereto=? and wherefrom=?) or (whereto=? and wherefrom=?)) and userid=?", new String[]{friendid,userid,userid,friendid,userid});
+	}
+	
+	public int deleteNewlist(String friendid,String userid)
+	{
+		return db.delete("newlist", "friendid=? and userid=?", new String[]{friendid,userid});
+	}
+	
+	public long insertNewlist(String friendid,String userid)
+	{
+		ContentValues values = new ContentValues();
+		values.put("friendid", friendid);
+		values.put("userid", userid);
+		long ret = db.insert("newlist", "id", values);
+		return ret;
 	}
 	//Todo:
 	//自己写的方法

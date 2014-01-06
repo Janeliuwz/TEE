@@ -186,7 +186,21 @@ public class FriendsMainActivity extends Activity{
 		
 		//查询数据库获取新消息
 		MessageStore store = new MessageStore(FriendsMainActivity.this);
-		Cursor newMsgcursor = store.selectNewmsg(userid);
+		Cursor newlistcursor = store.selectNewlist();
+		while(newlistcursor.moveToNext())
+		{
+			String friendid = newlistcursor.getString(newlistcursor.getColumnIndex("friendid"));
+			Cursor newMsgcursor = store.selectMessagelist(friendid, userid);
+			if(newMsgcursor.moveToLast())
+			{
+				Map<String,String> newMsg = new HashMap<String,String>();
+				newMsg.put("msgcontent",newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent")));
+				newMsg.put("friendid",friendid);
+				mNewMsg.add(newMsg);
+			}
+			newMsgcursor.close();
+		}
+		/*Cursor newMsgcursor = store.selectNewmsg(userid);
 		while(newMsgcursor.moveToNext())
 		{
 			String friendid = newMsgcursor.getString(newMsgcursor.getColumnIndex("wherefrom"));
@@ -198,8 +212,8 @@ public class FriendsMainActivity extends Activity{
 				newMsg.put("friendid",friendid);
 				mNewMsg.add(newMsg);
 			}
-		}
-		newMsgcursor.close();
+		}*/
+		newlistcursor.close();
 		store.closeDB();
 	}
 	
