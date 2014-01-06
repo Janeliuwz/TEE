@@ -89,6 +89,7 @@ public class FriendsMainActivity extends Activity{
 	private ListView friendsList;
 	private ListView msgList;
 	
+	private WindowManager mWindowManager;
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
 	private List<Map<String,String>> mNewMsg = new ArrayList<Map<String,String>>();
@@ -130,18 +131,6 @@ public class FriendsMainActivity extends Activity{
 		//注册广播接收器
 		IntentFilter intentFilter = new IntentFilter("com.tee686.activity.FriendsMainActivity");
 		registerReceiver(mReceiver, intentFilter);
-	}	
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		//获取新消息数据
-		//getNewMsgData();
-		
-		//更新新消息列表
-		//mAdapter.notifyDataSetChanged();
-		
 	}
 		
 	@Override
@@ -162,6 +151,7 @@ public class FriendsMainActivity extends Activity{
 		//注销广播监听器
 		unregisterReceiver(mReceiver);
 		System.out.println("注销监听");
+        mWindowManager.removeView(mDialogText);
 		this.finish();
 	}
 	
@@ -181,7 +171,7 @@ public class FriendsMainActivity extends Activity{
 	};
 
 	/*
-	 * 获取新消息列表视图
+	 * 获取新消息列表数据
 	 */
 	private void getNewMsgData()
 	{
@@ -210,6 +200,23 @@ public class FriendsMainActivity extends Activity{
 		}
 		newMsgcursor.close();
 		store.closeDB();
+	}
+	
+	private void getNewMsgView()
+	{
+		msgList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+				unregisterReceiver(mReceiver);
+				TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
+				//Toast.makeText(getApplicationContext(), 
+						//tv_name.getText(), Toast.LENGTH_SHORT).show();
+				//跳转到聊天界面
+				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
+				intent.putExtra("friendName", tv_name.getText());
+				startActivity(intent);
+			}
+		});	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -289,7 +296,7 @@ public class FriendsMainActivity extends Activity{
 			
 		});
 */		
-		WindowManager mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+		mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
@@ -432,21 +439,8 @@ public class FriendsMainActivity extends Activity{
 
 					msgList = (ListView)v.findViewById(R.id.lv_newMsgs); //获取其中的listview
 					getNewMsgData(); //获取数据
-					
-					msgList.setOnItemClickListener(new OnItemClickListener() {
-						@Override
-						public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-							unregisterReceiver(mReceiver);
-							TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
-							//Toast.makeText(getApplicationContext(), 
-									//tv_name.getText(), Toast.LENGTH_SHORT).show();
-							//跳转到聊天界面
-							Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
-							intent.putExtra("friendName", tv_name.getText());
-							startActivity(intent);
-						}
-					});
-					
+					getNewMsgView();
+									
 					//设置适配器
 					mAdapter = new NewMsgListAdapter(FriendsMainActivity.this, mNewMsg);
 					msgList.setAdapter(mAdapter);
@@ -487,7 +481,8 @@ public class FriendsMainActivity extends Activity{
 					break;
 					
 				case TAB_CONTACTS:
-					
+					//getFriendsListData();
+					//fAdapter.notifyDataSetChanged();
 					break;
 				}
 				super.setPrimaryItem(container, position, object);
