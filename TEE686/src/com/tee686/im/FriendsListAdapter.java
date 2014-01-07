@@ -6,6 +6,7 @@
 package com.tee686.im;
 
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,10 +21,10 @@ import com.casit.tee686.R;
 
 public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 
-	public static class friends {
+/*	public static class friends {
 		public String username;
 		public Boolean presence;
-	}
+	}*/
 	
 	static class ViewHolder {
 		TextView tvCatalog; //目录
@@ -32,26 +33,25 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 		TextView tvStatus; //状态
 	}
 	//private static List<friends> list = new ArrayList<friends>();
-	private static List<friends> list;
+	private List<Map<String,String>> mNames;
 	private Context mContext;
-	private String[] mNames;
+	//private String[] mNames;
 	
 	//构造函数
 	@SuppressWarnings("unchecked")
-	public FriendsListAdapter(Context mContext, List<friends> list, String[] mNames) {
+	public FriendsListAdapter(Context mContext, List<Map<String,String>> mNames) {
 		this.mContext = mContext;
-		this.list = list;
 		this.mNames = mNames;
 	}
 	
 	@Override
 	public int getCount() {
-		return mNames.length;
+		return mNames.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mNames[position];
+		return mNames.get(position);
 	}
 
 	@Override
@@ -63,7 +63,8 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		ViewHolder viewHolder = null;
-		final String username = mNames[position];
+		String username = mNames.get(position).get("name");
+		String presence = mNames.get(position).get("presence");
 		String catalog = PinyinUtil.getPingYin(username).toUpperCase().substring(0, 1);
 		
 		//填充视图，不为空时直接使用
@@ -86,7 +87,7 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 			viewHolder.tvCatalog.setText(catalog);
 		}
 		else {
-			String lastCatalog = PinyinUtil.getPingYin(mNames[position-1]).toUpperCase().substring(0, 1);
+			String lastCatalog = PinyinUtil.getPingYin(mNames.get(position-1).get("name")).toUpperCase().substring(0, 1);
 			if(catalog.equals(lastCatalog)) {
 				viewHolder.tvCatalog.setVisibility(View.GONE);
 			}
@@ -99,7 +100,8 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 		//TODO:头像
 		//viewHolder.ivAvatar.setImageResource();
 		viewHolder.tvName.setText(username);
-		Boolean presenceStatu = findpresenceStatubyUsername(username);
+		viewHolder.tvStatus.setText(presence);
+		/*Boolean presenceStatu = findpresenceStatubyUsername(username);
 		if(presenceStatu == true)
 		{
 			viewHolder.tvStatus.setText("在线");
@@ -107,7 +109,7 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 		else
 		{
 			viewHolder.tvStatus.setText("离线");
-		}
+		}*/
 		
 		return convertView;
 	}
@@ -115,9 +117,9 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 	//获取用户名所属字母索引
 	@Override
 	public int getPositionForSection(int section) {
-		for (int i = 0; i < mNames.length; i++) {
+		for (int i = 0; i < mNames.size(); i++) {
             //String l = PinyinUtil.converterToFirstSpell(mNames[i]).substring(0, 1);
-            String l = PinyinUtil.getPingYin(mNames[i]).toUpperCase();
+            String l = PinyinUtil.getPingYin(mNames.get(i).get("name")).toUpperCase();
             char firstChar = l.charAt(0);
             if (firstChar == section) {  
                 return i;  
@@ -136,7 +138,7 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 		return null;
 	}
 	
-	public static Boolean findpresenceStatubyUsername(String username)
+	/*public static Boolean findpresenceStatubyUsername(String username)
 	{
 		Boolean presenceStatu = true;
 		for(int i=0;i<list.size();i++)
@@ -148,6 +150,6 @@ public class FriendsListAdapter extends BaseAdapter implements SectionIndexer {
 			}
 		}
 		return presenceStatu;
-	}
+	}*/
 	
 }

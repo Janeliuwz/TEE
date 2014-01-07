@@ -91,7 +91,9 @@ public class FriendsMainActivity extends Activity{
 	private SideBar friendsListIndexbar;
 	private TextView mDialogText;
 	private List<Map<String,String>> mNewMsg = new ArrayList<Map<String,String>>();
-	private List<FriendsListAdapter.friends> mfriendsList = new ArrayList<FriendsListAdapter.friends>();
+	//private List<FriendsListAdapter.friends> mfriendsList = new ArrayList<FriendsListAdapter.friends>();
+	private List<Map<String,String>> tempNames =  new ArrayList<Map<String,String>>();
+	private List<Map<String,String>> friendsNamesList =  new ArrayList<Map<String,String>>();
 	private String[] friendsNames;
 	private NewMsgListAdapter mAdapter;
 	private FriendsListAdapter fAdapter;
@@ -236,14 +238,14 @@ public class FriendsMainActivity extends Activity{
 						//tv_name.getText(), Toast.LENGTH_SHORT).show();
 				//跳转到聊天界面
 				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
-				intent.putExtra("friendName", tv_name.getText());
+				intent.putExtra("friendName", tv_name.getText().toString());
 				startActivity(intent);
 			}
 		});	
 		msgList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+			public boolean onItemLongClick(AdapterView<?> parent, final View view, int pos, long id) {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
 				alertDialog.setTitle("请选择");
 				alertDialog.setItems(R.array.msgmenu, new DialogInterface.OnClickListener() {
@@ -253,6 +255,16 @@ public class FriendsMainActivity extends Activity{
 						// TODO 
 						switch(which) {
 						case MSG_MENU_CLEAR:
+							TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
+							String delname = tv_name.getText().toString();							
+							SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
+									Context.MODE_PRIVATE);
+							String userid = share.getString("uid","") + "@" + XmppTool.getServer();
+							MessageStore store = new MessageStore(FriendsMainActivity.this);
+							store.deleteNewlist(delname, userid);
+							store.closeDB();
+							getNewMsgData(); //重新获取数据
+							mAdapter.notifyDataSetChanged(); //数据改变
 							System.out.println("删除");
 							break;
 						}
@@ -266,7 +278,61 @@ public class FriendsMainActivity extends Activity{
 	
 	@SuppressWarnings("unchecked")
 	private void getFriendsListData() {
-		mfriendsList.clear();
+		
+		tempNames.clear();
+		friendsNamesList.clear();
+		Map<String,String> tempfriends = new HashMap<String,String>();
+		Map<String,String> temppresence = new HashMap<String,String>();
+		Roster roster = XmppTool.getConnection().getRoster();
+		Collection<RosterEntry> entries = roster.getEntries();
+		for (RosterEntry entry : entries) 
+		{
+		     Presence presence = roster.getPresence(entry.getUser());			     
+		     tempfriends = new HashMap<String,String>();
+		     if(presence.isAvailable() == true)
+		     {
+		    	 tempfriends.put("name", entry.getUser().toString());
+		    	 tempfriends.put("presence", "yes");
+		    	 temppresence.put(entry.getUser().toString(),"yes");
+		     }
+		     else
+		     {
+		    	 tempfriends.put("name", entry.getUser().toString());
+		    	 tempfriends.put("presence", "no");
+		    	 temppresence.put(entry.getUser().toString(),"no");
+		     }
+		     tempNames.add(tempfriends);
+		}
+		friendsNames = new String[tempNames.size()];
+		for(int i=0;i<tempNames.size();i++)
+		{
+			friendsNames[i]=tempNames.get(i).get("name");
+			System.out.println(friendsNames[i]);
+		}
+		Arrays.sort(friendsNames, new PinyinComparator());
+		
+		System.out.println(friendsNamesList.size());
+		for(int j=0;j<friendsNames.length;j++)
+		{
+			String presence = temppresence.get(friendsNames[j]);
+			System.out.println(presence);
+			if(presence.equals("yes"))
+			{
+				tempfriends = new HashMap<String,String>();
+				tempfriends.put("name", friendsNames[j]);
+				tempfriends.put("presence", "在线");
+				friendsNamesList.add(tempfriends);
+			}
+			if(presence.equals("no"))
+			{
+				tempfriends = new HashMap<String,String>();
+				tempfriends.put("name", friendsNames[j]);
+				tempfriends.put("presence", "离线");
+				friendsNamesList.add(tempfriends);
+			}
+		}
+		System.out.println(friendsNamesList.size());
+		/*mfriendsList.clear();
 		FriendsListAdapter.friends tempfriends;
 		Roster roster = XmppTool.getConnection().getRoster();
 		Collection<RosterEntry> entries = roster.getEntries();
@@ -292,7 +358,7 @@ public class FriendsMainActivity extends Activity{
 			this.friendsNames[i]=mfriendsList.get(i).username;
 		}
 		Arrays.sort(friendsNames, new PinyinComparator());
-		System.out.println("排序完成");
+		System.out.println("排序完成");*/
 	}
 	
 	/*
@@ -450,7 +516,7 @@ public class FriendsMainActivity extends Activity{
 					getFriendsListData();
 					getFriendsListView();
 
-					fAdapter = new FriendsListAdapter(FriendsMainActivity.this, mfriendsList, friendsNames);
+					fAdapter = new FriendsListAdapter(FriendsMainActivity.this, friendsNamesList);
 					friendsList.setAdapter(fAdapter);
 					break;
 				}				
@@ -471,8 +537,8 @@ public class FriendsMainActivity extends Activity{
 					break;
 					
 				case TAB_CONTACTS:
-					//getFriendsListData();
-					//fAdapter.notifyDataSetChanged();
+					getFriendsListData();
+					fAdapter.notifyDataSetChanged();
 					break;
 				}
 				super.setPrimaryItem(container, position, object);
