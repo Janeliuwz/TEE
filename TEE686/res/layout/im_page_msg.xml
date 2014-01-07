@@ -27,7 +27,9 @@
         android:id="@+id/lv_newMsgs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:divider="@drawable/divider_horizontal_line"
         android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:scrollbars="none" >
     </ListView>
 </LinearLayout>

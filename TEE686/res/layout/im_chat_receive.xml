@@ -43,7 +43,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/iv_recvAvatar"
 	        android:layout_marginLeft="10dp"
-	        android:background="@drawable/chatfrom_bg_normal"	        
+	        android:background="@drawable/im_chatfrom_bg"	        
 	        android:textSize="16sp"
 	        android:textColor="@color/black"
 	        android:gravity="left|center"

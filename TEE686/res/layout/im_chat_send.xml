@@ -43,7 +43,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_toLeftOf="@+id/iv_sendAvatar"
 	        android:layout_marginRight="10dp"
-	        android:background="@drawable/chatto_bg_normal"	        
+	        android:background="@drawable/im_chatto_bg"	        
 	        android:textSize="16sp"
 	        android:textColor="@color/black"
 	        android:gravity="left|center"

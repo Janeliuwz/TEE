@@ -12,7 +12,7 @@
     
     <LinearLayout 
         android:id="@+id/Linear_frienditem" 
-        android:background="@drawable/frienditem" 
+        android:background="@drawable/im_listitem" 
         android:paddingLeft="8.0dp" 
         android:layout_height="56.0dp" 
         style="@style/FriendsListItem">

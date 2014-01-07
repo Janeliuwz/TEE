@@ -3,26 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee" >
-    
-    <RelativeLayout 
+	<RelativeLayout 
         android:id="@+id/chatTitle"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/back_title" >
+        android:layout_height="50dp"
+        android:background="@drawable/im_title_bar"
+        android:gravity="center_vertical" >
         
-		<Button
-		    android:id="@+id/btn_chatBack"
-		    android:layout_width="60dp"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentLeft="true"
-		    android:layout_centerVertical="true"
-		    android:background="@drawable/back_above_menushow_style"
-		    android:layout_marginLeft="5dp"
-		    android:gravity="center"
-		    android:text="@string/strReturn"
-		    android:textSize="15sp"
-		    android:textColor="@color/white" />
-		
+        <Button
+            android:id="@+id/btn_chatback"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/strReturn"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@drawable/im_title_back" />
         <TextView 
             android:id="@+id/tv_chatTitleName"
             android:layout_width="wrap_content"
@@ -30,10 +27,18 @@
             android:text="用户名"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
-        
+            android:textSize="24sp"
+            android:textColor="@color/white" />
+		<ImageButton
+		    android:id="@+id/btn_chat_userinfo"
+		    android:layout_width="65dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:layout_marginRight="2dp"
+		    android:src="@drawable/button_userlogin_white"
+		    android:background="@drawable/im_title_button"/>
+		
     </RelativeLayout>
     
     <ListView  
@@ -45,7 +50,7 @@
         android:paddingRight="5.0dip"
         android:paddingTop="2.0dip"
     	android:layout_below="@+id/chatTitle"
-    	android:layout_above="@+id/chatBottom"
+    	android:layout_above="@+id/rl_chatBottom"
     	android:transcriptMode="alwaysScroll"
     	android:stackFromBottom="true"
     	android:cacheColorHint="#00000000"
@@ -53,34 +58,47 @@
     	android:dividerHeight="5dp" />
     
     <RelativeLayout
-        android:id="@+id/chatBottom"
+        android:id="@+id/rl_chatBottom"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/back_title" >
-
+        android:background="@drawable/im_chatbottom_bg" >
+		
+        <ImageButton
+            android:id="@+id/btn_talk"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:scaleType="fitCenter"
+		    android:src="@drawable/im_chatbtn_talk"
+		    android:background="@color/transparent" />
         <EditText
             android:id="@+id/text_chatMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="1dp"
+            android:layout_toRightOf="@+id/btn_talk"
             android:layout_toLeftOf="@+id/btn_chatSend"
-            android:background="@drawable/edittext1"
-            android:textSize="28sp" />
+            android:background="@drawable/edittext_normal"
+            android:gravity="bottom"
+            android:hint="请输入文字"
+            android:textSize="20sp" />
         <Button
             android:id="@+id/btn_chatSend"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/back_above_menushow_style"
+            android:background="@drawable/im_bottom_btn"
             android:gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="1dp"
             android:text="@string/im_sendMsg"
-            android:textSize="20sp"
-            android:textColor="@color/white"   />     
+            android:textSize="16sp"
+            android:textColor="@color/black"   />     
     </RelativeLayout>
     
 </RelativeLayout>
