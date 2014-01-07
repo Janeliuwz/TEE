@@ -189,6 +189,21 @@ public class FriendsMainActivity extends Activity{
 				Map<String,String> newMsg = new HashMap<String,String>();
 				newMsg.put("msgcontent",newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent")));
 				newMsg.put("friendid",friendid);
+				newMsg.put("datetime",newMsgcursor.getString(newMsgcursor.getColumnIndex("datetime")));
+				Integer count = 0;
+				Cursor countcursor = store.selectNewmsg(friendid,userid);
+				while(countcursor.moveToNext())
+				{
+					count++;
+				}
+				if(count>99)
+				{
+					newMsg.put("count", "99");
+				}
+				else
+				{
+					newMsg.put("count", count.toString());
+				}
 				mNewMsg.add(newMsg);
 			}
 			newMsgcursor.close();

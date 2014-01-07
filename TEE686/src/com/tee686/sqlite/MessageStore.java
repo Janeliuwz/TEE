@@ -57,6 +57,12 @@ public class MessageStore {
 		return ret;
 	}
 	
+	public Cursor selectNewmsg(String friendid, String userid) 
+	{
+		// TODO Auto-generated method stub
+		return db.rawQuery("select * from messagelist where wherefrom=? and whereto=? and userid=? and ifread=? order by id desc", new String[]{friendid, userid,userid,"0"});
+	}
+	
 	public Cursor selectNewmsg(String userid)
 	{
 		return db.rawQuery("select * from messagelist where whereto=? and userid=? and ifread=? order by id desc", new String[]{userid,userid,"0"});
@@ -94,5 +100,7 @@ public class MessageStore {
 	}
 	//Todo:
 	//自己写的方法
+
+	
 
 }

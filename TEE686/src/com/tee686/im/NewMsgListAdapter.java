@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -88,6 +89,9 @@ public class NewMsgListAdapter extends BaseAdapter {
 			  viewHolder = new ViewHolder();
 			  viewHolder.tvFriendid = (TextView) convertView.findViewById(R.id.tv_msgitem_name);
 			  viewHolder.tvMsg = (TextView) convertView.findViewById(R.id.tv_msgcontent);
+			  viewHolder.tvdateTime = (TextView) convertView.findViewById(R.id.tv_msgitem_time);
+			  viewHolder.tvnewCount =  (TextView) convertView.findViewById(R.id.tv_msgnum);
+			  viewHolder.ivnewCount = (ImageView) convertView.findViewById(R.id.iv_msgnum_bg);
 			  convertView.setTag(viewHolder);
 	    }
 	    else
@@ -96,14 +100,29 @@ public class NewMsgListAdapter extends BaseAdapter {
 	    }
 		    
 	    viewHolder.tvFriendid.setText(entity.get("friendid"));
-	    //viewHolder.tvUserName.setText(entity.getName());
-	    viewHolder.tvMsg.setText(entity.get("msgcontent"));	    
+	    viewHolder.tvMsg.setText(entity.get("msgcontent"));	
+	    viewHolder.tvdateTime.setText(entity.get("datetime"));
+	    int count = Integer.parseInt(entity.get("count"));
+	    if(count == 0)
+	    {
+	    	viewHolder.tvnewCount.setVisibility(View.INVISIBLE);
+	    	viewHolder.ivnewCount.setVisibility(View.INVISIBLE);
+	    }
+	    else
+	    {
+	    	viewHolder.tvnewCount.setVisibility(View.VISIBLE);
+	    	viewHolder.ivnewCount.setVisibility(View.VISIBLE);
+	    	viewHolder.tvnewCount.setText(entity.get("count"));
+	    }
 	    return convertView;
     }
     
     static class ViewHolder { 
         public TextView tvFriendid;
         public TextView tvMsg;
+        public TextView tvdateTime;
+        public TextView tvnewCount;
+        public ImageView ivnewCount;
         //public TextView tvContent;
     }
 }
