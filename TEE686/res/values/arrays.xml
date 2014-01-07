@@ -5,4 +5,7 @@
         <item>@string/contacts_menu2</item>
         <item>@string/contacts_menu3</item>
     </array>
+    <array name="msgmenu">
+        <item>@string/msglist_menu1</item>
+    </array>
 </resources>

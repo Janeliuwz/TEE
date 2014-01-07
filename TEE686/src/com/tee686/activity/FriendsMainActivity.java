@@ -18,7 +18,6 @@ import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
 import com.tee686.im.FriendsListAdapter;
 import com.tee686.im.NewMsgListAdapter;
-import com.tee686.im.PinyinUtil;
 import com.tee686.im.PinyinComparator;
 import com.tee686.im.SideBar;
 import com.tee686.sqlite.MessageStore;
@@ -33,28 +32,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
@@ -74,19 +67,21 @@ public class FriendsMainActivity extends Activity{
 	public static FriendsMainActivity instance = null;
 	
 	//Tab Bottom 标签页
-	private ViewPager mTabPager;
-	private ImageView mTabSelected; //tab按钮选中时底端动画图片
-	private ImageView mTabMsg, mTabContacts;
+	private ViewPager mTabPager; //页卡内容
+	private ImageView mTabCursor; //tab按钮选中时底端动画图片
+	private ImageView mTabMsg, mTabContacts; //页卡底端按钮图片
 	private LinearLayout btnMsg, btnContacts; //tab底部页卡按钮
 	private static final int TAB_MESSAGE = 0;
 	private static final int TAB_CONTACTS = 1;
 	
 	private int currIndex = 0; //当前页卡编号
-	private int zero; //动画图片偏移量
-	private int one; //动画图片位移
+	private int bmpW; //动画图片宽度
+	private int offset = 0; //动画图片偏移量
 	
 	private View layout;
 	private LayoutInflater inflater;
+	private View view0;
+	private View view1;
 	
 	private ImageButton addFriend;
 	private ListView friendsList;
@@ -101,8 +96,6 @@ public class FriendsMainActivity extends Activity{
 	private NewMsgListAdapter mAdapter;
 	private FriendsListAdapter fAdapter;
 	private PagerAdapter mPagerAdapter;
-	private View view0;
-	private View view1;
 	
 	//菜单选项
 	private static final int CONTACTS_MENU_INFO = 0;
@@ -232,6 +225,28 @@ public class FriendsMainActivity extends Activity{
 				startActivity(intent);
 			}
 		});	
+		msgList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
+				alertDialog.setTitle("请选择");
+				alertDialog.setItems(R.array.msgmenu, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO 
+						switch(which) {
+						case MSG_MENU_CLEAR:
+							System.out.println("删除");
+							break;
+						}
+					}
+				});
+				alertDialog.show();
+				return false;
+			}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -282,46 +297,46 @@ public class FriendsMainActivity extends Activity{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-			/*	TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
-				//Toast.makeText(getApplicationContext(), 
-						//tv_name.getText(), Toast.LENGTH_SHORT).show();
-				
-				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
-				intent.putExtra("friendName", tv_name.getText());
-				startActivity(intent); */
+				final TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
+
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
 				alertDialog.setTitle("请选择");
 				alertDialog.setItems(R.array.contactsmenu, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
 						switch(which) {
 						case CONTACTS_MENU_INFO:
+							//Intent intent0 = new Intent(FriendsMainActivity.this, FriendInfoActivity.class);
+							//intent0.putExtra("friendName", tv_name.getText());
+							//startActivity(intent0);
 							System.out.println("好友资料");
 							break;
 						case CONTACTS_MENU_SEND:
+							Intent intent1 = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
+							intent1.putExtra("friendName", tv_name.getText());
+							//Toast.makeText(getApplicationContext(), 
+								//tv_name.getText(), Toast.LENGTH_SHORT).show();
+							startActivity(intent1);
 							System.out.println("发送消息");
 							break;
 						case CONTACTS_MENU_DELETE:
+							//TODO
 							System.out.println("删除好友");
 							break;
 						}
 					}
 				});
-				alertDialog.show();
-				
+				alertDialog.show();		
 			}
-			
 		});
 		
 		//监听好友列表项长按操作，显示上下文菜单
-/*		friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+		/*friendsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				// TODO Auto-generated method stub
 				TextView tv_name = (TextView)arg1.findViewById(R.id.tv_frienditem_name);
 				Toast.makeText(getApplicationContext(), 
 						tv_name.getText(), Toast.LENGTH_SHORT).show();				
@@ -329,8 +344,8 @@ public class FriendsMainActivity extends Activity{
 				return true;
 			}
 			
-		});
-*/		
+		});*/
+		
 		mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
@@ -341,73 +356,6 @@ public class FriendsMainActivity extends Activity{
         mWindowManager.addView(mDialogText, lp);
         friendsListIndexbar.setTextView(mDialogText);
 	}
-	
-	/*
-	 * 创建上下文菜单
-	 */
-/*	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-	
-		//手动添加上下文菜单选项
-		//menu.setHeaderTitle("请选择操作");
-		//menu.add(0, 0, 0, "发送消息");
-		//menu.add(0, 1, 0, "查看资料");
-		//menu.add(0, 2, 0, "删除好友");
-		//menu.add(0, 3, 0, "清空记录");
-		
-		//通过xml文件配置上下文菜单
-		MenuInflater mInflater = getMenuInflater();
-		mInflater.inflate(R.menu.friendslistmenu, menu);
-		
-		super.onCreateContextMenu(menu, v, menuInfo);
-	}
-*/
-	/*
-	 * 长按上下文菜单
-	 */
-/*	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		
-		//当前被选择的视图项的信息
-		AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo)item.getMenuInfo();
-		TextView tv_name = (TextView)menuInfo.targetView.findViewById(R.id.tv_frienditem_name);
-		Toast.makeText(this, tv_name.getText().toString(), Toast.LENGTH_SHORT).show();	
-		
-		//上下文菜单选择项的操作
-		switch(item.getItemId()) {	
-		
-		case FLIST_CONTEXTMENU_SEND:  //发送消息
-			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
-			//System.out.println(item.getItemId());
-			break;
-		case FLIST_CONTEXTMENU_INFO:  //查看资料
-			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
-			//System.out.println(item.getItemId());
-			break;
-		case FLIST_CONTEXTMENU_DELETE:  //删除好友
-			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
-			//System.out.println(item.getItemId());
-			break;
-		case FLIST_CONTEXTMENU_CLEAR:  //清空记录
-			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
-			//System.out.println(item.getItemId());
-			break;
-		default:
-			break;
-		}
-		return super.onContextItemSelected(item);
-	}
-*/
-	/*
-	 * 关闭上下文菜单
-	 */
-/*	@Override
-	public void onContextMenuClosed(Menu menu) {
-		// TODO Auto-generated method stub
-		super.onContextMenuClosed(menu);
-	}
-*/
 
 	/*
 	 * Tab页卡视图初始化
@@ -416,7 +364,7 @@ public class FriendsMainActivity extends Activity{
 		mTabPager = (ViewPager)findViewById(R.id.im_tabPager);
 		mTabPager.setOnPageChangeListener(new MyOnPageChangeListener());
 		
-		mTabSelected = (ImageView)findViewById(R.id.iv_tabselected);
+		mTabCursor = (ImageView)findViewById(R.id.iv_tabselected);
 		mTabMsg = (ImageView)findViewById(R.id.iv_msgtab);
 		mTabContacts = (ImageView)findViewById(R.id.iv_contactstab);
 		btnMsg = (LinearLayout)findViewById(R.id.ll_msgtab);
@@ -425,15 +373,8 @@ public class FriendsMainActivity extends Activity{
 		btnMsg.setOnClickListener(new MyOnClickListener(0));
 		btnContacts.setOnClickListener(new MyOnClickListener(1));
 		
-		//获取屏幕分辨率
-		DisplayMetrics dm = new DisplayMetrics();
-		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
-		int displayWidth = dm.widthPixels;
-		//int displayHeight = dm.heightPixels;
-		//TODO:调整动画图片显示位置
-		int temp = displayWidth/4;
-		zero = temp - 100;
-		one = temp * 3 - 100;
+		//初始化横条动画图片
+		initCursorImage();
 		
 		//装入分页页卡数据
 		LayoutInflater mLI = LayoutInflater.from(this);
@@ -486,7 +427,8 @@ public class FriendsMainActivity extends Activity{
 					
 					friendsList = (ListView)v.findViewById(R.id.lv_friends);
 					friendsListIndexbar = (SideBar)v.findViewById(R.id.friendslist_sideBar);
-					mDialogText = (TextView)LayoutInflater.from(FriendsMainActivity.this).inflate(R.layout.im_friendslist_pos, null);
+					mDialogText = (TextView)LayoutInflater.from(FriendsMainActivity.this)
+							.inflate(R.layout.im_friendslist_pos, null);
 					addFriend = (ImageButton)v.findViewById(R.id.btn_addfriend);		
 					addFriend.setOnClickListener(addFriendListener);
 					
@@ -525,18 +467,21 @@ public class FriendsMainActivity extends Activity{
 	}
 	
 	/*
-	 * 句柄初始化操作
+	 * 初始化动画图片
 	 */
-/*	private void initControl() {
-		//SimpleAdapter adapter = new SimpleAdapter(this, 
-		//		getData(), 
-		//		R.layout.im_friendslist_item,
-		//		new String[]{"avatar", "name", "status"},
-		//		new int[]{R.id.iv_frienditem_avatar, R.id.tv_frienditem_name, R.id.tv_frienditem_status}
-		//);
-		friendlist.setAdapter(adapter);
+	private void initCursorImage() {
+		bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.im_tab_bg)
+				.getWidth();
+		//获取屏幕分辨率
+		DisplayMetrics dm = new DisplayMetrics();
+		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
+		int displayWidth = dm.widthPixels;
+		//TODO:调整动画图片显示位置
+		offset = (displayWidth/2 - bmpW) / 2;
+		Matrix matrix = new Matrix();
+		matrix.postTranslate(offset, 0);
+		mTabCursor.setImageMatrix(matrix);
 	}
-*/
 	
 	/*
 	 * 添加好友按钮监听器
@@ -572,19 +517,18 @@ public class FriendsMainActivity extends Activity{
 	 */
 	public class MyOnPageChangeListener implements OnPageChangeListener {
 
+		int one = offset * 2 + bmpW; //页卡1->页卡2偏移量
+				
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void onPageSelected(int arg0) {
-			// TODO Auto-generated method stub
 			Animation animation = null;
 			//mPagerAdapter.notifyDataSetChanged();
 			switch(arg0) {
@@ -593,14 +537,16 @@ public class FriendsMainActivity extends Activity{
 				//mAdapter.notifyDataSetChanged();
 				mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg_pressed));
 				if(currIndex == 1) {
-					animation = new TranslateAnimation(one, zero, 0, 0);
-					mTabContacts.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_contacts));
+					animation = new TranslateAnimation(one, 0, 0, 0);
+					mTabContacts.setImageDrawable(getResources()
+							.getDrawable(R.drawable.im_tab_contacts));
 				}
 				break;
 			case TAB_CONTACTS:
-				mTabContacts.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_contacts_pressed));
+				mTabContacts.setImageDrawable(getResources()
+						.getDrawable(R.drawable.im_tab_contacts_pressed));
 				if(currIndex == 0) {
-					animation = new TranslateAnimation(zero, one, 0, 0);
+					animation = new TranslateAnimation(offset, one, 0, 0);
 					mTabMsg.setImageDrawable(getResources().getDrawable(R.drawable.im_tab_msg));
 				}
 				break;
@@ -608,14 +554,78 @@ public class FriendsMainActivity extends Activity{
 			currIndex = arg0;
 			animation.setFillAfter(true); //TRUE:图片停在动画结束位置
 			animation.setDuration(150);
-			mTabSelected.startAnimation(animation);
+			mTabCursor.startAnimation(animation);
 		}
 		
 	}
 
+	/*
+	 * 创建上下文菜单
+	 */
+	/*@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+	
+		//手动添加上下文菜单选项
+		//menu.setHeaderTitle("请选择操作");
+		//menu.add(0, 0, 0, "发送消息");
+		//menu.add(0, 1, 0, "查看资料");
+		//menu.add(0, 2, 0, "删除好友");
+		//menu.add(0, 3, 0, "清空记录");
+		
+		//通过xml文件配置上下文菜单
+		MenuInflater mInflater = getMenuInflater();
+		mInflater.inflate(R.menu.friendslistmenu, menu);
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}*/
 
-	//private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234","北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
+	/*
+	 * 长按上下文菜单
+	 */
+	/*@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		//当前被选择的视图项的信息
+		AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo)item.getMenuInfo();
+		TextView tv_name = (TextView)menuInfo.targetView.findViewById(R.id.tv_frienditem_name);
+		Toast.makeText(this, tv_name.getText().toString(), Toast.LENGTH_SHORT).show();	
+		
+		//上下文菜单选择项的操作
+		switch(item.getItemId()) {	
+		
+		case FLIST_CONTEXTMENU_SEND:  //发送消息
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_INFO:  //查看资料
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_DELETE:  //删除好友
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		case FLIST_CONTEXTMENU_CLEAR:  //清空记录
+			Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+			//System.out.println(item.getItemId());
+			break;
+		default:
+			break;
+		}
+		return super.onContextItemSelected(item);
+	}*/
 
+	/*
+	 * 关闭上下文菜单
+	 */
+	/*@Override
+	public void onContextMenuClosed(Menu menu) {
+		super.onContextMenuClosed(menu);
+	}*/
+
+	//private static String[] testNames = {"阿里","baidu","ali","Ali","Baidu","度娘","谷哥","企鹅","1234",
+	//"北风","张山","李四","欧阳锋","郭靖","黄蓉","杨过","凤姐","芙蓉姐姐","移联网","樱木花道","风清扬","张三丰","梅超风"};
 	
 	/*
 	private List<Map<String, Object>> getData() 
