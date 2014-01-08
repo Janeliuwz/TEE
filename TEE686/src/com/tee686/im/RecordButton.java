@@ -145,7 +145,9 @@ public class RecordButton extends ImageButton {
 	 private void startRecording() {
 		 
 		 recorder = new MediaRecorder();
+
 		 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+
 		 recorder.setAudioChannels(1);
 		 recorder.setAudioEncodingBitRate(4000);
 		 recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);

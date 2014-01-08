@@ -132,7 +132,46 @@ public class FriendChatActivity extends Activity{
 			
 			if(audioPath != null) {
 				try {
-					//TODO:发送语音
+					//发送语音消息
+					String msg = "语音消息："+audioPath;
+					ChatManager cm = XmppTool.XMPPgetChatManager();
+					Chat chat = cm.createChat(friendName, null);
+					chat.sendMessage(msg);
+					//发送内容存入数据库
+					Map<String,String> tempmsg = new HashMap<String,String>();
+					tempmsg.put("to", friendName);
+					tempmsg.put("from", userid);
+					tempmsg.put("content", msg);
+					tempmsg.put("uid", userid);
+					MessageStore store = new MessageStore(FriendChatActivity.this);
+					long result = 0;
+					if((result = store.insertMessagelist(tempmsg))!=-1)
+					{
+						System.out.println(result);
+					}
+					store.deleteNewlist(friendName, userid);
+					store.insertNewlist(friendName, userid);
+					store.closeDB();
+					
+					//更新界面
+					ChatMsgEntity entity = new ChatMsgEntity();
+					entity.setText(msg);
+					entity.setName(userid);
+					entity.setMsgType(false);
+					SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
+					String date = sDateFormat.format(new java.util.Date());
+					entity.setDate(date);
+					mDataArrays.add(entity);
+					if(mDataArrays.size()<6)
+					{
+						listMessage.setStackFromBottom(false);
+					}
+					else
+					{
+						listMessage.setStackFromBottom(true);
+					}
+					mAdapter.notifyDataSetChanged();
+					//Todo：发送语音文件
 					
 				} catch(Exception e) {
 					e.printStackTrace();
