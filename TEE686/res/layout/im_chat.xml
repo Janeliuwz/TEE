@@ -64,7 +64,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/im_chatbottom_bg" >
 		
-        <ImageButton
+        <com.tee686.im.RecordButton
             android:id="@+id/btn_talk"
             android:layout_width="40dp"
             android:layout_height="40dp"

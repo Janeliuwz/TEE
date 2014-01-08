@@ -104,7 +104,7 @@
         <item name="android:background">@drawable/back_button_default_style</item>
     </style>
     
-        <style name="FriendsListItem">
+    <style name="FriendsListItem">
         <item name="android:gravity">center_vertical</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingLeft">4.0dip</item>
@@ -137,5 +137,15 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:singleLine">true</item>
+    </style>
+    
+    <style name="RecordToastDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/im_recwindow_bg</item>
     </style>
 </resources>

@@ -1,5 +1,6 @@
 package com.tee686.activity;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import org.jivesoftware.smack.XMPPException;
 
 import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
+import com.tee686.im.RecordButton;
+import com.tee686.im.RecordButton.OnFinishedRecordListener;
 
 import com.casit.tee686.R;
 import com.tee686.sqlite.MessageStore;
@@ -25,11 +28,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +48,12 @@ public class FriendChatActivity extends Activity{
 	private ChatMsgViewAdapter mAdapter;
 	private ListView listMessage;
 	private Button sendMessage;
+	private RecordButton btnTalk;
 	private EditText tv_msg;
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
+	
+	public static String RECORD_ROOT_PATH = Environment
+			.getExternalStorageDirectory().getPath() + "/im/record";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +124,25 @@ public class FriendChatActivity extends Activity{
 		listMessage.setAdapter(mAdapter);
 	}
 	
+	private OnFinishedRecordListener finishlistener = new OnFinishedRecordListener() {
+
+		@Override
+		public void onFinishedRecord(String audioPath, int time) {
+			System.out.println("Record fished!!Saved to" + audioPath);
+			
+			if(audioPath != null) {
+				try {
+					//TODO:发送语音
+					
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				Toast.makeText(FriendChatActivity.this, "发送失败", Toast.LENGTH_SHORT).show();
+			}
+		}
+	};
 	private OnClickListener sendlistener = new OnClickListener() {
 
 		@Override
@@ -181,10 +209,17 @@ public class FriendChatActivity extends Activity{
 		tv_titleName = (TextView)findViewById(R.id.tv_chatTitleName);
 		tv_msg = (EditText)findViewById(R.id.text_chatMsg);
 		tv_titleName.setText(friendName);
-		listMessage = (ListView) findViewById(R.id.chatList);
-		sendMessage = (Button) findViewById(R.id.btn_chatSend);
-		
+		listMessage = (ListView)findViewById(R.id.chatList);
+		sendMessage = (Button)findViewById(R.id.btn_chatSend);
 		sendMessage.setOnClickListener(sendlistener);
+		
+		btnTalk = (RecordButton)findViewById(R.id.btn_talk);
+		String path = RECORD_ROOT_PATH;
+		File file = new File(path);
+		file.mkdirs();
+		path = path + "/" + System.currentTimeMillis() + ".amr";
+		btnTalk.setSavePath(path);
+		btnTalk.setOnFinishedRecordListener(finishlistener);
 	}
 	
 	@Override
