@@ -82,6 +82,7 @@ public class FriendChatActivity extends Activity{
 	private void GetData()
 	{
 		//this.deleteDatabase("imdata.db");
+		mDataArrays.clear();
 		MessageStore store = new MessageStore(FriendChatActivity.this);
 		Cursor cursor = store.selectMessagelist(friendName, userid);
 		while(cursor.moveToNext())
@@ -133,7 +134,7 @@ public class FriendChatActivity extends Activity{
 			if(audioPath != null) {
 				try {
 					//发送语音消息
-					String msg = "语音消息："+audioPath;
+					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/'));
 					ChatManager cm = XmppTool.XMPPgetChatManager();
 					Chat chat = cm.createChat(friendName, null);
 					chat.sendMessage(msg);

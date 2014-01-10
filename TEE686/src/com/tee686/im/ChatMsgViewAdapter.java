@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -68,6 +69,21 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	 	}
 	 	
 	}
+	
+	public boolean IsVoice(String msgContent)
+	{
+		if(msgContent!=null)
+		{
+			if(msgContent.length()>10)
+			{
+				if(msgContent.substring(0,10).equals("[voicemsg]"))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 
 	public int getViewTypeCount() {
@@ -80,46 +96,74 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     	
     	ChatMsgEntity entity = coll.get(position);
     	boolean isComMsg = entity.getMsgType();
+    	String msgContent = entity.getText();
     		
     	ViewHolder viewHolder = null;	
 	    if (convertView == null)
 	    {
 	    	  if (isComMsg)
 			  {
-				  convertView = mInflater.inflate(R.layout.im_chat_receive, null);
-				  viewHolder = new ViewHolder();
-				  viewHolder.tvSendTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
-				  //viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tv_username);
+	    		  convertView = mInflater.inflate(R.layout.im_chat_receive, null);
+	    		  viewHolder = new ViewHolder();
+				  viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
 				  viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_recvContent);
-				  viewHolder.isComMsg = isComMsg;
+				  viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				  viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_recvVoice_time);
+				  viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
+				  viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_recvVoice_dot);
+	    		  
+	    		  //System.out.println(entity.getDate().substring(0,10));				  
 			  }
 	    	  else
 	    	  {
+	    		  //System.out.println(entity.getDate().substring(0,10));
 				  convertView = mInflater.inflate(R.layout.im_chat_send, null);
 				  viewHolder = new ViewHolder();
-				  viewHolder.tvSendTime = (TextView) convertView.findViewById(R.id.tv_sendMsgTime);
-				  //viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tv_username);
+				  viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_sendMsgTime);
 				  viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_sendContent);
-				  viewHolder.isComMsg = isComMsg;
-			  }
-			  
+				  viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				  viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
+				  viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
+				  viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
+				  
+			  }		  
 			  convertView.setTag(viewHolder);
-	    }else{
-	        viewHolder = (ViewHolder) convertView.getTag();
 	    }
-		    
-	    viewHolder.tvSendTime.setText(entity.getDate());
-	    //viewHolder.tvUserName.setText(entity.getName());
-	    viewHolder.tvContent.setText(entity.getText());
-	    
+	    else
+	    {
+	        viewHolder = (ViewHolder)convertView.getTag();
+	    }
+	    viewHolder.isComMsg = isComMsg;
+	    if(IsVoice(msgContent))
+	    {
+	    	viewHolder.tvTime.setText(entity.getDate());
+			viewHolder.tvContent.setText("        ");
+			viewHolder.tvFileName.setText(entity.getText().substring(10));
+			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
+			viewHolder.ivVoice.setVisibility(View.VISIBLE);
+			viewHolder.ivDot.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			viewHolder.tvTime.setText(entity.getDate());
+			viewHolder.tvContent.setText(msgContent);
+			viewHolder.tvFileName.setText("");
+			viewHolder.tvPlayTime.setVisibility(View.INVISIBLE);
+			viewHolder.ivVoice.setVisibility(View.INVISIBLE);
+			viewHolder.ivDot.setVisibility(View.INVISIBLE);
+		}
 	    return convertView;
     }
     
 
     static class ViewHolder { 
-        public TextView tvSendTime;
+        public TextView tvTime;
         public TextView tvUserName;
         public TextView tvContent;
+        public TextView tvFileName;
+        public TextView tvPlayTime;
+        public ImageView ivVoice;
+        public ImageView ivDot;
         public boolean isComMsg = true;
     }
 }
