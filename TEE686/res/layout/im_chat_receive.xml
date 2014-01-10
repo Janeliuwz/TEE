@@ -73,7 +73,8 @@
 	        		android:layout_height="wrap_content"
 	        		android:layout_marginLeft="12dp"
 	        		android:layout_gravity="center_vertical"
-	        		android:background="@drawable/chatfrom_voice_playing" />
+	        		android:background="@drawable/chatfrom_voice_playing"
+	        		android:visibility="invisible" />
 	    	</FrameLayout>
 		    <TextView
 		        android:id="@+id/tv_recvVoice_time"
@@ -85,14 +86,16 @@
 	        	android:textColor="#666"
 	        	android:text="3''"
 	        	android:gravity="center"
-	        	android:background="@color/transparent" />
+	        	android:background="@color/transparent" 
+	        	android:visibility="invisible"/>
 	    	<ImageView
 	        	android:id="@+id/iv_recvVoice_dot"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	android:layout_toRightOf="@+id/tv_recvVoice_time"
 	        	android:layout_centerVertical="true"
-	        	android:background="@drawable/bullet_yellow" />
+	        	android:background="@drawable/bullet_yellow" 
+	        	android:visibility="invisible"/>
 		</RelativeLayout>
 	</FrameLayout>
 </LinearLayout>

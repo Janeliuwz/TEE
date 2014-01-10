@@ -129,7 +129,7 @@ public class FriendChatActivity extends Activity{
 
 		@Override
 		public void onFinishedRecord(String audioPath, int time) {
-			System.out.println("Record fished!!Saved to" + audioPath);
+			System.out.println("Record finished!!Saved to" + audioPath);
 			
 			if(audioPath != null) {
 				try {

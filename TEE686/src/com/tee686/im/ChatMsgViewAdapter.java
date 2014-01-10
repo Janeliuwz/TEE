@@ -5,6 +5,8 @@ import android.R.integer;
 import android.content.Context;
 import android.database.DataSetObserver;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,7 @@ import com.casit.tee686.R;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 	
-	public static interface IMsgViewType
-	{
+	public static interface IMsgViewType {
 		int IMVT_COM_MSG = 0;
 		int IMVT_TO_MSG = 1;
 	}
@@ -37,6 +38,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     
     private LayoutInflater mInflater;
 
+    private static final int IMG_VOICE_1 = 0;
+    private static final int IMG_VOICE_2 = 1;
+    private static final int IMG_VOICE_3 = 2;
+    
     public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll) {
         ctx = context;
         this.coll = coll;
@@ -61,23 +66,19 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 	 	ChatMsgEntity entity = coll.get(position);
 	 	
-	 	if (entity.getMsgType())
-	 	{
+	 	if (entity.getMsgType()) {
 	 		return IMsgViewType.IMVT_COM_MSG;
-	 	}else{
+	 	}
+	 	else {
 	 		return IMsgViewType.IMVT_TO_MSG;
 	 	}
 	 	
 	}
 	
-	public boolean IsVoice(String msgContent)
-	{
-		if(msgContent!=null)
-		{
-			if(msgContent.length()>10)
-			{
-				if(msgContent.substring(0,10).equals("[voicemsg]"))
-				{
+	public boolean IsVoice(String msgContent) {
+		if(msgContent!=null) {
+			if(msgContent.length()>10) {
+				if(msgContent.substring(0,10).equals("[voicemsg]"))	{
 					return true;
 				}
 			}
@@ -87,7 +88,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 
 	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
 		return 2;
 	}
 	
@@ -99,10 +99,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     	String msgContent = entity.getText();
     		
     	ViewHolder viewHolder = null;	
-	    if (convertView == null)
-	    {
-	    	  if (isComMsg)
-			  {
+	    if (convertView == null) {
+	    	  if (isComMsg) {
 	    		  convertView = mInflater.inflate(R.layout.im_chat_receive, null);
 	    		  viewHolder = new ViewHolder();
 				  viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
@@ -114,8 +112,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    		  
 	    		  //System.out.println(entity.getDate().substring(0,10));				  
 			  }
-	    	  else
-	    	  {
+	    	  else {
 	    		  //System.out.println(entity.getDate().substring(0,10));
 				  convertView = mInflater.inflate(R.layout.im_chat_send, null);
 				  viewHolder = new ViewHolder();
@@ -125,17 +122,14 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				  viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
 				  viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
 				  viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
-				  
 			  }		  
 			  convertView.setTag(viewHolder);
 	    }
-	    else
-	    {
+	    else {
 	        viewHolder = (ViewHolder)convertView.getTag();
 	    }
 	    viewHolder.isComMsg = isComMsg;
-	    if(IsVoice(msgContent))
-	    {
+	    if(IsVoice(msgContent)) {
 	    	viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText("        ");
 			viewHolder.tvFileName.setText(entity.getText().substring(10));
@@ -143,8 +137,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
 			viewHolder.ivDot.setVisibility(View.VISIBLE);
 		}
-		else
-		{
+		else {
 			viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(msgContent);
 			viewHolder.tvFileName.setText("");
@@ -155,7 +148,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    return convertView;
     }
     
-
     static class ViewHolder { 
         public TextView tvTime;
         public TextView tvUserName;
