@@ -2,15 +2,20 @@
 package com.tee686.im;
 
 import android.R.integer;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
-
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
@@ -37,10 +42,15 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     private Context ctx;
     
     private LayoutInflater mInflater;
-
+    
+	private ImageView animationIV;  
+    private AnimationDrawable animationDrawable; 
+    
     private static final int IMG_VOICE_1 = 0;
     private static final int IMG_VOICE_2 = 1;
     private static final int IMG_VOICE_3 = 2;
+	private static final int CHATLIST_MENU_DELETE = 0;
+	private static final int CHATLIST_MENU_COPY = 1;
     
     public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll) {
         ctx = context;
@@ -95,35 +105,39 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
     	
     	ChatMsgEntity entity = coll.get(position);
-    	boolean isComMsg = entity.getMsgType();
+    	final boolean isComMsg = entity.getMsgType();
     	String msgContent = entity.getText();
-    		
+    	final int pos = position;
+    	
     	ViewHolder viewHolder = null;	
 	    if (convertView == null) {
-	    	  if (isComMsg) {
-	    		  convertView = mInflater.inflate(R.layout.im_chat_receive, null);
-	    		  viewHolder = new ViewHolder();
-				  viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
-				  viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_recvContent);
-				  viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
-				  viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_recvVoice_time);
-				  viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
-				  viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_recvVoice_dot);
-	    		  
-	    		  //System.out.println(entity.getDate().substring(0,10));				  
-			  }
-	    	  else {
-	    		  //System.out.println(entity.getDate().substring(0,10));
-				  convertView = mInflater.inflate(R.layout.im_chat_send, null);
-				  viewHolder = new ViewHolder();
-				  viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_sendMsgTime);
-				  viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_sendContent);
-				  viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
-				  viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
-				  viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
-				  viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
-			  }		  
-			  convertView.setTag(viewHolder);
+	    	//接收到的消息
+	    	if (isComMsg) {
+	    		convertView = mInflater.inflate(R.layout.im_chat_receive, null);
+	    		viewHolder = new ViewHolder();
+				viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
+				viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_recvContent);
+				viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_recvVoice_time);
+				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
+				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_recvVoice_dot);
+				animationIV = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
+				//System.out.println(entity.getDate().substring(0,10));				  
+			}
+	    	//发送的消息
+	    	else {
+	    		//System.out.println(entity.getDate().substring(0,10));
+				convertView = mInflater.inflate(R.layout.im_chat_send, null);
+				viewHolder = new ViewHolder();
+				viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_sendMsgTime);
+				viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_sendContent);
+				viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
+				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
+				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
+				animationIV = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
+			}		  
+			convertView.setTag(viewHolder);
 	    }
 	    else {
 	        viewHolder = (ViewHolder)convertView.getTag();
@@ -133,21 +147,120 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    	viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText("        ");
 			viewHolder.tvFileName.setText(entity.getText().substring(10));
+			//viewHolder.tvContent.setVisibility(View.INVISIBLE);
 			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
 			viewHolder.ivDot.setVisibility(View.VISIBLE);
+
+			viewHolder.tvContent.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if(isComMsg) {
+						animationIV.setImageResource(R.drawable.im_recvvoiceplaying);
+						System.out.println("receive");
+					}
+					else {
+						animationIV.setImageResource(R.drawable.im_sendvoiceplaying);
+						System.out.println("send");
+					}
+					
+					animationDrawable = (AnimationDrawable)animationIV.getDrawable();
+					
+					//TODO:播放语音
+					
+					animationDrawable.start();
+					
+					//TODO:监测语音播放结束时停止图片动画
+					//animationDrawable.stop();
+					
+					System.out.println("单击语音消息");
+				}
+			});
+			viewHolder.tvContent.setOnLongClickListener(new OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);		
+					builder.setItems(R.array.chatvoicemenu, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO 
+							switch(which) {
+							case CHATLIST_MENU_DELETE:
+								System.out.println("删除语音" + pos);
+								break;
+							}
+						}
+					});
+					AlertDialog alertDialog = builder.create(); //创建对话框
+					alertDialog.setCanceledOnTouchOutside(true); //点击对话框外部则消失
+					alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //对话框无标题栏
+					alertDialog.show();
+					return false;
+				}
+			});
 		}
 		else {
 			viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(msgContent);
 			viewHolder.tvFileName.setText("");
+			//viewHolder.tvContent.setVisibility(View.VISIBLE);
 			viewHolder.tvPlayTime.setVisibility(View.INVISIBLE);
 			viewHolder.ivVoice.setVisibility(View.INVISIBLE);
 			viewHolder.ivDot.setVisibility(View.INVISIBLE);
+
+			viewHolder.tvContent.setOnLongClickListener(new OnLongClickListener() {
+
+				@Override
+				public boolean onLongClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);		
+					builder.setItems(R.array.chattextmenu, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO 
+							switch(which) {
+							case CHATLIST_MENU_DELETE:
+								System.out.println("删除文字" + pos);
+								break;
+							case CHATLIST_MENU_COPY:
+								System.out.println("复制文字" + pos);
+								break;
+							}
+						}
+					});
+					AlertDialog alertDialog = builder.create(); //创建对话框
+					alertDialog.setCanceledOnTouchOutside(true); //点击对话框外部则消失
+					alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //对话框无标题栏 
+					alertDialog.show();
+					return false;
+				}
+			});
 		}
 	    return convertView;
     }
-    
+    /*
+    OnClickListener voiceListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+    };
+    OnLongClickListener voiceLongListener = new OnLongClickListener() {
+
+		@Override
+		public boolean onLongClick(View v) {
+			return false;
+		}
+    };
+    OnLongClickListener textLongListener = new OnLongClickListener() {
+		@Override
+		public boolean onLongClick(View v) {
+
+			return false;
+		}
+    };*/
+
     static class ViewHolder { 
         public TextView tvTime;
         public TextView tvUserName;

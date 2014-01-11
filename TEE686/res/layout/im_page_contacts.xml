@@ -7,7 +7,7 @@
     
     <RelativeLayout 
         android:id="@+id/friendsTitle"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/im_title_bar" >
         
@@ -34,10 +34,10 @@
 
     <FrameLayout 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 		
 		<LinearLayout 
-		    android:layout_gravity="center"
+		    android:layout_gravity="center_horizontal"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:orientation="vertical">
@@ -54,7 +54,7 @@
     	    android:id ="@+id/friendslist_sideBar"  
 	    	android:layout_height="wrap_content"  
 	    	android:layout_width="20dp"  
-	    	android:layout_gravity="right|center_vertical"
+	    	android:layout_gravity="right|top"
 	    	android:background="@drawable/friendslist_sidebar_bg" />
 
     </FrameLayout>

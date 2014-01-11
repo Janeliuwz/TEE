@@ -56,11 +56,13 @@ public class FriendChatActivity extends Activity{
 	private ChatMsgViewAdapter mAdapter;
 	private ListView listMessage;
 	private Button sendMessage;
+	private Button btnBack;
+	private ImageButton btnInfo;
 	private RecordButton btnTalk;
 	private EditText tv_msg;
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
-	private ImageView animationIV;  
-    private AnimationDrawable animationDrawable; 
+	//private ImageView animationIV;  
+    //private AnimationDrawable animationDrawable; 
 	
 	private static final int CHATLIST_MENU_DELETE = 0;
 	private static final int CHATLIST_MENU_COPY = 1;
@@ -135,13 +137,12 @@ public class FriendChatActivity extends Activity{
 			listMessage.setStackFromBottom(true);
 		}
 		listMessage.setAdapter(mAdapter);
-		listMessage.setOnItemClickListener(itemListener);
-		listMessage.setOnItemLongClickListener(itemLongListener);
+		//listMessage.setOnItemClickListener(itemListener);
+		//listMessage.setOnItemLongClickListener(itemLongListener);
 	}
 	
 	/*
 	 * 对话列表项单击响应
-	 */
 	OnItemClickListener itemListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
@@ -178,9 +179,7 @@ public class FriendChatActivity extends Activity{
 			}
 		}
 	};
-	/*
 	 * 对话列表项长按响应
-	 */	
 	private OnItemLongClickListener itemLongListener = new OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, final View view, int pos, long id) {
@@ -245,67 +244,35 @@ public class FriendChatActivity extends Activity{
 			}
 		}
 		return false;
-	}
+	}*/
 	
-	private OnFinishedRecordListener finishlistener = new OnFinishedRecordListener() {
-
+	/*--Button监听器------------------------------------------
+	 * 	backlistener -- private Button btnBack;
+	 *  infolistener -- private ImageButton btnInfo;
+	 * 	sendlistener -- private Button sendMessage;
+	 *  finishlistener -- private RecordButton btnTalk;
+	 -------------------------------------------------------*/
+	//title中返回按钮监听器
+	private OnClickListener backlistener = new OnClickListener() {
 		@Override
-		public void onFinishedRecord(String audioPath, int time) {
-			System.out.println("Record finished!!Saved to" + audioPath);
-			
-			if(audioPath != null) {
-				try {
-					//发送语音消息
-					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/'));
-					ChatManager cm = XmppTool.XMPPgetChatManager();
-					Chat chat = cm.createChat(friendName, null);
-					chat.sendMessage(msg);
-					//发送内容存入数据库
-					Map<String,String> tempmsg = new HashMap<String,String>();
-					tempmsg.put("to", friendName);
-					tempmsg.put("from", userid);
-					tempmsg.put("content", msg);
-					tempmsg.put("uid", userid);
-					MessageStore store = new MessageStore(FriendChatActivity.this);
-					long result = 0;
-					if((result = store.insertMessagelist(tempmsg))!=-1)
-					{
-						System.out.println(result);
-					}
-					store.deleteNewlist(friendName, userid);
-					store.insertNewlist(friendName, userid);
-					store.closeDB();
-					
-					//更新界面
-					ChatMsgEntity entity = new ChatMsgEntity();
-					entity.setText(msg);
-					entity.setName(userid);
-					entity.setMsgType(false);
-					SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
-					String date = sDateFormat.format(new java.util.Date());
-					entity.setDate(date);
-					mDataArrays.add(entity);
-					if(mDataArrays.size()<6)
-					{
-						listMessage.setStackFromBottom(false);
-					}
-					else
-					{
-						listMessage.setStackFromBottom(true);
-					}
-					mAdapter.notifyDataSetChanged();
-					//Todo：发送语音文件
-					
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			else {
-				Toast.makeText(FriendChatActivity.this, "发送失败", Toast.LENGTH_SHORT).show();
-			}
+		public void onClick(View v) {
+			unregisterReceiver(mReceiver);
+			System.out.println("注销监听");
+			FriendChatActivity.this.finish();
 		}
 	};
-	
+	//title中个人信息按钮监听器
+	private OnClickListener infolistener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			//TODO:FriendInfoActivity
+			//Intent intent = new Intent(FriendChatActivity.this, FriendInfoActivity.class);
+			//intent.putExtra("friendName", friendName);
+			//startActivity(intent);
+			Toast.makeText(getApplicationContext(), "查看好友资料", Toast.LENGTH_SHORT).show();
+		}
+	};
+	//发送消息按钮监听器
 	private OnClickListener sendlistener = new OnClickListener() {
 
 		@Override
@@ -366,7 +333,69 @@ public class FriendChatActivity extends Activity{
 		}
 		
 	};
+	//录音完成监听器
+	private OnFinishedRecordListener finishlistener = new OnFinishedRecordListener() {
 
+		@Override
+		public void onFinishedRecord(String audioPath, int time) {
+			System.out.println("Record finished!!Saved to" + audioPath);
+			
+			if(audioPath != null) {
+				try {
+					//发送语音消息
+					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/'));
+					ChatManager cm = XmppTool.XMPPgetChatManager();
+					Chat chat = cm.createChat(friendName, null);
+					chat.sendMessage(msg);
+					//发送内容存入数据库
+					Map<String,String> tempmsg = new HashMap<String,String>();
+					tempmsg.put("to", friendName);
+					tempmsg.put("from", userid);
+					tempmsg.put("content", msg);
+					tempmsg.put("uid", userid);
+					MessageStore store = new MessageStore(FriendChatActivity.this);
+					long result = 0;
+					if((result = store.insertMessagelist(tempmsg))!=-1)
+					{
+						System.out.println(result);
+					}
+					store.deleteNewlist(friendName, userid);
+					store.insertNewlist(friendName, userid);
+					store.closeDB();
+					
+					//更新界面
+					ChatMsgEntity entity = new ChatMsgEntity();
+					entity.setText(msg);
+					entity.setName(userid);
+					entity.setMsgType(false);
+					SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
+					String date = sDateFormat.format(new java.util.Date());
+					entity.setDate(date);
+					mDataArrays.add(entity);
+					if(mDataArrays.size()<6)
+					{
+						listMessage.setStackFromBottom(false);
+					}
+					else
+					{
+						listMessage.setStackFromBottom(true);
+					}
+					mAdapter.notifyDataSetChanged();
+					//Todo：发送语音文件
+					
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				Toast.makeText(FriendChatActivity.this, "发送失败", Toast.LENGTH_SHORT).show();
+			}
+		}
+	};
+	
+	/*
+	 * 句柄初始化
+	 */
 	private void initControl() {				
 		tv_titleName = (TextView)findViewById(R.id.tv_chatTitleName);
 		tv_msg = (EditText)findViewById(R.id.text_chatMsg);
@@ -374,7 +403,10 @@ public class FriendChatActivity extends Activity{
 		listMessage = (ListView)findViewById(R.id.chatList);
 		sendMessage = (Button)findViewById(R.id.btn_chatSend);
 		sendMessage.setOnClickListener(sendlistener);
-		
+		btnBack = (Button)findViewById(R.id.btn_chatback);
+		btnBack.setOnClickListener(backlistener);
+		btnInfo = (ImageButton)findViewById(R.id.btn_chat_userinfo);
+		btnInfo.setOnClickListener(infolistener);
 		btnTalk = (RecordButton)findViewById(R.id.btn_talk);
 		String path = RECORD_ROOT_PATH;
 		File file = new File(path);
