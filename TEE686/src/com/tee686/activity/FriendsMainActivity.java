@@ -157,12 +157,9 @@ public class FriendsMainActivity extends Activity{
 		public void onReceive(Context context, Intent intent) 
 		{
 			System.out.println("broadcast Receiver");
-			
-			//获取新消息数据
-			getNewMsgData();
-			
-			//更新新消息列表
-			mAdapter.notifyDataSetChanged();
+
+			getNewMsgData(); //获取新消息数据
+			mAdapter.notifyDataSetChanged(); //更新新消息列表
 		}
 	};
 
@@ -227,8 +224,7 @@ public class FriendsMainActivity extends Activity{
 		store.closeDB();
 	}
 	
-	private void getNewMsgView()
-	{
+	private void getNewMsgView() {
 		msgList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
@@ -243,7 +239,6 @@ public class FriendsMainActivity extends Activity{
 			}
 		});	
 		msgList.setOnItemLongClickListener(new OnItemLongClickListener() {
-
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, final View view, int pos, long id) {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);

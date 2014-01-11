@@ -21,23 +21,31 @@ import com.tee686.sqlite.MessageStore;
 import com.tee686.xmpp.XmppTool;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class FriendChatActivity extends Activity{
 	
@@ -51,18 +59,22 @@ public class FriendChatActivity extends Activity{
 	private RecordButton btnTalk;
 	private EditText tv_msg;
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
+	private ImageView animationIV;  
+    private AnimationDrawable animationDrawable; 
+	
+	private static final int CHATLIST_MENU_DELETE = 0;
+	private static final int CHATLIST_MENU_COPY = 1;
 	
 	public static String RECORD_ROOT_PATH = Environment
 			.getExternalStorageDirectory().getPath() + "/im/record";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.im_chat);
 		
-		//默认不弹出软键盘
-		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams
+				.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //默认不弹出软键盘
 			
 		//获取用户名和对话用户名
 		Intent intent = getIntent();
@@ -123,6 +135,116 @@ public class FriendChatActivity extends Activity{
 			listMessage.setStackFromBottom(true);
 		}
 		listMessage.setAdapter(mAdapter);
+		listMessage.setOnItemClickListener(itemListener);
+		listMessage.setOnItemLongClickListener(itemLongListener);
+	}
+	
+	/*
+	 * 对话列表项单击响应
+	 */
+	OnItemClickListener itemListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+			ChatMsgEntity entity = mDataArrays.get(pos);
+			boolean isComeMsg = entity.getMsgType();
+			String msgContent = entity.getText();
+			
+			//若为语音消息，播放语音，设置图片动画
+			if(isVoice(msgContent)) {
+				//判断是接收还是发送的消息，获取对应视图的id
+				if (isComeMsg) {
+					animationIV = (ImageView)findViewById(R.id.iv_recvVoice);
+					animationIV.setImageResource(R.drawable.im_recvvoiceplaying);
+					System.out.println("receive");
+				}
+				else {
+					animationIV = (ImageView)findViewById(R.id.iv_sendVoice);
+					animationIV.setImageResource(R.drawable.im_sendvoiceplaying);
+					System.out.println("send");
+				}
+				animationDrawable = (AnimationDrawable)animationIV.getDrawable();
+				
+				//TODO:播放语音
+				
+				animationDrawable.start();
+				
+				//TODO:监测语音播放结束时停止图片动画
+				//animationDrawable.stop();
+				
+				System.out.println("单击语音消息");
+			}
+			else {
+				System.out.println("单击文字消息");
+			}
+		}
+	};
+	/*
+	 * 对话列表项长按响应
+	 */	
+	private OnItemLongClickListener itemLongListener = new OnItemLongClickListener() {
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, final View view, int pos, long id) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(FriendChatActivity.this);		
+			ChatMsgEntity entity = mDataArrays.get(pos);
+			boolean isComeMsg = entity.getMsgType();
+			String msgContent = entity.getText();
+			
+			//判断是接收还是发送的消息，获取对应视图的id
+			if (isComeMsg) {
+				System.out.println("receive");
+			}
+			else {
+				System.out.println("send");
+			}
+			//创建语音消息或文字消息的长按菜单项
+			if(isVoice(msgContent)) {
+				builder.setItems(R.array.chatvoicemenu, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO 
+						switch(which) {
+						case CHATLIST_MENU_DELETE:
+							System.out.println("删除语音");
+							break;
+						}
+					}
+				});
+			}
+			else {
+				builder.setItems(R.array.chattextmenu, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO 
+						switch(which) {
+						case CHATLIST_MENU_DELETE:
+							System.out.println("删除文字");
+							break;
+						case CHATLIST_MENU_COPY:
+							System.out.println("复制文字");
+							break;
+						}
+					}
+				});
+			}
+			AlertDialog alertDialog = builder.create(); //创建对话框
+			alertDialog.setCanceledOnTouchOutside(true); //点击对话框外部则消失
+			alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //对话框无标题栏
+			//Window window = alertDialog.getWindow(); //获取对话框窗口
+			//WindowManager.LayoutParams lp = window.getAttributes(); //设置对话框窗口属性
+			//window.setAttributes(lp);  
+			alertDialog.show();
+			return false;
+		}
+	};
+	public boolean isVoice(String msgContent) {
+		if(msgContent!=null) {
+			if(msgContent.length()>10) {
+				if(msgContent.substring(0,10).equals("[voicemsg]"))	{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	private OnFinishedRecordListener finishlistener = new OnFinishedRecordListener() {
@@ -183,11 +305,11 @@ public class FriendChatActivity extends Activity{
 			}
 		}
 	};
+	
 	private OnClickListener sendlistener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			String msg = tv_msg.getText().toString();
 			if(msg.equals("")||msg == null)
 			{
@@ -269,7 +391,7 @@ public class FriendChatActivity extends Activity{
 		System.out.println("注销监听");
 		this.finish();
 	}
-	
+
 	//定义broadcastreceiver
 	BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override

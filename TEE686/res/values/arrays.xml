@@ -8,4 +8,11 @@
     <array name="msgmenu">
         <item>@string/msglist_menu1</item>
     </array>
+    <array name="chatvoicemenu">
+        <item>@string/chatvoice_menu1</item>
+    </array>
+    <array name="chattextmenu">
+        <item>@string/chattext_menu1</item>
+        <item>@string/chattext_menu2</item>
+    </array>    
 </resources>
