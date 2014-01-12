@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Message;
@@ -105,6 +106,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
     	
     	ChatMsgEntity entity = coll.get(position);
+    	int voiceTime = entity.getVoiceTime();
     	final boolean isComMsg = entity.getMsgType();
     	String msgContent = entity.getText();
     	final int pos = position;
@@ -144,10 +146,19 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    }
 	    viewHolder.isComMsg = isComMsg;
 	    if(IsVoice(msgContent)) {
+	    	
+	    	//根据音频时长设置消息框长度
+	    	String voiceStr = "";
+	    	int voiceStrLen = voiceTime / 2;
+	    	while(voiceStrLen-- > 0 ) {
+	    		voiceStr += "v";
+	    	}
+	    	
 	    	viewHolder.tvTime.setText(entity.getDate());
-			viewHolder.tvContent.setText("        ");
+			viewHolder.tvContent.setText(voiceStr);
+			viewHolder.tvContent.setTextColor(Color.argb(0, 0, 0, 0)); //文字透明
 			viewHolder.tvFileName.setText(entity.getText().substring(10));
-			//viewHolder.tvContent.setVisibility(View.INVISIBLE);
+			viewHolder.tvPlayTime.setText(voiceTime + "''");
 			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
 			viewHolder.ivDot.setVisibility(View.VISIBLE);
@@ -203,8 +214,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		else {
 			viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(msgContent);
+			viewHolder.tvContent.setTextColor(Color.BLACK);	
 			viewHolder.tvFileName.setText("");
-			//viewHolder.tvContent.setVisibility(View.VISIBLE);
 			viewHolder.tvPlayTime.setVisibility(View.INVISIBLE);
 			viewHolder.ivVoice.setVisibility(View.INVISIBLE);
 			viewHolder.ivDot.setVisibility(View.INVISIBLE);

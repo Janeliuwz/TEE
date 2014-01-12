@@ -10,6 +10,8 @@ import java.util.Map;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import com.tee686.im.ChatMsgEntity;
 import com.tee686.im.ChatMsgViewAdapter;
@@ -67,6 +69,7 @@ public class FriendChatActivity extends Activity{
 	private static final int CHATLIST_MENU_DELETE = 0;
 	private static final int CHATLIST_MENU_COPY = 1;
 	
+	private OutgoingFileTransfer sendTransfer;
 	public static String RECORD_ROOT_PATH = Environment
 			.getExternalStorageDirectory().getPath() + "/im/record";
 	
@@ -164,14 +167,10 @@ public class FriendChatActivity extends Activity{
 					System.out.println("send");
 				}
 				animationDrawable = (AnimationDrawable)animationIV.getDrawable();
-				
-				//TODO:播放语音
-				
-				animationDrawable.start();
-				
-				//TODO:监测语音播放结束时停止图片动画
-				//animationDrawable.stop();
-				
+				//播放语音		
+				animationDrawable.start();		
+				//监测语音播放结束时停止图片动画
+				//animationDrawable.stop();		
 				System.out.println("单击语音消息");
 			}
 			else {
@@ -200,7 +199,6 @@ public class FriendChatActivity extends Activity{
 				builder.setItems(R.array.chatvoicemenu, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO 
 						switch(which) {
 						case CHATLIST_MENU_DELETE:
 							System.out.println("删除语音");
@@ -213,7 +211,6 @@ public class FriendChatActivity extends Activity{
 				builder.setItems(R.array.chattextmenu, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO 
 						switch(which) {
 						case CHATLIST_MENU_DELETE:
 							System.out.println("删除文字");
@@ -368,6 +365,7 @@ public class FriendChatActivity extends Activity{
 					entity.setText(msg);
 					entity.setName(userid);
 					entity.setMsgType(false);
+					entity.setVoiceTime(time);
 					SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
 					String date = sDateFormat.format(new java.util.Date());
 					entity.setDate(date);
@@ -382,6 +380,8 @@ public class FriendChatActivity extends Activity{
 					}
 					mAdapter.notifyDataSetChanged();
 					//Todo：发送语音文件
+					
+					//sendFile(audioPath);
 					
 				} catch(Exception e) {
 					e.printStackTrace();
@@ -424,6 +424,23 @@ public class FriendChatActivity extends Activity{
 		this.finish();
 	}
 
+	public void sendFile(String path) {
+		FileTransferManager sendFileManager = new FileTransferManager(
+				XmppTool.getConnection());
+		//sendTransfer = sendFileManager.createOutgoingFileTransfer(arg0);
+		
+		try {
+			sendTransfer.sendFile(new java.io.File(path), "send file");
+			//TODO
+		}
+		catch (XMPPException e){
+			e.printStackTrace();
+		}
+	}
+	public void receivedFile() {
+		//TODO
+	}
+	
 	//定义broadcastreceiver
 	BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override

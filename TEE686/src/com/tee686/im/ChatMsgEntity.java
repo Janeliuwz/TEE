@@ -11,6 +11,8 @@ public class ChatMsgEntity {
     private String text;
 
     private boolean isComMeg = true;
+    
+    private int voiceTime = 0;
 
     public String getName() {
         return name;
@@ -44,15 +46,24 @@ public class ChatMsgEntity {
     	isComMeg = isComMsg;
     }
 
-    public ChatMsgEntity() {
+    public int getVoiceTime() {
+		return voiceTime;
+	}
+
+	public void setVoiceTime(int voiceTime) {
+		this.voiceTime = voiceTime;
+	}
+
+	public ChatMsgEntity() {
     }
 
-    public ChatMsgEntity(String name, String date, String text, boolean isComMsg) {
+    public ChatMsgEntity(String name, String date, String text, boolean isComMsg, int voiceTime) {
         super();
         this.name = name;
         this.date = date;
         this.text = text;
         this.isComMeg = isComMsg;
+        this.setVoiceTime(voiceTime);
     }
 
 }
