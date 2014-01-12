@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +48,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     
     private LayoutInflater mInflater;
     
-	private ImageView animationIV;  
+	//private ImageView animationIV;
+	private ViewHolder viewHolder = null;	
     private AnimationDrawable animationDrawable; 
     
     private static final int IMG_VOICE_1 = 0;
@@ -105,13 +110,13 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	
     public View getView(int position, View convertView, ViewGroup parent) {
     	
-    	ChatMsgEntity entity = coll.get(position);
+    	final ChatMsgEntity entity = coll.get(position);
     	int voiceTime = entity.getVoiceTime();
     	final boolean isComMsg = entity.getMsgType();
     	String msgContent = entity.getText();
     	final int pos = position;
     	
-    	ViewHolder viewHolder = null;	
+    	//ViewHolder viewHolder = null;	
 	    if (convertView == null) {
 	    	//接收到的消息
 	    	if (isComMsg) {
@@ -123,7 +128,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_recvVoice_time);
 				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
 				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_recvVoice_dot);
-				animationIV = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
+				//animationIV = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
 				//System.out.println(entity.getDate().substring(0,10));				  
 			}
 	    	//发送的消息
@@ -137,7 +142,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
 				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
 				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
-				animationIV = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
+				//animationIV = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
 			}		  
 			convertView.setTag(viewHolder);
 	    }
@@ -148,7 +153,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    if(IsVoice(msgContent)) {
 	    	
 	    	//根据音频时长设置消息框长度
-	    	String voiceStr = "";
+	    	String voiceStr = "vvv";
 	    	int voiceStrLen = voiceTime / 2;
 	    	while(voiceStrLen-- > 0 ) {
 	    		voiceStr += "v";
@@ -162,26 +167,63 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
 			viewHolder.ivDot.setVisibility(View.VISIBLE);
-
 			viewHolder.tvContent.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					if(isComMsg) {
-						animationIV.setImageResource(R.drawable.im_recvvoiceplaying);
+						viewHolder.ivVoice.setImageResource(R.drawable.im_recvvoiceplaying);
 						System.out.println("receive");
 					}
 					else {
-						animationIV.setImageResource(R.drawable.im_sendvoiceplaying);
+						viewHolder.ivVoice.setImageResource(R.drawable.im_sendvoiceplaying);
 						System.out.println("send");
 					}
 					
-					animationDrawable = (AnimationDrawable)animationIV.getDrawable();
+					animationDrawable = (AnimationDrawable)viewHolder.ivVoice.getDrawable();
 					
 					//TODO:播放语音
-					
 					animationDrawable.start();
 					
+					//文件路径
+					String audioPath = Environment
+							.getExternalStorageDirectory().getPath() + "/im/record"; entity.getText().substring(10);
+					File audioFile = new File(audioPath,entity.getText().substring(10));
+					
+					final MediaPlayer mediaPlayer = new MediaPlayer();
+					mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//播出完毕事件  
+				        @Override public void onCompletion(MediaPlayer arg0) {  
+					        mediaPlayer.release(); 
+					        animationDrawable.stop();
+				        }  
+					});  
+			        mediaPlayer.reset();
+			        try {
+						mediaPlayer.setDataSource(audioFile.getAbsolutePath());
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}  
+			        try {
+						mediaPlayer.prepare();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}  
+			        mediaPlayer.start();//播放  
+										
 					//TODO:监测语音播放结束时停止图片动画
 					//animationDrawable.stop();
 					

@@ -340,7 +340,7 @@ public class FriendChatActivity extends Activity{
 			if(audioPath != null) {
 				try {
 					//发送语音消息
-					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/'));
+					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/')+1);
 					ChatManager cm = XmppTool.XMPPgetChatManager();
 					Chat chat = cm.createChat(friendName, null);
 					chat.sendMessage(msg);
