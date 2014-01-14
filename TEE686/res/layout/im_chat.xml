@@ -84,6 +84,7 @@
             android:layout_toRightOf="@+id/btn_talk"
             android:layout_toLeftOf="@+id/btn_chatSend"
             android:background="@drawable/edittext_normal"
+            android:longClickable="true"
             android:gravity="bottom"
             android:hint="请输入文字"
             android:textSize="20sp" />

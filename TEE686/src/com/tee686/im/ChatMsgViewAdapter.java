@@ -24,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -69,26 +70,25 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return coll.get(position);
+    	ListView msgItem = new ListView(ctx);
+    	ViewGroup parent = (ViewGroup)msgItem
+    			.getItemAtPosition(position);
+    	return parent;
+        //return coll.get(position);
     }
 
     public long getItemId(int position) {
         return position;
     }
     
-
-
 	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
 	 	ChatMsgEntity entity = coll.get(position);
-	 	
 	 	if (entity.getMsgType()) {
 	 		return IMsgViewType.IMVT_COM_MSG;
 	 	}
 	 	else {
 	 		return IMsgViewType.IMVT_TO_MSG;
 	 	}
-	 	
 	}
 	
 	public boolean IsVoice(String msgContent) {
@@ -102,11 +102,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		return false;
 	}
 
-
 	public int getViewTypeCount() {
 		return 2;
 	}
-	
 	
     public View getView(int position, View convertView, ViewGroup parent) {
     	
@@ -153,10 +151,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    if(IsVoice(msgContent)) {
 	    	
 	    	//根据音频时长设置消息框长度
-	    	String voiceStr = "vvv";
+	    	String voiceStr = "www";
 	    	int voiceStrLen = voiceTime / 2;
 	    	while(voiceStrLen-- > 0 ) {
-	    		voiceStr += "v";
+	    		voiceStr += "w";
 	    	}
 	    	
 	    	viewHolder.tvTime.setText(entity.getDate());
@@ -167,6 +165,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
 			viewHolder.ivDot.setVisibility(View.VISIBLE);
+			
 			viewHolder.tvContent.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -181,10 +180,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 					}
 					
 					animationDrawable = (AnimationDrawable)viewHolder.ivVoice.getDrawable();
-					
-					//TODO:播放语音
-					animationDrawable.start();
-					
 					//文件路径
 					String audioPath = Environment
 							.getExternalStorageDirectory().getPath() + "/im/record"; entity.getText().substring(10);
@@ -201,33 +196,34 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			        try {
 						mediaPlayer.setDataSource(audioFile.getAbsolutePath());
 					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (SecurityException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}  
 			        try {
 						mediaPlayer.prepare();
 					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}  
 			        mediaPlayer.start();//播放  
-										
+			        animationDrawable.start();
+			        viewHolder.ivDot.setVisibility(View.INVISIBLE);
+			        
 					//TODO:监测语音播放结束时停止图片动画
 					//animationDrawable.stop();
-					
-					System.out.println("单击语音消息");
+			        //if(isComMsg) {
+			        //	viewHolder.ivVoice.setImageResource(R.drawable.chatfrom_voice_playing);
+			        //}
+			        //else {
+			        //	viewHolder.ivVoice.setImageResource(R.drawable.chatto_voice_playing);
+			        //}
+					System.out.println("单击语音消息" + pos);
 				}
 			});
 			viewHolder.tvContent.setOnLongClickListener(new OnLongClickListener() {
@@ -291,28 +287,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		}
 	    return convertView;
     }
-    /*
-    OnClickListener voiceListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-		}
-    };
-    OnLongClickListener voiceLongListener = new OnLongClickListener() {
-
-		@Override
-		public boolean onLongClick(View v) {
-			return false;
-		}
-    };
-    OnLongClickListener textLongListener = new OnLongClickListener() {
-		@Override
-		public boolean onLongClick(View v) {
-
-			return false;
-		}
-    };*/
 
     static class ViewHolder { 
         public TextView tvTime;

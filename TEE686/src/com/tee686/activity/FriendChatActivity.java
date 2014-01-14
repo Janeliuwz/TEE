@@ -66,8 +66,8 @@ public class FriendChatActivity extends Activity{
 	//private ImageView animationIV;  
     //private AnimationDrawable animationDrawable; 
 	
-	private static final int CHATLIST_MENU_DELETE = 0;
-	private static final int CHATLIST_MENU_COPY = 1;
+	//private static final int CHATLIST_MENU_DELETE = 0;
+	//private static final int CHATLIST_MENU_COPY = 1;
 	
 	private OutgoingFileTransfer sendTransfer;
 	public static String RECORD_ROOT_PATH = Environment

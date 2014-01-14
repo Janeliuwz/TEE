@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -180,28 +181,28 @@ public class FriendsMainActivity extends Activity{
 		//查询数据库获取新消息
 		MessageStore store = new MessageStore(FriendsMainActivity.this);
 		Cursor newlistcursor = store.selectNewlist();
-		while(newlistcursor.moveToNext())
-		{
+		while(newlistcursor.moveToNext()) {
+			
 			String friendid = newlistcursor.getString(newlistcursor.getColumnIndex("friendid"));
 			Cursor newMsgcursor = store.selectMessagelist(friendid, userid);
-			if(newMsgcursor.moveToLast())
-			{
+			
+			if(newMsgcursor.moveToLast()) {
+				
 				Map<String,String> newMsg = new HashMap<String,String>();
 				newMsg.put("msgcontent",newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent")));
 				newMsg.put("friendid",friendid);
 				newMsg.put("datetime",newMsgcursor.getString(newMsgcursor.getColumnIndex("datetime")));
 				Integer count = 0;
 				Cursor countcursor = store.selectNewmsg(friendid,userid);
-				while(countcursor.moveToNext())
-				{
+				
+				while(countcursor.moveToNext()) {
 					count++;
 				}
-				if(count>99)
-				{
+				
+				if(count>99) {
 					newMsg.put("count", "99");
 				}
-				else
-				{
+				else {
 					newMsg.put("count", count.toString());
 				}
 				mNewMsg.add(newMsg);
@@ -226,31 +227,38 @@ public class FriendsMainActivity extends Activity{
 	}
 	
 	private void getNewMsgView() {
+		
+		//单击列表项跳转
 		msgList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				unregisterReceiver(mReceiver);
 				TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
-				//Toast.makeText(getApplicationContext(), 
-						//tv_name.getText(), Toast.LENGTH_SHORT).show();
+
 				//跳转到聊天界面
 				Intent intent = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
 				intent.putExtra("friendName", tv_name.getText().toString());
 				startActivity(intent);
 			}
 		});	
+		
+		//长按列表项显示菜单
 		msgList.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, final View view, int pos, long id) {
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
-				alertDialog.setTitle("请选择");
-				alertDialog.setItems(R.array.msgmenu, new DialogInterface.OnClickListener() {
-					
+				
+				//设置对话框的创建属性
+				AlertDialog.Builder builder = new AlertDialog.Builder(FriendsMainActivity.this);
+				builder.setTitle("请选择");
+				builder.setItems(R.array.msgmenu, new DialogInterface.OnClickListener() {
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO 
+						
 						switch(which) {
+						
 						case MSG_MENU_CLEAR:
+							//TODO:显示“正在删除”
 							TextView tv_name = (TextView)view.findViewById(R.id.tv_msgitem_name);
 							String delname = tv_name.getText().toString();							
 							SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
@@ -266,17 +274,24 @@ public class FriendsMainActivity extends Activity{
 						}
 					}
 				});
+				AlertDialog alertDialog = builder.create(); //创建对话框
+				alertDialog.setCanceledOnTouchOutside(true); //点击对话框外部则消失
+				//alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //对话框无标题栏
 				alertDialog.show();
+				
 				return false;
 			}
 		});
 	}
 	
+	/*
+	 * 获取好友列表数据
+	 */
 	@SuppressWarnings("unchecked")
 	private void getFriendsListData() {
 		
 		tempNames.clear();
-		friendsNamesList.clear();
+		friendsNamesList.clear(); //使用List才能监听到动态变化
 		Map<String,String> tempfriends = new HashMap<String,String>();
 		Map<String,String> temppresence = new HashMap<String,String>();
 		Roster roster = XmppTool.getConnection().getRoster();
@@ -305,8 +320,9 @@ public class FriendsMainActivity extends Activity{
 			friendsNames[i]=tempNames.get(i).get("name");
 			System.out.println(friendsNames[i]);
 		}
-		Arrays.sort(friendsNames, new PinyinComparator());
+		Arrays.sort(friendsNames, new PinyinComparator()); //按姓名拼音排序
 		
+		//将排序完成后的好友名及状态存入到List中
 		System.out.println(friendsNamesList.size());
 		for(int j=0;j<friendsNames.length;j++)
 		{
@@ -369,41 +385,52 @@ public class FriendsMainActivity extends Activity{
 		friendsListIndexbar.setListView(friendsList);
 		mDialogText.setVisibility(View.INVISIBLE);
 		
-		//监听好友列表项单击操作
+		//监听好友列表项单击操作，显示菜单
 		friendsList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				final TextView tv_name = (TextView)view.findViewById(R.id.tv_frienditem_name);
 
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendsMainActivity.this);
-				alertDialog.setTitle("请选择");
-				alertDialog.setItems(R.array.contactsmenu, new DialogInterface.OnClickListener() {
+				//设置对话框创建属性
+				AlertDialog.Builder builder = new AlertDialog.Builder(FriendsMainActivity.this);
+				builder.setTitle("请选择");
+				builder.setItems(R.array.contactsmenu, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						switch(which) {
+						
 						case CONTACTS_MENU_INFO:
-							//Intent intent0 = new Intent(FriendsMainActivity.this, FriendInfoActivity.class);
+							//TODO:FriendInfoActivity
+							//Intent intent0 = new Intent(FriendsMainActivity.this, 
+								//FriendInfoActivity.class);
 							//intent0.putExtra("friendName", tv_name.getText());
 							//startActivity(intent0);
 							System.out.println("好友资料");
 							break;
+							
 						case CONTACTS_MENU_SEND:
-							Intent intent1 = new Intent(FriendsMainActivity.this, FriendChatActivity.class);
+							Intent intent1 = new Intent(FriendsMainActivity.this, 
+									FriendChatActivity.class);
 							intent1.putExtra("friendName", tv_name.getText());
-							//Toast.makeText(getApplicationContext(), 
-								//tv_name.getText(), Toast.LENGTH_SHORT).show();
 							startActivity(intent1);
 							System.out.println("发送消息");
 							break;
+							
 						case CONTACTS_MENU_DELETE:
-							//TODO
+							
+							//TODO 1、删除item项。2、解除好友关系
+							
 							System.out.println("删除好友");
 							break;
 						}
 					}
 				});
+				
+				AlertDialog alertDialog = builder.create(); //创建对话框
+				alertDialog.setCanceledOnTouchOutside(true); //点击对话框外部则消失
+				//alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //对话框无标题栏
 				alertDialog.show();		
 			}
 		});
@@ -549,11 +576,13 @@ public class FriendsMainActivity extends Activity{
 	private void initCursorImage() {
 		bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.im_tab_bg)
 				.getWidth();
+		
 		//获取屏幕分辨率
 		DisplayMetrics dm = new DisplayMetrics();
 		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
 		int displayWidth = dm.widthPixels;
-		//TODO:调整动画图片显示位置
+		
+		//调整动画图片显示位置
 		offset = (displayWidth/2 - bmpW) / 2;
 		Matrix matrix = new Matrix();
 		matrix.postTranslate(offset, 0);
@@ -586,7 +615,6 @@ public class FriendsMainActivity extends Activity{
 		public void onClick(View v) {
 			mTabPager.setCurrentItem(index);
 		}
-		
 	}
 	
 	/*
@@ -609,6 +637,7 @@ public class FriendsMainActivity extends Activity{
 			Animation animation = null;
 			//mPagerAdapter.notifyDataSetChanged();
 			switch(arg0) {
+			
 			case TAB_MESSAGE:
 				//getNewMsgListView(view0);
 				//mAdapter.notifyDataSetChanged();
@@ -619,6 +648,7 @@ public class FriendsMainActivity extends Activity{
 							.getDrawable(R.drawable.im_tab_contacts));
 				}
 				break;
+				
 			case TAB_CONTACTS:
 				mTabContacts.setImageDrawable(getResources()
 						.getDrawable(R.drawable.im_tab_contacts_pressed));
@@ -628,6 +658,7 @@ public class FriendsMainActivity extends Activity{
 				}
 				break;
 			}
+			
 			currIndex = arg0;
 			animation.setFillAfter(true); //TRUE:图片停在动画结束位置
 			animation.setDuration(150);
