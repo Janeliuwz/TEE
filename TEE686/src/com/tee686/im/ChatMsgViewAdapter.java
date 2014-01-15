@@ -108,11 +108,13 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	
     public View getView(int position, View convertView, ViewGroup parent) {
     	
-    	final ChatMsgEntity entity = coll.get(position);
-    	int voiceTime = entity.getVoiceTime();
-    	final boolean isComMsg = entity.getMsgType();
-    	String msgContent = entity.getText();
+    	//定义成final对象以便在onclick响应中使用
+    	final ChatMsgEntity entity = coll.get(position);  	
+    	final boolean isComMsg = entity.getMsgType();   	
     	final int pos = position;
+    	
+    	String msgContent = entity.getText();
+    	int voiceTime = entity.getVoiceTime();
     	
     	//ViewHolder viewHolder = null;	
 	    if (convertView == null) {
@@ -147,7 +149,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    else {
 	        viewHolder = (ViewHolder)convertView.getTag();
 	    }
+	    
+	    //必须定义在这里，定义在最前面convertView可能为null
+	    final View view = convertView;
 	    viewHolder.isComMsg = isComMsg;
+	    
+	    //如果是音频消息
 	    if(IsVoice(msgContent)) {
 	    	
 	    	//根据音频时长设置消息框长度
@@ -170,16 +177,23 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View v) {
+					ImageView ivVoice = null;
+					ImageView ivDot = null;
 					if(isComMsg) {
-						viewHolder.ivVoice.setImageResource(R.drawable.im_recvvoiceplaying);
+						ivVoice = (ImageView)view.findViewById(R.id.iv_recvVoice);
+						ivDot = (ImageView)view.findViewById(R.id.iv_recvVoice_dot);
+						ivVoice.setImageResource(R.drawable.im_recvvoiceplaying);
 						System.out.println("receive");
 					}
 					else {
-						viewHolder.ivVoice.setImageResource(R.drawable.im_sendvoiceplaying);
+						ivVoice = (ImageView)view.findViewById(R.id.iv_sendVoice);
+						ivDot = (ImageView)view.findViewById(R.id.iv_sendVoice_dot);
+						ivVoice.setImageResource(R.drawable.im_sendvoiceplaying);
 						System.out.println("send");
 					}
 					
-					animationDrawable = (AnimationDrawable)viewHolder.ivVoice.getDrawable();
+					final ImageView ivVoice_finish = ivVoice;
+					animationDrawable = (AnimationDrawable)ivVoice.getDrawable();
 					//文件路径
 					String audioPath = Environment
 							.getExternalStorageDirectory().getPath() + "/im/record"; entity.getText().substring(10);
@@ -190,6 +204,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				        @Override public void onCompletion(MediaPlayer arg0) {  
 					        mediaPlayer.release(); 
 					        animationDrawable.stop();
+					        if(isComMsg) {
+					        	ivVoice_finish.setImageResource(R.drawable.chatfrom_voice_playing);
+						     }
+						     else {
+						    	ivVoice_finish.setImageResource(R.drawable.chatto_voice_playing);
+						     }
 				        }  
 					});  
 			        mediaPlayer.reset();
@@ -213,16 +233,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 					}  
 			        mediaPlayer.start();//播放  
 			        animationDrawable.start();
-			        viewHolder.ivDot.setVisibility(View.INVISIBLE);
+			        ivDot.setVisibility(View.INVISIBLE);
 			        
-					//TODO:监测语音播放结束时停止图片动画
-					//animationDrawable.stop();
-			        //if(isComMsg) {
-			        //	viewHolder.ivVoice.setImageResource(R.drawable.chatfrom_voice_playing);
-			        //}
-			        //else {
-			        //	viewHolder.ivVoice.setImageResource(R.drawable.chatto_voice_playing);
-			        //}
 					System.out.println("单击语音消息" + pos);
 				}
 			});
@@ -249,6 +261,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				}
 			});
 		}
+	    
+	    //如果非音频消息
 		else {
 			viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(msgContent);
