@@ -1,6 +1,5 @@
 package com.tee686.activity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,12 +9,10 @@ import java.util.Map;
 
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 
 import com.casit.tee686.R;
-import com.unionpay.mpay.views.r;
-import com.tee686.im.ChatMsgEntity;
-import com.tee686.im.ChatMsgViewAdapter;
 import com.tee686.im.FriendsListAdapter;
 import com.tee686.im.NewMsgListAdapter;
 import com.tee686.im.PinyinComparator;
@@ -44,23 +41,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.SectionIndexer;
-//import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class FriendsMainActivity extends Activity{
@@ -78,11 +69,6 @@ public class FriendsMainActivity extends Activity{
 	private int currIndex = 0; //当前页卡编号
 	private int bmpW; //动画图片宽度
 	private int offset = 0; //动画图片偏移量
-	
-	private View layout;
-	private LayoutInflater inflater;
-	private View view0;
-	private View view1;
 	
 	private ImageButton addFriend;
 	private ListView friendsList;
@@ -171,7 +157,7 @@ public class FriendsMainActivity extends Activity{
 	private void getNewMsgData()
 	{
 		mNewMsg.clear();
-		Map<String,String> tempid = new HashMap<String,String>();
+		new HashMap<String,String>();
 		SharedPreferences share = getSharedPreferences(UserLoginActivity.SharedName,
 				Context.MODE_PRIVATE);
 		
@@ -421,7 +407,31 @@ public class FriendsMainActivity extends Activity{
 						case CONTACTS_MENU_DELETE:
 							
 							//TODO 1、删除item项。2、解除好友关系
-							
+							AlertDialog.Builder builder = new AlertDialog.Builder(FriendsMainActivity.this);
+							builder.setTitle("提示")
+							   .setMessage("确定删除该好友吗?")
+						       .setCancelable(false)      //是否屏蔽回退键
+						       .setPositiveButton("否", new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						                dialog.cancel();   	   
+						           }
+						       })
+						       .setNegativeButton("是", new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						        	   Roster roster = XmppTool.getConnection().getRoster();
+						        	   try {
+						        		   roster.removeEntry(roster.getEntry(tv_name.getText().toString()));
+						        		   dialog.cancel();
+						        		   getFriendsListData();
+						        		   fAdapter.notifyDataSetChanged();
+						        	   } catch (XMPPException e) {
+						        		   // TODO Auto-generated catch block
+						        		   e.printStackTrace();
+						        	   } 
+						           }
+						       });
+							AlertDialog alert = builder.create();
+							alert.show();
 							System.out.println("删除好友");
 							break;
 						}

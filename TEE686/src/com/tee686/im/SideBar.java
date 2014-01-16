@@ -64,6 +64,7 @@ public class SideBar extends View {
 	        }  
 	        return true;  
 	    }  
+	    
 	    protected void onDraw(Canvas canvas) {  
 	        Paint paint = new Paint();  
 	        paint.setColor(0xff595c61);  

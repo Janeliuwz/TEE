@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
@@ -32,7 +33,13 @@ public class XmppTool {
 		try {
 			//设置服务器url和端口
 			ConnectionConfiguration connConfig = new ConnectionConfiguration(SERVER_NAME, PORT);
-			connConfig.setSASLAuthenticationEnabled(false);
+			connConfig.setReconnectionAllowed(true);       
+			connConfig.setSecurityMode(SecurityMode.required);
+	        connConfig.setSASLAuthenticationEnabled(false);
+	        connConfig.setCompressionEnabled(false);     
+			connConfig .setTruststorePath("/system/etc/security/cacerts.bks");        
+			connConfig.setTruststorePassword("changeit");        
+			connConfig.setTruststoreType("bks");        
 			con = new XMPPConnection(connConfig);
 			con.connect();
 			//cm = con.getChatManager();
