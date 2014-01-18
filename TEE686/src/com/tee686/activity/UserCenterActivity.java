@@ -1,5 +1,6 @@
 package com.tee686.activity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,12 +19,18 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.filetransfer.FileTransferListener;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
+import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
+
 import com.tee686.xmpp.XmppTool;
 
 import android.content.Context;
@@ -31,6 +38,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -132,6 +140,17 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 			initViewPager();
 		}
 	}
+	
+	public boolean IsVoice(String msgContent) {
+		if(msgContent!=null) {
+			if(msgContent.length()>10) {
+				if(msgContent.substring(0,10).equals("[voicemsg]"))	{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -176,6 +195,24 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 		loadLayout = (LinearLayout) findViewById(R.id.view_loading);
 		loadFaillayout = (LinearLayout) findViewById(R.id.view_load_fail);
 		
+		FileTransferManager fileRecManager = new FileTransferManager(XmppTool.getConnection());
+		fileRecManager.addFileTransferListener(new FileTransferListener() {
+			@Override
+		     public void fileTransferRequest(FileTransferRequest request) {   
+		           //接收文件监听
+		           IncomingFileTransfer transfer = request.accept();
+		           String fileName = transfer.getFileName();
+		           try {
+					transfer.recieveFile(new File(Environment
+							.getExternalStorageDirectory().getPath() + "/im/record" + fileName));
+				} catch (XMPPException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  
+		     }		
+		}
+		);  
+		
 		//开启消息监听
 		ChatManager cm = XmppTool.XMPPgetChatManager();
 	    cm.addChatListener(new ChatManagerListener() 
@@ -217,6 +254,11 @@ public class UserCenterActivity extends BaseFragmentActivity implements
 							msg.put("content", message.getBody());
 							msg.put("ifread","no");
 							msg.put("uid", userId);
+							if(IsVoice(message.getBody())){
+								msg.put("voicetime", message.getBody().substring(10).split(",")[1]);
+							}else{
+								msg.put("voicetime", "0");
+							}
 							
 							//存入数据库
 							MessageStore store = new MessageStore(UserCenterActivity.this);

@@ -150,6 +150,17 @@ public class FriendsMainActivity extends Activity{
 			mAdapter.notifyDataSetChanged(); //更新新消息列表
 		}
 	};
+	
+	public boolean IsVoice(String msgContent) {
+		if(msgContent!=null) {
+			if(msgContent.length()>10) {
+				if(msgContent.substring(0,10).equals("[voicemsg]"))	{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	/*
 	 * 获取新消息列表数据
@@ -175,7 +186,12 @@ public class FriendsMainActivity extends Activity{
 			if(newMsgcursor.moveToLast()) {
 				
 				Map<String,String> newMsg = new HashMap<String,String>();
-				newMsg.put("msgcontent",newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent")));
+				String msgcontent = newMsgcursor.getString(newMsgcursor.getColumnIndex("msgcontent"));
+				if(IsVoice(msgcontent)){
+					newMsg.put("msgcontent", "语音消息");
+				}else{
+					newMsg.put("msgcontent",msgcontent);
+				}				
 				newMsg.put("friendid",friendid);
 				newMsg.put("datetime",newMsgcursor.getString(newMsgcursor.getColumnIndex("datetime")));
 				Integer count = 0;

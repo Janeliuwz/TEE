@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class IM_SQLiteHelper extends SQLiteOpenHelper{
 	
 	private static final String DB_NAME = "imdata.db";
-	private static final String DB_CREATE = "create table if not exists messagelist(id integer primary key, userid varchar, whereto varchar, wherefrom varchar, msgcontent nvarchar, datetime text,ifread integer)";
+	private static final String DB_CREATE = "create table if not exists messagelist(id integer primary key, userid varchar, whereto varchar, wherefrom varchar, msgcontent nvarchar, datetime text,ifread integer,voicetime integer)";
 	private static final String NEW_CREATE = "create table if not exists newlist(id integer primary key,friendid varchar,userid varchar)";
 	private static final int version = 1;
 	

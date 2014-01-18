@@ -44,6 +44,7 @@ public class MessageStore {
 		values.put("wherefrom", msg.get("from"));
 		values.put("msgcontent", msg.get("content"));
 		values.put("userid",msg.get("uid"));
+		values.put("voicetime", Integer.parseInt(msg.get("voicetime")));
 		
 		if(msg.containsKey("ifread"))
 			values.put("ifread",0);

@@ -117,6 +117,7 @@ public class FriendChatActivity extends Activity{
 				entity.setName(userid);
 				entity.setMsgType(false);
 			}
+			entity.setVoiceTime(cursor.getInt(cursor.getColumnIndex("voicetime")));
 			mDataArrays.add(entity);
 			System.out.println("从数据库获取对话数据");
 			System.out.println("数据库id："+ cursor.getString(cursor.getColumnIndex("id")));
@@ -298,6 +299,7 @@ public class FriendChatActivity extends Activity{
 				tempmsg.put("from", userid);
 				tempmsg.put("content", msg);
 				tempmsg.put("uid", userid);
+				tempmsg.put("voicetime", "0");
 				MessageStore store = new MessageStore(FriendChatActivity.this);
 				long result = 0;
 				if((result = store.insertMessagelist(tempmsg))!=-1)
@@ -316,6 +318,7 @@ public class FriendChatActivity extends Activity{
 				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");     
 				String date = sDateFormat.format(new java.util.Date());
 				entity.setDate(date);
+				entity.setVoiceTime(0);
 				mDataArrays.add(entity);
 				if(mDataArrays.size()<6)
 				{
@@ -340,7 +343,7 @@ public class FriendChatActivity extends Activity{
 			if(audioPath != null) {
 				try {
 					//发送语音消息
-					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/')+1);
+					String msg = "[voicemsg]"+audioPath.substring(audioPath.lastIndexOf('/')+1) + "," + Integer.toString(time);
 					ChatManager cm = XmppTool.XMPPgetChatManager();
 					Chat chat = cm.createChat(friendName, null);
 					chat.sendMessage(msg);
@@ -350,6 +353,7 @@ public class FriendChatActivity extends Activity{
 					tempmsg.put("from", userid);
 					tempmsg.put("content", msg);
 					tempmsg.put("uid", userid);
+					tempmsg.put("voicetime",Integer.toString(time));
 					MessageStore store = new MessageStore(FriendChatActivity.this);
 					long result = 0;
 					if((result = store.insertMessagelist(tempmsg))!=-1)
@@ -427,19 +431,18 @@ public class FriendChatActivity extends Activity{
 	public void sendFile(String path) {
 		FileTransferManager sendFileManager = new FileTransferManager(
 				XmppTool.getConnection());
+		OutgoingFileTransfer transfer = sendFileManager.createOutgoingFileTransfer(friendName);
 		//sendTransfer = sendFileManager.createOutgoingFileTransfer(arg0);
 		
 		try {
-			sendTransfer.sendFile(new java.io.File(path), "send file");
+			sendTransfer.sendFile(new java.io.File(path), "VoiceMsg");
 			//TODO
 		}
 		catch (XMPPException e){
 			e.printStackTrace();
 		}
 	}
-	public void receivedFile() {
-		//TODO
-	}
+	
 	
 	//定义broadcastreceiver
 	BroadcastReceiver mReceiver = new BroadcastReceiver() {

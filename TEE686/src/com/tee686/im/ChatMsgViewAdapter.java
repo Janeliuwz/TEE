@@ -124,7 +124,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    		viewHolder = new ViewHolder();
 				viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_recvMsgTime);
 				viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_recvContent);
-				viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				viewHolder.tvFileNameAndTime = (TextView) convertView.findViewById(R.id.tv_voice_filename);
 				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_recvVoice_time);
 				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_recvVoice);
 				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_recvVoice_dot);
@@ -138,7 +138,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				viewHolder = new ViewHolder();
 				viewHolder.tvTime = (TextView) convertView.findViewById(R.id.tv_sendMsgTime);
 				viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_sendContent);
-				viewHolder.tvFileName = (TextView) convertView.findViewById(R.id.tv_voice_filename);
+				viewHolder.tvFileNameAndTime = (TextView) convertView.findViewById(R.id.tv_voice_filename);
 				viewHolder.tvPlayTime = (TextView) convertView.findViewById(R.id.tv_sendVoice_time);
 				viewHolder.ivVoice = (ImageView) convertView.findViewById(R.id.iv_sendVoice);
 				viewHolder.ivDot = (ImageView) convertView.findViewById(R.id.iv_sendVoice_dot);
@@ -167,7 +167,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	    	viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(voiceStr);
 			viewHolder.tvContent.setTextColor(Color.argb(0, 0, 0, 0)); //文字透明
-			viewHolder.tvFileName.setText(entity.getText().substring(10));
+			viewHolder.tvFileNameAndTime.setText(entity.getText().substring(10));
 			viewHolder.tvPlayTime.setText(voiceTime + "''");
 			viewHolder.tvPlayTime.setVisibility(View.VISIBLE);
 			viewHolder.ivVoice.setVisibility(View.VISIBLE);
@@ -194,15 +194,19 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 					
 					final ImageView ivVoice_finish = ivVoice;
 					animationDrawable = (AnimationDrawable)ivVoice.getDrawable();
+					
+					String msgcontent = entity.getText().substring(10);
+					String[] command = msgcontent.split(",");
+					
 					//文件路径
 					String audioPath = Environment
-							.getExternalStorageDirectory().getPath() + "/im/record"; entity.getText().substring(10);
-					File audioFile = new File(audioPath,entity.getText().substring(10));
+							.getExternalStorageDirectory().getPath() + "/im/record"; 
+					File audioFile = new File(audioPath,command[0]);
 					
-					final MediaPlayer mediaPlayer = new MediaPlayer();
+					MediaPlayer mediaPlayer = new MediaPlayer();
 					mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//播出完毕事件  
-				        @Override public void onCompletion(MediaPlayer arg0) {  
-					        mediaPlayer.release(); 
+				        @Override public void onCompletion(MediaPlayer mp) {  
+					        mp.release(); 
 					        animationDrawable.stop();
 					        if(isComMsg) {
 					        	ivVoice_finish.setImageResource(R.drawable.chatfrom_voice_playing);
@@ -267,7 +271,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			viewHolder.tvTime.setText(entity.getDate());
 			viewHolder.tvContent.setText(msgContent);
 			viewHolder.tvContent.setTextColor(Color.BLACK);	
-			viewHolder.tvFileName.setText("");
+			viewHolder.tvFileNameAndTime.setText("");
 			viewHolder.tvPlayTime.setVisibility(View.INVISIBLE);
 			viewHolder.ivVoice.setVisibility(View.INVISIBLE);
 			viewHolder.ivDot.setVisibility(View.INVISIBLE);
@@ -306,7 +310,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         public TextView tvTime;
         public TextView tvUserName;
         public TextView tvContent;
-        public TextView tvFileName;
+        public TextView tvFileNameAndTime;
         public TextView tvPlayTime;
         public ImageView ivVoice;
         public ImageView ivDot;
