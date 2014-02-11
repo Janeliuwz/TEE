@@ -3,6 +3,8 @@ package com.tee686.im;
 
 import android.R.integer;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.casit.tee686.R;
+import com.tee686.activity.FriendChatActivity;
+import com.tee686.sqlite.MessageStore;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 	
@@ -112,6 +116,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     	final ChatMsgEntity entity = coll.get(position);  	
     	final boolean isComMsg = entity.getMsgType();   	
     	final int pos = position;
+    	final ChatMsgViewAdapter adapter = this;
     	
     	String msgContent = entity.getText();
     	int voiceTime = entity.getVoiceTime();
@@ -252,7 +257,18 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 							// TODO 
 							switch(which) {
 							case CHATLIST_MENU_DELETE:
-								System.out.println("删除语音" + pos);
+								//System.out.println("删除语音" + pos);
+								
+								//删除数据库项
+								MessageStore store = new MessageStore(ctx);
+								store.deleteMessagelistfromdatetiem(entity.getDate());
+								store.closeDB();
+								
+								//刷新数据
+								coll.remove(pos);
+								adapter.notifyDataSetChanged();
+								//TODO:
+								//删除对应的文件
 								break;
 							}
 						}
@@ -280,17 +296,44 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 				@Override
 				public boolean onLongClick(View v) {
+									
 					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);		
 					builder.setItems(R.array.chattextmenu, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO 
+							
+							//取当前点击的对话文本的view
+							TextView contentMsg = null;
+							if(isComMsg) {
+								contentMsg = (TextView)view.findViewById(R.id.tv_recvContent);
+								System.out.println("receive");
+							}
+							else {
+								contentMsg = (TextView)view.findViewById(R.id.tv_sendContent);
+								System.out.println("send");
+							}
+							
 							switch(which) {
 							case CHATLIST_MENU_DELETE:
-								System.out.println("删除文字" + pos);
+								//System.out.println("删除文字" + pos);
+								//删除数据库项
+								MessageStore store = new MessageStore(ctx);
+								store.deleteMessagelistfromdatetiem(entity.getDate());
+								store.closeDB();
+								
+								//刷新数据
+								coll.remove(pos);
+								adapter.notifyDataSetChanged();
 								break;
 							case CHATLIST_MENU_COPY:
-								System.out.println("复制文字" + pos);
+								
+								//System.out.println("复制文字" + pos);
+								
+								//取得系统全局剪贴板
+								ClipboardManager copy = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+								
+								//将当前的文本内容放入剪切板
+								copy.setPrimaryClip(ClipData.newPlainText("simple text",contentMsg.getText()));
 								break;
 							}
 						}

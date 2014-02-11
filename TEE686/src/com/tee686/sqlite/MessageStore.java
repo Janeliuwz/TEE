@@ -91,6 +91,11 @@ public class MessageStore {
 		return db.delete("newlist", "friendid=? and userid=?", new String[]{friendid,userid});
 	}
 	
+	public int deleteMessagelistfromdatetiem(String datetime)
+	{
+		return db.delete("messagelist", "datetime=?", new String[]{datetime});
+	}
+	
 	public long insertNewlist(String friendid,String userid)
 	{
 		ContentValues values = new ContentValues();
