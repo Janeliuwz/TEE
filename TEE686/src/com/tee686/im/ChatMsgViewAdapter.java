@@ -267,8 +267,18 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 								//刷新数据
 								coll.remove(pos);
 								adapter.notifyDataSetChanged();
-								//TODO:
+								
 								//删除对应的文件
+								String msgcontent = entity.getText().substring(10);
+								String[] command = msgcontent.split(",");
+								
+								//文件路径
+								String audioPath = Environment
+										.getExternalStorageDirectory().getPath() + "/im/record"; 
+								File audioFile = new File(audioPath,command[0]);
+								
+								//删除
+								audioFile.delete();
 								break;
 							}
 						}
