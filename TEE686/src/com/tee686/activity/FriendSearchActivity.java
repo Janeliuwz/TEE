@@ -75,8 +75,7 @@ public class FriendSearchActivity extends Activity{
 				// Toast.makeText(this,e.getMessage()+" "+e.getClass().toString(),
 				// Toast.LENGTH_SHORT).show();
 			}
-		}
-		
+		}		
 	};
 	
 	private void initControl() {
